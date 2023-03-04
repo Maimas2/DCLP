@@ -20,7 +20,7 @@ namespace res {
 	vector<Image*> images;
 	vector<IMAGE_TYPE> typesLoaded;
 	int lastReservedSpot = 0;
-	Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon;
+	Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored;
 	bool isOfType(IMAGE_TYPE im, IMAGE_TYPE typee) {
 		return typee == im;
 	}
@@ -34,12 +34,6 @@ namespace res {
 		return i;
 	}
 	void initial() {
-		//imgs = (Image**)malloc(sizeof(Image*) * NUMBER_OF_IMAGE_SLOTS);
-		
-		container = setupImage("images/container.jpg",                false,IMAGE_ALWAYS_LOADED);
-		allWhite  = setupImage("images/white.png",                    false,IMAGE_ALWAYS_LOADED);
-		circle    = setupImage("images/circle.png",                   true, IMAGE_ALWAYS_LOADED);
-		
 		baseCard  = setupImage("card-resources/CardColorOne.png",     true, IMAGE_ALWAYS_LOADED);
 	baseOutline   = setupImage("card-resources/CardBrown.png",        true, IMAGE_ALWAYS_LOADED);
 desciptionFocus   = setupImage("card-resources/DescriptionFocus.png", true, IMAGE_ALWAYS_LOADED);
@@ -50,6 +44,8 @@ desciptionFocus   = setupImage("card-resources/DescriptionFocus.png", true, IMAG
 		cardGrey  = setupImage("card-resources/CardGray.png",         true, IMAGE_ALWAYS_LOADED);
 		cardBase  = setupImage("card-resources/BaseCardGray.png",     true, IMAGE_ALWAYS_LOADED);
 		traveler  = setupImage("card-resources/Traveller.png",        true, IMAGE_ALWAYS_LOADED);
+		pileMarker= setupImage("card-resources/PileMarkerGrey.png",   true, IMAGE_ALWAYS_LOADED);
+pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",true,IMAGE_ALWAYS_LOADED);
 		
 		baseCardOutline = setupImage("card-resources/BaseCardGray.png",     true, IMAGE_ALWAYS_LOADED);
 		baseCardColor   = setupImage("card-resources/BaseCardColorOne.png", true, IMAGE_ALWAYS_LOADED);

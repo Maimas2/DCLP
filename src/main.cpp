@@ -126,7 +126,7 @@ void screenShot() { // Based off https://stackoverflow.com/questions/33757634/cr
 	if(cardLayout == 0 || cardLayout == 2) {
 		w = (pixelWidth/1920)*672;
 		h = (pixelHeight/1080)*1080;
-	} else if(cardLayout == 1) {
+	} else if(cardLayout == 1 || cardLayout == 3) {
 		w = (pixelWidth/1920)*1080;
 		h = (pixelHeight/1080)*702;
 	}
@@ -181,21 +181,11 @@ void composeDearImGuiFrame() {
 
     // a window is defined by Begin/End pair
     {
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		if(cardLayout == 0 || cardLayout == 2) {
-			ImGui::SetNextWindowSize(
-				ImVec2(624.f, pixelHeight)
-			);
-		} else if(cardLayout == 1) {
-			ImGui::SetNextWindowSize(
-				ImVec2(440.f, pixelHeight)
-			);
-		}
 		
 
 		ImGui::SetNextWindowBgAlpha(0.7f);
         
-        ImGui::Begin("Options", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin("Options", NULL);
 		
 		ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
@@ -206,22 +196,24 @@ void composeDearImGuiFrame() {
 		
 		ImGui::InputText("Title", cardTitle, 100);
 		
-		ImGui::InputText("Type", cardType, 100);
-		ImGui::InputText("Cost", cardCost, 30);
+		if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
+		if(cardLayout <= 2) ImGui::InputText("Cost", cardCost, 30);
 		
-		ImGui::InputText("Art Credit", cardCredit, 120);
-		ImGui::InputText("Card Version and Creator", cardVersion, 120);
+		if(cardLayout != 3) ImGui::InputText("Art Credit", cardCredit, 120);
+		if(cardLayout != 3) ImGui::InputText("Card Version and Creator", cardVersion, 120);
 		
 		if(cardLayout == 0 || cardLayout == 2) ImGui::InputText("Preview (Top left & right)", cardPreview, 30);
 		
-		ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
-		if(cardLayout < 2) ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
+		if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
+		if(cardLayout < 2)  ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
 		
-		static ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
-		ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
+		if(cardLayout <= 2) {
+			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
+			ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
+		}
 		
 		ImGui::InputText("Picture URL", iconUrl, 500);
-		ImGui::InputText("Expansion URL", expansionUrl, 500);
+		if(cardLayout <= 2) ImGui::InputText("Expansion URL", expansionUrl, 500);
 		if(ImGui::Button("Reload Pictures")) {
 			loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
 			loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), false);
@@ -256,20 +248,21 @@ void composeDearImGuiFrame() {
 			}
 			
 		}
-		ImGui::Text("Tweaks (Uneeded; unavalible in CLI mode)");
-		ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
-		ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
-		ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
-		ImGui::SliderFloat("Tweak Text Y Position", &textYPosTweak, -1.f, 1.f, "%.2f");
-		ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
+		if(cardLayout != 3) ImGui::Text("Tweaks (Uneeded; unavalible in CLI mode)");
+		if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
+		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
+		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
+		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Y Position", &textYPosTweak, -1.f, 1.f, "%.2f");
+		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
 
-		ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
-		ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
+		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
+		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
 
-		ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f");
-		ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
-      ImGui::End();
-      //ImGui::ShowDemoWindow();
+		if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f");
+		if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
+
+    	ImGui::End();
+    	//ImGui::ShowDemoWindow();
     }
 	
 }

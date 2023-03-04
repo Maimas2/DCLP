@@ -250,6 +250,27 @@ void drawBase() {
 		res::baseCardSide.bind();
 		
 		drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, sideColor);
+	} else if(cardLayout == 3) {
+		setVec2("maxNE", 0.8f, 0.5f);
+		setVec2("maxSW", -0.8f, -0.5f);
+		res::tempIcon.bind();
+		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+		if(wxh < 1.f) {
+			wid    = 1.1f;
+			height = 1.1f/wxh;
+		} else {
+			wid    = 0.8f*wxh;
+			height = 0.8f;
+		}
+		setBool("maxX", true);
+		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
+		setBool("maxX", false);
+
+		res::pileMarker.bind();
+		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, allWhite);
+
+		res::pileMarkerColored.bind();
+		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
 	}
 }
 void drawEmbellishments() {
@@ -291,6 +312,12 @@ void drawTitle(char* ss) {
 			drawCenteredStringWithMaxWidth(s, 0.f, 0.51f, 2.f, 0.66f, 0.f, 0.f, 0.f);
 		}
 		
+	} else if(cardLayout == 3) {
+		setMat4("transMat", glm::rotate(1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
+		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);
+		setMat4("transMat", glm::rotate(-1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
+		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);
+		setMat4("transMat", glm::mat4(1.f));
 	}
 }
 void drawType(char* ss) {
@@ -386,17 +413,23 @@ void drawBottomTexts() {
 	setFont("tnr");
 }
 void drawExpansionIcon() {
-	if(cardLayout == 0 || cardLayout == 2) {
+	if(cardLayout == 0) {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();
 			
 			drawTexturedQuad(0.47f, -0.815f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
 		}
-	} if(cardLayout == 1) {
+	} else if(cardLayout == 1) {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();
 			
-			drawTexturedQuad(0.47f, -0.815f, 0.08f, 0.08f);
+			drawTexturedQuad(0.763f, -0.495f, 0.07f*expansionIconXSizeTweak, 0.07f*expansionIconYSizeTweak);
+		}
+	} else if(cardLayout == 2) {
+		if(res::tempExpansionIcon.id != 0) {
+			res::tempExpansionIcon.bind();
+			
+			drawTexturedQuad(0.47f, -0.82f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
 		}
 	}
 }

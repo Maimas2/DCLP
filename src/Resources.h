@@ -17,7 +17,7 @@ extern IMAGE_TYPE IMAGE_GAME_CHOOSER;
 
 namespace res {
 	extern vector<Image*> images;
-	extern Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon;
+	extern Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored;
 	string getAvalible();
 	int reserveNextSpot();
 	void initial();
