@@ -750,5 +750,5 @@ void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, fl
 	drawCenteredStringSingleLine(in, x, y, scale, r, g, b);
 }
 void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, float maxWidth) {
-	drawCenteredStringWithMaxDimensions(in, x, y, scale, maxWidth, 100, 0, 0, 0);
+	drawCenteredStringWithMaxWidth(in, x, y, scale, maxWidth, 0, 0, 0);
 }

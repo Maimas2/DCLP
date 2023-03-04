@@ -47,9 +47,10 @@ namespace Saves {
       charPointers["pictureUrl"] = &iconUrl;
       charPointers["expansionUrl"] = &expansionUrl;
 
-      intPointers["cardColor"] = &cardColor;
+      intPointers["cardColor"]     = &cardColor;
       intPointers["cardSecondary"] = &cardSecondary;
-      intPointers["cardLayout"] = &cardLayout;
+      intPointers["cardLayout"]    = &cardLayout;
+      intPointers["matColor"]      = &matColor;
 
       boolPointers["isLowRes"] = &isLowRes;
       boolPointers["isTraveler"] = &isTraveler;

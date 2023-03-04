@@ -8,6 +8,7 @@ extern string currentFont;
 extern bool   isDrawingLargeIcons;
 extern float  largeIconSize;
 extern int    fontSize;
+extern bool   isBold;
 
 int textInit();
 int loadFont(string fontPath, string name);

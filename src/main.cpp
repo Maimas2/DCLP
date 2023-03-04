@@ -76,11 +76,11 @@ bool isPausedMaster = false;
 
 bool isFirstFrame = true;
 
-extern vector<vector<float>> co;
-
+#define NUMBER_OF_CHOICES 21
 const char* mainChoices[] = {"Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom", "Extra Custom"};
 const char* secondaryChoices[] = {"Same", "Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom", "Extra Custom"};
 const char* layoutChoices[] = {"Normal", "Landscape", "Base Card", "Pile Marker", "Player Mat"};
+const char* matColorChoices[] = {"Black", "Red", "Green", "Brown", "Blue"};
 
 float customCardColor[3] = {1.f, 1.f, 1.f};
 float customEmbellishmentColor[3] = {1.f, 1.f, 1.f};
@@ -153,8 +153,9 @@ char* cardPreview = (char*)malloc(32);
 char* cardCredit  = (char*)malloc(128);
 char* cardVersion = (char*)malloc(128);
 int   cardColor = 0;
-int   cardSecondary= 0;
+int   cardSecondary = 0;
 int   cardLayout= 0;
+int   matColor  = 0;
 float xMove     = 0.f;
 float yMove     = 0.f;
 float zoom      = 1.f;
@@ -178,11 +179,7 @@ void composeDearImGuiFrame() {
     ImGui_ImplGlfw_NewFrame();
 
     ImGui::NewFrame();
-
-    // a window is defined by Begin/End pair
     {
-		
-
 		ImGui::SetNextWindowBgAlpha(0.7f);
         
         ImGui::Begin("Options", NULL);
@@ -206,6 +203,7 @@ void composeDearImGuiFrame() {
 		
 		if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
 		if(cardLayout < 2)  ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
+		if(cardLayout == 4) ImGui::ListBox("Mat Color", &matColor, matColorChoices, IM_ARRAYSIZE(matColorChoices), 6);
 		
 		if(cardLayout <= 2) {
 			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
@@ -233,12 +231,13 @@ void composeDearImGuiFrame() {
 			screenShot();
 		}
 		
-		if(cardColor >= co.size()-2) {
+		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
 			ImGui::ColorEdit3("Card Base Color", customCardColor);
-			if(cardColor == co.size()-1) {
+			if(cardColor == NUMBER_OF_CHOICES-1) {
 				ImGui::ColorEdit3("Card Embellishemnt Color", customEmbellishmentColor);
-				ImGui::ColorEdit3("Card Side Color", customSideColor);
+				if(cardLayout != 3) ImGui::ColorEdit3("Card Side Color", customSideColor);
 			}
+			ImGui::Text("Custom colors are not saved. =(");
 			if(ImGui::Button("Reset Colors")) {
 				for(int i = 0; i < 12; i++) {
 					customCardColor[i] = 1.f;
@@ -246,9 +245,8 @@ void composeDearImGuiFrame() {
 					customSideColor[i] = allBrown[i];
 				}
 			}
-			
 		}
-		if(cardLayout != 3) ImGui::Text("Tweaks (Uneeded; unavalible in CLI mode)");
+		if(cardLayout != 3) ImGui::Text("Tweaks");
 		if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
@@ -678,7 +676,8 @@ int main(int argc, char *argv[]) {
 	if(!isScreenshotting) imguiInit();
 	
    textInit();
-	loadFont("TrajanPro.ttf", "trajan");
+	loadFont("cinzel.ttf", "trajan");
+	loadFont("cinzel-bold.ttf", "trajanb");
 	loadFont("tnr-bold.ttf", "tnrb");
 	loadFont("tnr.ttf", "tnr");
 	loadFont("tnri.ttf", "tnri");

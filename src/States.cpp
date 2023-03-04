@@ -27,6 +27,8 @@
 
 const char* colorChoices[] = {"Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally"};
 
+float* matColorPointers[] = {allBlack, allRed, allGreen, allBrown, allBlue};
+
 using namespace std;
 
 void State::update() {}
@@ -267,10 +269,35 @@ void drawBase() {
 		setBool("maxX", false);
 
 		res::pileMarker.bind();
-		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, allWhite);
+		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
 
 		res::pileMarkerColored.bind();
 		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
+	} else if(cardLayout == 4) {
+		setVec2("maxNE", 0.99f, 0.727068966f);
+		setVec2("maxSW", -0.99f, -0.727068966f);
+
+		drawColoredQuad(-1.f, -0.737068966f, 2.f, 0.737068966f*2, matColorPointers[matColor]);
+		res::tempIcon.bind();
+		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+		if(wxh < 1.f) {
+			wid    = 1.1f;
+			height = 1.1f/wxh;
+		} else {
+			wid    = 0.8f*wxh;
+			height = 0.8f;
+		}
+		setBool("maxX", true);
+		zoom *= 1.78;
+		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
+		zoom /= 1.78;
+		setBool("maxX", false);
+
+		res::matTop.bind();
+		drawColoredTexture(-1.f, -0.737068966, 2.f, 0.737068966*2, allWhite);
+
+		res::matBottom.bind();
+		drawColoredTexture(-1.f, -0.737068966, 2.f, 0.737068966*2, allWhite);
 	}
 }
 void drawEmbellishments() {
@@ -318,6 +345,8 @@ void drawTitle(char* ss) {
 		setMat4("transMat", glm::rotate(-1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
 		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);
 		setMat4("transMat", glm::mat4(1.f));
+	} else if(cardLayout == 4) {
+		drawCenteredStringWithMaxWidth("~" + s, 0.f, 0.535f, 3.f, 1.f);
 	}
 }
 void drawType(char* ss) {

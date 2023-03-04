@@ -52,6 +52,7 @@ extern char* cardVersion;
 extern char* cardCredit;
 extern int   cardColor;
 extern int   cardSecondary;
+extern int   matColor;
 extern float xMove;
 extern float yMove;
 extern float zoom;

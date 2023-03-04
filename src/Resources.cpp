@@ -20,7 +20,7 @@ namespace res {
 	vector<Image*> images;
 	vector<IMAGE_TYPE> typesLoaded;
 	int lastReservedSpot = 0;
-	Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored;
+	Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored, matTop, matBottom;
 	bool isOfType(IMAGE_TYPE im, IMAGE_TYPE typee) {
 		return typee == im;
 	}
@@ -34,6 +34,8 @@ namespace res {
 		return i;
 	}
 	void initial() {
+		allWhite  = setupImage("images/white.png",                    false,IMAGE_ALWAYS_LOADED);
+
 		baseCard  = setupImage("card-resources/CardColorOne.png",     true, IMAGE_ALWAYS_LOADED);
 	baseOutline   = setupImage("card-resources/CardBrown.png",        true, IMAGE_ALWAYS_LOADED);
 desciptionFocus   = setupImage("card-resources/DescriptionFocus.png", true, IMAGE_ALWAYS_LOADED);
@@ -44,20 +46,24 @@ desciptionFocus   = setupImage("card-resources/DescriptionFocus.png", true, IMAG
 		cardGrey  = setupImage("card-resources/CardGray.png",         true, IMAGE_ALWAYS_LOADED);
 		cardBase  = setupImage("card-resources/BaseCardGray.png",     true, IMAGE_ALWAYS_LOADED);
 		traveler  = setupImage("card-resources/Traveller.png",        true, IMAGE_ALWAYS_LOADED);
-		pileMarker= setupImage("card-resources/PileMarkerGrey.png",   true, IMAGE_ALWAYS_LOADED);
-pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",true,IMAGE_ALWAYS_LOADED);
 		
-		baseCardOutline = setupImage("card-resources/BaseCardGray.png",     true, IMAGE_ALWAYS_LOADED);
-		baseCardColor   = setupImage("card-resources/BaseCardColorOne.png", true, IMAGE_ALWAYS_LOADED);
-		baseCardSide    = setupImage("card-resources/BaseCardBrown.png",    true, IMAGE_ALWAYS_LOADED);
+		baseCardOutline = setupImage("card-resources/BaseCardGray.png",      true, IMAGE_ALWAYS_LOADED);
+		baseCardColor   = setupImage("card-resources/BaseCardColorOne.png",  true, IMAGE_ALWAYS_LOADED);
+		baseCardSide    = setupImage("card-resources/BaseCardBrown.png",     true, IMAGE_ALWAYS_LOADED);
 		
-		secondaryCard = setupImage("card-resources/CardColorTwo.png", true, IMAGE_ALWAYS_LOADED);
-		secondaryNight= setupImage("card-resources/CardColorTwoNight.png", true, IMAGE_ALWAYS_LOADED);
+		secondaryCard = setupImage("card-resources/CardColorTwo.png",        true, IMAGE_ALWAYS_LOADED);
+		secondaryNight= setupImage("card-resources/CardColorTwoNight.png",   true, IMAGE_ALWAYS_LOADED);
 		
-		eventOutline  = setupImage("card-resources/EventBrown.png", true, IMAGE_ALWAYS_LOADED);
-		eventSide     = setupImage("card-resources/EventBrown2.png", true, IMAGE_ALWAYS_LOADED);
-		eventBase     = setupImage("card-resources/EventColorOne.png", true, IMAGE_ALWAYS_LOADED);
-		eventSecondary= setupImage("card-resources/EventColorTwo.png", true, IMAGE_ALWAYS_LOADED);
+		eventOutline  = setupImage("card-resources/EventBrown.png",          true, IMAGE_ALWAYS_LOADED);
+		eventSide     = setupImage("card-resources/EventBrown2.png",         true, IMAGE_ALWAYS_LOADED);
+		eventBase     = setupImage("card-resources/EventColorOne.png",       true, IMAGE_ALWAYS_LOADED);
+		eventSecondary= setupImage("card-resources/EventColorTwo.png",       true, IMAGE_ALWAYS_LOADED);
+
+		pileMarker= setupImage("card-resources/PileMarkerGrey.png",          true, IMAGE_ALWAYS_LOADED);
+pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",      true,IMAGE_ALWAYS_LOADED);
+
+		matTop    = setupImage("card-resources/MatBannerTop.png",            true, IMAGE_ALWAYS_LOADED);
+		matBottom = setupImage("card-resources/MatBannerBottom.png",         true, IMAGE_ALWAYS_LOADED);
 		
 		typesLoaded.push_back(IMAGE_ALWAYS_LOADED);
 	}
