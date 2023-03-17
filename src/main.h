@@ -71,6 +71,7 @@ extern bool  largeSingleLineVanillaBonuses;
 extern float tweakDividingLineY;
 extern float bottomTextSizeTweak;
 extern bool  isSupply;
+extern bool  isTrait;
 
 extern float customCardColor[];
 extern float customEmbellishmentColor[];

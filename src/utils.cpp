@@ -738,7 +738,7 @@ string split(string og, string splitter, bool isFirst) {
 }
 void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) {
 	if(isLoaded) {
-		*toLoad = res::setupImage(fileOut, true, IMAGE_ALWAYS_LOADED);
+		*toLoad = res::setupImage(fileOut, true);
 		return;
 	}
 	cout << url << endl;
@@ -749,6 +749,6 @@ void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) {
         exit(127); /* only if execv fails */
     } else { /* pid!=0; parent process */
         waitpid(pid,0,0); /* wait for child to exit */
-		*toLoad = res::setupImage(fileOut, true, IMAGE_ALWAYS_LOADED);
+		*toLoad = res::setupImage(fileOut, true);
     }
 }

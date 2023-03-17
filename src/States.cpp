@@ -1,5 +1,6 @@
 #ifndef GL_IS_INCLUDED
 #define GL_IS_INCLUDED
+#include "glm/fwd.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #endif
@@ -41,6 +42,9 @@ State::State() {}
 map<string, vector<float>> colors;
 
 vector<vector<float>> co;
+
+string s;
+string sss;
 
 float tempColor[12];
 float embellishmentColor[12] = {
@@ -211,19 +215,25 @@ void drawBase() {
 		setBool("maxX", true);
 		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.104-(height/2+(yMove*0.4f))*zoom, wid*zoom, height*zoom);
 		setBool("maxX", false);
-		
-		if(cardSecondary == 0) {
-			res::eventBase.bind();
-			
+
+		if(isTrait) {
+			res::traitColor.bind();
+				
 			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
 		} else {
-			res::eventBase.bind();
-			
-			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
-			
-			res::eventSecondary.bind();
-			
-			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, secondaryColor);
+			if(cardSecondary == 0) {
+				res::eventBase.bind();
+				
+				drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
+			} else {
+				res::eventBase.bind();
+				
+				drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
+				
+				res::eventSecondary.bind();
+				
+				drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, secondaryColor);
+			}
 		}
 	} else if(cardLayout == 2) {
 		setVec2("maxNE", 0.55f, 0.75f);
@@ -320,15 +330,38 @@ void drawEmbellishments() {
 			setFont("trajan");
 		}
 	} else if(cardLayout == 1) {
-		res::eventOutline.bind();
-		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
-		
-		res::eventSide.bind();
-		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, eventColor);
+		if(isTrait) {
+			res::traitBase.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
+
+			res::traitColorSide.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, tempColor);
+
+			res::traitSide.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, eventColor);
+
+			float cr = (isTitleWhite ? 1.f : 0.f);
+			float cg = (isTitleWhite ? 1.f : 0.f);
+			float cb = (isTitleWhite ? 1.f : 0.f);
+
+			drawCenteredStringWithMaxWidth("Trait", 0.f, 0.51f, 2.f, 0.66f, cr, cg, cb);
+
+			setMat4("transMat", glm::rotate(1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
+			drawCenteredStringWithMaxWidth(s, 0.f, -0.875f, 1.7f, 0.7, cr, cg, cb);
+			setMat4("transMat", glm::rotate(-1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
+			drawCenteredStringWithMaxWidth(s, 0.f, -0.875f, 1.7f, 0.7, cr, cg, cb);
+			setMat4("transMat", glm::mat4(1.f));
+		} else {
+			res::eventOutline.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
+			
+			res::eventSide.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, eventColor);
+		}
 	}
 }
 void drawTitle(char* ss) {
-	string s = string(ss);
+	s = string(ss);
 	setFont("trajan");
 	
 	if(cardLayout == 0 || cardLayout == 2) {
@@ -341,13 +374,13 @@ void drawTitle(char* ss) {
 		
 		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, (strcmp(cardPreview, (char*)"") == 0) ? 1.f : 0.7f, r, g, b);
 	} else if(cardLayout == 1) {
-		
-		if(isTitleWhite) {
-			drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.66f, 1.f, 1.f, 1.f);
-		} else {
-			drawCenteredStringWithMaxWidth(s, 0.f, 0.51f, 2.f, 0.66f, 0.f, 0.f, 0.f);
+		if(!isTrait) {
+			if(isTitleWhite) {
+				drawCenteredStringWithMaxWidth(s, 0.f, 0.51f, 2.f, 0.66f, 1.f, 1.f, 1.f);
+			} else {
+				drawCenteredStringWithMaxWidth(s, 0.f, 0.51f, 2.f, 0.66f, 0.f, 0.f, 0.f);
+			}
 		}
-		
 	} else if(cardLayout == 3) {
 		setMat4("transMat", glm::rotate(1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
 		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);
@@ -359,7 +392,7 @@ void drawTitle(char* ss) {
 	}
 }
 void drawType(char* ss) {
-	string s = string(ss);
+	string sss = string(ss);
 	setFont("trajan");
 	isDrawingLargeIcons = false;
 	
@@ -370,11 +403,14 @@ void drawType(char* ss) {
 		typeWidth -= (costSize-0.1f);
 		typeX     += (costSize-0.1f)/2;
 	}
+	float cr = (isTitleWhite ? 1.f : 0.f);
+	float cg = (isTitleWhite ? 1.f : 0.f);
+	float cb = (isTitleWhite ? 1.f : 0.f);
 	if(cardLayout == 0 || cardLayout == 2) {
-		drawCenteredStringWithMaxWidth(s, typeX, -0.785f, 1.8, typeWidth, 0.f, 0.f, 0.f);
+		drawCenteredStringWithMaxWidth(sss, typeX, -0.785f, 1.8, typeWidth, cr, cg, cb);
 	} else if(cardLayout == 1) {
 		setMat4("transMat", glm::rotate(0.78539805f, glm::vec3(0.f, 0.f, 1.f)));
-		drawCenteredStringWithMaxWidth(s, 0.24f, 0.85f, 1.5f, 0.27, 0.f, 0.f, 0.f);
+		drawCenteredStringWithMaxWidth(sss, 0.24f, 0.85f, 1.5f, 0.27, cr, cg, cb);
 		setMat4("transMat", glm::mat4(1.f));
 	}
 	isDrawingLargeIcons = true;

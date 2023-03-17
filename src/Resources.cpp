@@ -59,5 +59,8 @@ pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",      tru
 		heirloom  = setupImage("card-resources/Heirloom.png", 			   true);
 
 		traitBase = setupImage("card-resources/TraitBrown.png", 			   true);
+		traitColor= setupImage("card-resources/TraitColorOne.png", 		   true);
+		traitSide = setupImage("card-resources/TraitBrownSide.png", 		   true);
+		traitColorSide = setupImage("card-resources/TraitColorOneSide.png", 			   true);
 	}
 }

@@ -17,7 +17,8 @@ extern IMAGE_TYPE IMAGE_GAME_CHOOSER;
 
 #define IMAGE_LIST container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, \
 secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, \
-baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored, matTop, matBottom, heirloom, traitBase
+baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored, matTop, matBottom, heirloom, traitBase, \
+traitSide, traitColor, traitColorSide
 
 namespace res {
 	extern Image IMAGE_LIST;

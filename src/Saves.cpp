@@ -56,6 +56,7 @@ namespace Saves {
       boolPointers["isLowRes"] = &isLowRes;
       boolPointers["isTraveler"] = &isTraveler;
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
+      boolPointers["isTrait"] = &isTrait;
    }
    void save() {
       string g = string(cardText);
@@ -115,6 +116,16 @@ namespace Saves {
             string name = lines[i].substr(1, lines[i].find(":")-1);
             if(intPointers[name] == nullptr) continue;
             *(intPointers[name]) = stoi(lines[i].substr(lines[i].find(":")+1));
+         }
+      }
+
+      for(int i = 0; i < lines.size(); i++) {
+         if(lines[i].find(":") == -1) continue;
+         char type = lines[i].at(0);
+         if(type == 'b') {
+            string name = lines[i].substr(1, lines[i].find(":")-1);
+            if(boolPointers[name] == nullptr) continue;
+            *(boolPointers[name]) = (lines[i].substr(lines[i].find(":")+1) == "0" ? false : true);
          }
       }
    }
