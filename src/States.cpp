@@ -139,13 +139,19 @@ void doColors() {
 			sideColor[i] = customSideColor[i % 3];
 		}
 	}
-	if(cardSecondary != 0) {
+	if(cardSecondary == co.size()+1) {
 		for(int i = 0; i < 12; i++) {
-			secondaryColor[i] = co[max(0, cardSecondary-1)][i % 3];
+			secondaryColor[i] = secondCustomCardColor[i % 3];
 		}
 	} else {
-		for(int i = 0; i < 12; i++) {
-			secondaryColor[i] = tempColor[i % 3];
+		if(cardSecondary != 0) {
+			for(int i = 0; i < 12; i++) {
+				secondaryColor[i] = co[max(0, cardSecondary-1)][i % 3];
+			}
+		} else {
+			for(int i = 0; i < 12; i++) {
+				secondaryColor[i] = tempColor[i % 3];
+			}
 		}
 	}
 }
@@ -288,7 +294,7 @@ void drawBase() {
 		setVec2("maxNE", 0.99f, 0.727068966f);
 		setVec2("maxSW", -0.99f, -0.727068966f);
 
-		drawColoredQuad(-1.f, -0.737068966f, 2.f, 0.737068966f*2, matColorPointers[matColor]);
+		drawColoredQuad(-1.f, -0.727068966f, 2.f, 0.727068966f*2, matColorPointers[matColor]);
 		res::tempIcon.bind();
 		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
 		if(wxh < 1.f) {

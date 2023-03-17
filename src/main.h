@@ -76,3 +76,4 @@ extern bool  isTrait;
 extern float customCardColor[];
 extern float customEmbellishmentColor[];
 extern float customSideColor[];
+extern float secondCustomCardColor[];

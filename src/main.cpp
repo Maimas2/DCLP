@@ -85,13 +85,15 @@ bool isFirstFrame = true;
 
 #define NUMBER_OF_CHOICES 21
 const char* mainChoices[] = {"Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom", "Extra Custom"};
-const char* secondaryChoices[] = {"Same", "Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom", "Extra Custom"};
+const char* secondaryChoices[] = {"Same", "Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom"};
 const char* layoutChoices[] = {"Normal", "Landscape", "Base Card", "Pile Marker", "Player Mat"};
 const char* matColorChoices[] = {"Black", "Red", "Green", "Brown", "Blue"};
 
 float customCardColor[3] = {1.f, 1.f, 1.f};
 float customEmbellishmentColor[3] = {1.f, 1.f, 1.f};
 float customSideColor[3] = {1.2f, 0.8f, 0.5f};
+
+float secondCustomCardColor[3] = {1.f, 1.f, 1.f};
 
 int getChoice(char* c) {
 	for(int i = 0; i < 18; i++) {
@@ -346,6 +348,27 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
 		if(cardLayout < 2)  ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
 		if(cardLayout == 4) ImGui::ListBox("Mat Color", &matColor, matColorChoices, IM_ARRAYSIZE(matColorChoices), 6);
+
+		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
+			ImGui::ColorEdit3("Card Base Color", customCardColor);
+			if(cardColor == NUMBER_OF_CHOICES-1) {
+				ImGui::ColorEdit3("Card Embellishment Color", customEmbellishmentColor);
+				if(cardLayout != 3) ImGui::ColorEdit3("Card Side Color", customSideColor);
+			}
+		}
+		if(cardSecondary+1 == NUMBER_OF_CHOICES) {
+			ImGui::ColorEdit3("Secondary Card Base Color", secondCustomCardColor);
+		}
+		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
+			if(ImGui::Button("Reset Colors")) {
+				for(int i = 0; i < 12; i++) {
+					customCardColor[i] = 1.f;
+					customEmbellishmentColor[i] = 1.f;
+					customSideColor[i] = allBrown[i];
+					secondCustomCardColor[i] = 1.f;
+				}
+			}
+		}
 		
 		if(cardLayout <= 2) {
 			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
@@ -468,21 +491,6 @@ void composeDearImGuiFrame() {
 			ImGui::EndPopup();
 		}
 		
-		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
-			ImGui::ColorEdit3("Card Base Color", customCardColor);
-			if(cardColor == NUMBER_OF_CHOICES-1) {
-				ImGui::ColorEdit3("Card Embellishemnt Color", customEmbellishmentColor);
-				if(cardLayout != 3) ImGui::ColorEdit3("Card Side Color", customSideColor);
-			}
-			ImGui::Text("Custom colors are not saved. =(");
-			if(ImGui::Button("Reset Colors")) {
-				for(int i = 0; i < 12; i++) {
-					customCardColor[i] = 1.f;
-					customEmbellishmentColor[i] = 1.f;
-					customSideColor[i] = allBrown[i];
-				}
-			}
-		}
 		if(cardLayout != 3) ImGui::Text("Tweaks");
 		if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");

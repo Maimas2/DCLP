@@ -37,6 +37,22 @@ namespace Saves {
       floatPointers["tweakDividingLineY"] = &tweakDividingLineY;
       floatPointers["bottomTextSizeTweak"] = &bottomTextSizeTweak;
 
+      floatPointers["customColor1"] = &customCardColor[0];
+      floatPointers["customColor2"] = &customCardColor[1];
+      floatPointers["customColor3"] = &customCardColor[2];
+
+      floatPointers["customEmbellishmentColor1"] = &customEmbellishmentColor[0];
+      floatPointers["customEmbellishmentColor2"] = &customEmbellishmentColor[1];
+      floatPointers["customEmbellishmentColor3"] = &customEmbellishmentColor[2];
+
+      floatPointers["customSideColor1"] = &customSideColor[0];
+      floatPointers["customSideColor2"] = &customSideColor[1];
+      floatPointers["customSideColor3"] = &customSideColor[2];
+
+      floatPointers["secondCustomCardColor1"] = &secondCustomCardColor[0];
+      floatPointers["secondCustomCardColor2"] = &secondCustomCardColor[1];
+      floatPointers["secondCustomCardColor3"] = &secondCustomCardColor[2];
+
       charPointers["cardTitle"] = &cardTitle;
       charPointers["cardType"] = &cardType;
       charPointers["cardText"] = &cardText;
