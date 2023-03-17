@@ -305,7 +305,7 @@ void drawEmbellishments() {
 	if(cardLayout == 0) {
 		res::cardBase.bind();
 		drawTexturedQuad(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f);
-		
+
 		res::cardGrey.bind();
 		drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, embellishmentColor);
 		
@@ -315,6 +315,9 @@ void drawEmbellishments() {
 		if(strcmp(heirloomText, "") != 0) {
 			res::heirloom.bind();
 			drawTexturedQuad(-0.576476058, -0.72f, 2.f, 0.581476058*2, 0.134821013);
+			setFont("tnri");
+			drawCenteredStringWithMaxWidth(string(heirloomText), 0.f, -0.666f, 1.25f, 0.9f);
+			setFont("trajan");
 		}
 	} else if(cardLayout == 1) {
 		res::eventOutline.bind();
