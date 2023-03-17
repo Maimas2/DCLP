@@ -50,6 +50,7 @@ extern char* cardCost;
 extern char* cardPreview;
 extern char* cardVersion;
 extern char* cardCredit;
+extern char* heirloomText;
 extern int   cardColor;
 extern int   cardSecondary;
 extern int   matColor;

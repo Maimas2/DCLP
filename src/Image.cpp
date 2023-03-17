@@ -27,7 +27,6 @@ using namespace std;
 };*/
 
 Image::Image() {
-	res::images.push_back(this);
 	path = "";
 }
 

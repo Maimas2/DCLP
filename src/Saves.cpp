@@ -46,6 +46,7 @@ namespace Saves {
       charPointers["cardCredit"] = &cardCredit;
       charPointers["pictureUrl"] = &iconUrl;
       charPointers["expansionUrl"] = &expansionUrl;
+      charPointers["heirloomText"] = &heirloomText;
 
       intPointers["cardColor"]     = &cardColor;
       intPointers["cardSecondary"] = &cardSecondary;

@@ -95,7 +95,7 @@ void TestState::update() {
 	}
 }
 void doColors() {
-	if(cardColor < co.size()-2) {
+	if(cardColor < co.size()) {
 		for(int i = 0; i < 12; i++) {
 			tempColor[i] = co[cardColor].at(i % 3);
 		}
@@ -117,7 +117,7 @@ void doColors() {
 				sideColor[i] = allBrown[i];
 			}
 		}
-	} else if(cardColor == co.size()-2) {
+	} else if(cardColor == co.size()) {
 		for(int i = 0; i < 12; i++) {
 			tempColor[i] = customCardColor[i % 3];
 		}
@@ -311,6 +311,11 @@ void drawEmbellishments() {
 		
 		res::baseOutline.bind();
 		drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, sideColor);
+
+		if(strcmp(heirloomText, "") != 0) {
+			res::heirloom.bind();
+			drawTexturedQuad(-0.576476058, -0.72f, 2.f, 0.581476058*2, 0.134821013);
+		}
 	} else if(cardLayout == 1) {
 		res::eventOutline.bind();
 		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);

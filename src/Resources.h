@@ -15,15 +15,12 @@ extern IMAGE_TYPE IMAGE_GAME_CHOOSER;
 
 #define NUMBER_OF_IMAGE_SLOTS images.size()
 
+#define IMAGE_LIST container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, \
+secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, \
+baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored, matTop, matBottom, heirloom, traitBase
+
 namespace res {
-	extern vector<Image*> images;
-	extern Image container, ball, allWhite, circle, baseCard, baseOutline, desciptionFocus, coin, debt, cardGrey, bg, cardBase, secondaryCard, secondaryNight, tempIcon, eventOutline, eventSide, eventBase, eventSecondary, vpToken, potion, baseCardOutline, baseCardColor, baseCardSide, traveler, tempExpansionIcon, pileMarker, pileMarkerColored, matTop, matBottom;
-	string getAvalible();
-	int reserveNextSpot();
+	extern Image IMAGE_LIST;
 	void initial();
-	void unloadAll();
-	void unload(IMAGE_TYPE type);
-	void load(IMAGE_TYPE type);
-	void unloadAndLoad(IMAGE_TYPE type);
-	Image setupImage(string path, bool hasTrans, IMAGE_TYPE typee);
+	Image setupImage(string path, bool hasTrans);
 }
