@@ -225,6 +225,7 @@ bool  isTraveler= false;
 bool  isTightScreenshot = false;
 float textXTweak= 1.f;
 float textSizeTweak = 1.f;
+float bonusSizeTweak= 1.f;
 float textXPosTweak = 0.f;
 float textYPosTweak = 0.f;
 float expansionIconXSizeTweak = 1.f;
@@ -325,11 +326,15 @@ void composeDearImGuiFrame() {
 		ImGui::SetNextWindowBgAlpha(0.7f);
         
         ImGui::Begin("Options", NULL);
+
+		if(ImGui::Button("Load Example")) {
+			ImGui::OpenPopup("Load Example");
+		}
 		
 		ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
 		if(cardLayout == 0) ImGui::Checkbox("Traveller?", &isTraveler);
-		if(cardLayout == 0) ImGui::Checkbox("Is Supply Pile?", &isSupply);
+		//if(cardLayout == 0) ImGui::Checkbox("Is Supply Pile?", &isSupply);
 		if(cardLayout == 1) ImGui::Checkbox("Trait?", &isTrait);
 
 		//ImGui::InputText("string", title, IM_ARRAYSIZE(title));
@@ -346,7 +351,13 @@ void composeDearImGuiFrame() {
 		if(cardLayout == 0 || cardLayout == 2) ImGui::InputText("Preview (Top left & right)", cardPreview, 30);
 		
 		if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
-		if(cardLayout < 2)  ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
+		if(cardLayout < 2) {
+			if(cardLayout == 1) {
+				if(!isTrait) ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
+			} else {
+				ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
+			}
+		}
 		if(cardLayout == 4) ImGui::ListBox("Mat Color", &matColor, matColorChoices, IM_ARRAYSIZE(matColorChoices), 6);
 
 		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
@@ -356,7 +367,7 @@ void composeDearImGuiFrame() {
 				if(cardLayout != 3) ImGui::ColorEdit3("Card Side Color", customSideColor);
 			}
 		}
-		if(cardSecondary+1 == NUMBER_OF_CHOICES) {
+		if(cardSecondary+1 == NUMBER_OF_CHOICES && cardLayout < 2 && !isTrait) {
 			ImGui::ColorEdit3("Secondary Card Base Color", secondCustomCardColor);
 		}
 		if(cardColor >= NUMBER_OF_CHOICES-2 && cardLayout < 4) {
@@ -403,6 +414,10 @@ void composeDearImGuiFrame() {
 		
 		if (ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
+		if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+			ImGui::EndPopup();
+		}
 		if(ImGui::BeginPopupModal("Reset All", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 			ImGui::Text("Are you sure you want to delete everything?\nThis will restart the program.");
 			if (ImGui::Button("OK", ImVec2(120, 0))) {
@@ -497,6 +512,7 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Y Position", &textYPosTweak, -1.f, 1.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
+		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Vanilla Bonus Size", &bonusSizeTweak, 0.3f, 4.f, "%.2f");
 
 		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
 		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");

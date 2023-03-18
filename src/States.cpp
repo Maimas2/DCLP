@@ -3,6 +3,7 @@
 #include "glm/fwd.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <string>
 #endif
 #include <iostream>
 #include <cmath>
@@ -422,7 +423,7 @@ void drawType(char* ss) {
 	isDrawingLargeIcons = true;
 }
 void drawCardText() {
-	string ct = string(cardText) + (isSupply ? "" : "\n[h][i]This is not in the Supply.");
+	string ct = string(cardText);
 	
 	setFont("tnr");
 	float r = 0.f, g = 0.f, b = 0.f;
@@ -431,19 +432,20 @@ void drawCardText() {
 		g = 1.f;
 		b = 1.f;
 	}
+	drawString(to_string(getStringHeight(clampStringToWidth(ct, 0.8f, 1.5 * textSizeTweak), 1.f)), getX(), getY(), 1.f, 1.f, 0.f, 0.f);
 	if(cardLayout == 0) {
 		float size = 1.5f;
 		drawCenteredStringWithMaxDimensions(
-			string(ct),
+			(ct),
 			textXPosTweak, -0.4f+textYPosTweak,         // X/Y
 			size * textSizeTweak,// Scale
-			0.7f, 0.6f,         // Max Dimensions
+			1.8f, 0.6f,         // Max Dimensions
 			r, g, b       // Color
 		);
 	} else if(cardLayout == 1) {
 		float size = 1.5f;
 		drawCenteredStringWithMaxDimensions(
-			string(ct),
+			(ct),
 			textXPosTweak, -0.375f+textYPosTweak,       // X/Y
 			size * textSizeTweak,               // Scale
 			1.5f, 0.25f,         // Max Dimensions

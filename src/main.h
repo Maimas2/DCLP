@@ -63,6 +63,7 @@ extern bool  isScreenshotting;
 extern bool  isTraveler;
 extern float textXTweak;
 extern float textSizeTweak;
+extern float bonusSizeTweak;
 extern float textXPosTweak;
 extern float textYPosTweak;
 extern float expansionIconXSizeTweak;

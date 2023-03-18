@@ -94,20 +94,20 @@ string strip(string in) {
 	return in.substr(sp, in.size()-sp);
 }
 bool isLargeCoin(string in) {
-	if(in.size() < 1) return false;
 	if(cardLayout == 1) return false;
-	if(in.at(0) != '$' || in.size() == 1) return false;
+	if(in.size() <= 1 || in.at(0) != '$') return false;
 	for(int i = 1; i < in.size(); i++) {
 		if(!isDigit(in.at(i))) return false;
 	}
 	return true;
 }
 bool isLargeVP(string in) {
+	if(cardLayout == 1 || cardLayout == 3 || cardLayout == 4) return false;
 	if(in.size() < 1) return false;
-	if(cardLayout == 1) return false;
 	for(int i = 0; i < in.size(); i++) {
-		if(i == in.size()-1) if(in.at(i) != '%') return false;
-		if(!isDigit(in.at(0))) return false;
+		if(i == in.size()-1) {
+			if(!(in.at(i) == '%')) return false;
+		}
 	}
 	return true;
 }
@@ -209,7 +209,7 @@ int loadFont(string fontPath, string name) {
 			setToPush.insert(pair<GLchar, Char>(c, ch));
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
-		currentFontHeight = (((*font)->size->metrics.ascender - (*font)->size->metrics.descender) / 64) / (float)fontSize;
+		currentFontHeight = ((float)((*font)->size->metrics.ascender - (*font)->size->metrics.descender) / 64) / (float)fontSize;
 		
 		Charsets[name] = setToPush;
 	}
@@ -273,7 +273,7 @@ float getStringWidth(string in, float scale) {
 	return max;
 }
 float getStringYMax(string in, float scale) {
-	if(currentFont == "") 0.f;
+	if(currentFont == "") return 0.f;
 	float curr = 0.f;
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
 	for(string::const_iterator currentCharr = in.begin(); currentCharr != in.end(); currentCharr++) {
@@ -289,7 +289,7 @@ float getStringHeight(string in, float scale) {
 	
 	for(int i = 0; i < ingore.size()-1; i++) {
 		if(isLargeSymbol(ingore[i])) {
-			tr += LARGE_ICON_SIZE;
+			tr += LARGE_ICON_SIZE * bonusSizeTweak;
 		} else {
 			tr += (currentFontHeight * scale * fontDownscale);
 		}
@@ -311,8 +311,8 @@ float getStringHeightRequired(string in, float scale) {
 	return tr;
 }
 float drawLargeIcon(string text, float x, float y) {
-	float scale = largeIconSize;
-	bool isVP = text.at(text.size()-1) == '%';
+	float scale = largeIconSize * bonusSizeTweak;
+	bool isVP = isLargeVP(text);
 	isBold = true;
 	
 	float r = 0.f, g = 0.f, b = 0.f;
@@ -343,7 +343,7 @@ float drawLargeIcon(string text, float x, float y) {
 	
 	isBold = false;
 	
-	return LARGE_ICON_SIZE;
+	return LARGE_ICON_SIZE * bonusSizeTweak;
 }
 bool shouldBeBolded(string in) {
 	if(in.size() <= 2)  return false;
@@ -566,17 +566,20 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 	
 	y += getStringHeight(textt, scale)/2;
 	
-	vector<string> parts = split(strip(textt), "\n");
+	vector<string> parts = split(textt, "\n");
 	
 	for(int i = 0; i < parts.size(); i++) {
+		parts[i] = strip(parts[i]);
 		if(isDrawingLargeIcons && isLargeSymbol(parts[i])) {
-			string s = parts[i];
-			
-			y -= drawLargeIcon(parts[i], x, y);
+			if(parts.size() == 1) {
+				y -= drawLargeIcon(parts[i], x, y-LARGE_ICON_SIZE/2)*1.5f;
+			} else {
+				y -= drawLargeIcon(parts[i], x, y);
+			}
 			continue;
 		}
 		if(shouldBeBolded(parts[i]) && largeSingleLineVanillaBonuses) {
-			float size = 1.75;
+			float size = 1.5 * bonusSizeTweak;
 			drawString(parts[i], x - getStringWidth(parts[i], size)/2, y, size, r, g, b);
 			y -= currentFontHeight * size * fontDownscale;
 			continue;
@@ -699,7 +702,7 @@ string clampStringToWidth(string in, float width, float scale) {
 			continue;
 		} else {
 			cl += getStringWidth(words[i] + " ", scale);
-			building += words[i] + " ";
+			building += words[i] + (i < words.size()-1 ? " " : "");
 		}
 	}
 	tor.push_back(building);
@@ -716,18 +719,16 @@ void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scal
 	
 	maxWidth /= 2;
 	
-	in = clampStringToWidth(in, maxWidth*textXTweak, maxHeight);
+	in = clampStringToWidth(in, maxWidth*textXTweak, scale);
 	
 	vector<string> lines = split(in, "\n");
 	if(isLargeSymbol(strip(lines[0]))) {
-		y += 0.12f;
-		maxHeight -= LARGE_ICON_SIZE;
+		maxHeight -= getStringHeightRequired(in, scale);
 	}
 	
 	//if((heightTemp = getStringHeight(in, scale)) > maxHeight-getStringHeightRequired(in, scale)) {
-	if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
+	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
 		scale *= maxHeight / heightTemp;
-		
 	}
 	/*if((widthTemp = getStringWidth(in, scale)) > maxWidth) {
 		scale *= maxWidth / widthTemp;

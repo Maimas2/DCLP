@@ -712,6 +712,11 @@ void drawRoundedRectangle(float x, float y, float z, float width, float height, 
 	drawColoredTexture(x+width-bearingX, y+height-bearingY, z, bearingX, bearingY, color);
 }
 vector<string> split(string og, string splitter) {
+	if(og.find(splitter) == string::npos) {
+		vector<string> tor;
+		tor.push_back(og);
+		return tor;
+	}
 	string s = og;
 	size_t pos = 0;
 	string token;
