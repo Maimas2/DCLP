@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <map>
 #include <string>
@@ -342,6 +343,7 @@ float drawLargeIcon(string text, float x, float y) {
 	
 	isDrawingIcons = false;
 	isDrawingLargeIcons = false;
+	checkingForBold = false;
 	if(!isVP) {
 		bindIconFromChar(text.at(0));
 		drawTexturedQuad(x-0.03*scale, y-0.06*scale, 0.06*scale, 0.06*scale);
@@ -351,6 +353,7 @@ float drawLargeIcon(string text, float x, float y) {
 	}
 	isDrawingIcons = true;
 	isDrawingLargeIcons = true;
+	checkingForBold = true;
 	
 	isBold = false;
 	
@@ -760,6 +763,7 @@ string clampStringToWidth(string in, float width, float scale) {
 	}
 	return tr;
 }
+int timesMaxDRunThrough = 0;
 void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b) {
 	if(currentFont == "") return;
 	
@@ -774,7 +778,6 @@ void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scal
 		maxHeight -= getStringHeightRequired(in, scale);
 	}
 	
-	//if((heightTemp = getStringHeight(in, scale)) > maxHeight-getStringHeightRequired(in, scale)) {
 	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
 		scale *= maxHeight / heightTemp;
 	}
