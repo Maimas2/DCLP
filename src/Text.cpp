@@ -61,6 +61,7 @@ bool  isDrawingLargeIcons = true;
 float largeIconSize       = 4.f;
 
 bool isBold = false;
+bool checkingForBold = true;
 
 char  digitList[]   = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', /* Account for misc symbols */ '?', '*', '+'};
 char  symbolList[]  = {'$', '@', '^', '%'};
@@ -407,7 +408,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		drawColoredTexture((currentX + currentChar.bearX)*scale-0.4, ((currentY - (currentChar.height - currentChar.bearY))+tweakDividingLineY)*scale, 0.f, currentChar.width*scale+0.8f, currentChar.height*scale, col);
 		return;
 	}
-	if(isBold) {
+	if(isBold && checkingForBold) {
 		int i = 0;
 		for( ; i < toRender.size(); i++) {
 			char cc = toRender.at(i);
@@ -527,6 +528,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				}
 				numberOfContinues = l;
 				isBold = false;
+				checkingForBold = false;
 				//isDrawingIcons = false;
 				string tod = toRender.substr(pos+1, l);
 				float tods = scale/fontDownscale;
@@ -560,6 +562,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 					currentX += 0.06f / fontDownscale;
 				}
 				isBold = false;
+				checkingForBold = true;
 				continue;
 			}
 		}
@@ -780,6 +783,8 @@ void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scal
 	}*/
 	
 	drawCenteredString(in, x, y, scale, r, g, b);
+
+	isBold = false;
 }
 void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight) {
 	drawCenteredStringWithMaxDimensions(in, x, y, scale, maxWidth, maxHeight, 0.f, 0.f, 0.f);
