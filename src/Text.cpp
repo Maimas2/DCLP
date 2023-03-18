@@ -62,9 +62,10 @@ float largeIconSize       = 4.f;
 
 bool isBold = false;
 
-char  digitList[]   = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', /* Account for misc symbols */ '?', '*'};
+char  digitList[]   = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', /* Account for misc symbols */ '?', '*', '+'};
 char  symbolList[]  = {'$', '@', '^', '%'};
-vector<string> boldedWords = {"Action", "Buy", "Card", "Villager", "Coffer", "Favor", "Actions", "Buys", "Cards", "Villagers", "Coffers", "Favors"};
+vector<string> boldedWords = {"Action", "Buy", "Card", "Villager", "Coffer", "Favor", 
+							  "Actions","Buys","Cards","Villagers","Coffers","Favors"};
 bool isDigit(char c) {
 	for(int i = 0; i < 12; i++) {
 		if(c == digitList[i]) return true;
@@ -406,6 +407,25 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		drawColoredTexture((currentX + currentChar.bearX)*scale-0.4, ((currentY - (currentChar.height - currentChar.bearY))+tweakDividingLineY)*scale, 0.f, currentChar.width*scale+0.8f, currentChar.height*scale, col);
 		return;
 	}
+	if(isBold) {
+		int i = 0;
+		for( ; i < toRender.size(); i++) {
+			char cc = toRender.at(i);
+			if(!(cc == ' ')) break;
+		}
+		string firstWord = strip(toRender.substr(0, toRender.find(" ")));
+		int longestLength = -1;
+		for(i = 0; i < boldedWords.size(); i++) {
+			if(firstWord.starts_with(boldedWords[i])) {
+				
+				unboldIn = boldedWords[i].size()+1;
+				longestLength = boldedWords[i].size();
+			}
+		}
+		if(longestLength == -1) {
+			isBold = false;
+		}
+	}
 	if(shouldBeBolded(toRender)) {
 		isBold = true;
 	}
@@ -437,6 +457,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		if(n == '+') {
 			bool hasPassedANumber = false;
 			bool shouldGoOn       = false;
+			bool passedNonNumber  = false;
 			int  posAt            = 0;
 			int  numberOfNumbers  = 0;
 			for(int i = pos+1; i < toRender.size(); i++) {
@@ -453,8 +474,14 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 						posAt = i+1;
 						break;
 					}
+					if(!isDigit(toRender.at(i))) {
+						passedNonNumber = true;
+					}
 					break;
 				}
+			}
+			if(!passedNonNumber) {
+				isBold = true;
 			}
 			if(shouldGoOn) {
 				for(int i = 0; i < boldedWords.size(); i++) {
@@ -558,7 +585,6 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		drawColoredTexture((currentX + currentChar.bearX)*scale, (currentY - (currentChar.height - currentChar.bearY))*scale, 0.f, currentChar.width*scale, currentChar.height*scale, col);
 		currentX += currentChar.advanceX;
 	}
-	isBold = false;
 }
 void drawString(string text, float x, float y, float scale) {
 	drawString(text, x, y, scale, 0.f, 0.f, 0.f);
@@ -686,10 +712,19 @@ string clampStringToWidth(string in, float width, float scale) {
 	float cl = 0.f;
 	vector<string> tor;
 	string building = "";
-	vector<string> words = split(in, " ");
+	vector<string> lines = split(in, "\n");
+	vector<string> words;
+	for(int i = 0; i < lines.size(); i++) {
+		vector<string> ts = split(lines[i], " ");
+		for(int ii = 0; ii < ts.size(); ii++) {
+			words.push_back(ts[ii]);
+		}
+		words.push_back("\n");
+	}
 	for(int i = 0; i < words.size(); i++) {
 		if(words[i].substr(0, 3) == "[f]") {
 			tor.push_back(in.substr(3, words[i].size()-3));
+			continue;
 		}
 		if(getStringWidth(words[i], scale) >= width) { // Failsafe to prevent infinite loop
 			tor.push_back(building);
@@ -698,7 +733,12 @@ string clampStringToWidth(string in, float width, float scale) {
 			cl = 0.f;
 			continue;
 		}
-		
+		if(words[i] == "\n") {
+			tor.push_back(building);
+			building = "";
+			cl = 0.f;
+			continue;
+		}
 		if(cl + getStringWidth(words[i], scale) > width) {
 			tor.push_back(building);
 			building = "";
