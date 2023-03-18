@@ -85,13 +85,20 @@ bool isIconSymbol(char c) {
 }
 string strip(string in) {
 	int sp = 0;
+	int ends = 0;
 	for(int i = 0; i < in.size(); i++) {
 		if(in.at(i) != ' ') {
 			break;
 		}
 		sp++;
 	}
-	return in.substr(sp, in.size()-sp);
+	for(int i = in.size()-1; i >= sp; i--) {
+		if(in.at(i) != ' ') {
+			break;
+		}
+		ends++;
+	}
+	return in.substr(sp, in.size()-ends);
 }
 bool isLargeCoin(string in) {
 	if(cardLayout == 1) return false;
@@ -107,6 +114,8 @@ bool isLargeVP(string in) {
 	for(int i = 0; i < in.size(); i++) {
 		if(i == in.size()-1) {
 			if(!(in.at(i) == '%')) return false;
+		} else {
+			if(!isDigit(in.at(i))) return false;
 		}
 	}
 	return true;
@@ -571,11 +580,7 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 	for(int i = 0; i < parts.size(); i++) {
 		parts[i] = strip(parts[i]);
 		if(isDrawingLargeIcons && isLargeSymbol(parts[i])) {
-			if(parts.size() == 1) {
-				y -= drawLargeIcon(parts[i], x, y-LARGE_ICON_SIZE/2)*1.5f;
-			} else {
-				y -= drawLargeIcon(parts[i], x, y);
-			}
+			y -= drawLargeIcon(parts[i], x, y);
 			continue;
 		}
 		if(shouldBeBolded(parts[i]) && largeSingleLineVanillaBonuses) {
