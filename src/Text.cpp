@@ -21,7 +21,7 @@
 #include "Text.h"
 
 #define cf Chars
-#define LARGE_ICON_SIZE 0.24
+#define LARGE_ICON_SIZE 0.22
 
 #define Chars Charsets[currentFont + (isBold ? "b" : "")]
 
@@ -235,11 +235,29 @@ int loadFont(string fontPath, string name) {
 	
 	return 0;
 }
+bool shouldBeBolded(string in) {
+	if(in.size() <= 2)  return false;
+	if(in.at(0) != '+') return false;
+	
+	for(int i = 1; i < in.size(); i++) {
+		if(in.at(i) == ' ') {
+			string after = in.substr(i+1, in.size()-i);
+			
+			for(int r = 0; r < boldedWords.size(); r++) {
+				if(boldedWords[r] == after) return true;
+			}
+			return false;
+		}
+		if(!isActualDigit(in.at(i))) return false;
+	}
+	return true;
+}
 float getStringWidthRaw(string in, float scale) {
 	if(currentFont == "") return 0.f;
 	float wid = 0.f;
 	bool isBoldSave = isBold;
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
+	if(shouldBeBolded(in)) isBold = true;
 	
 	for(int i = 0; i < in.size(); i++) {
 		char n = in.at(i);
@@ -308,23 +326,6 @@ float getStringHeight(string in, float scale) {
 	}
 	
 	return tr + getStringYMax(in, scale);
-}
-bool shouldBeBolded(string in) {
-	if(in.size() <= 2)  return false;
-	if(in.at(0) != '+') return false;
-	
-	for(int i = 1; i < in.size(); i++) {
-		if(in.at(i) == ' ') {
-			string after = in.substr(i+1, in.size()-i);
-			
-			for(int r = 0; r < boldedWords.size(); r++) {
-				if(boldedWords[r] == after) return true;
-			}
-			return false;
-		}
-		if(!isActualDigit(in.at(i))) return false;
-	}
-	return true;
 }
 float getStringHeightRequired(string in, float scale) {
 	if(currentFont == "") return 0.f;
@@ -584,6 +585,23 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				unboldIn = 0;
 			}
 		}
+		if(isDigit(n) && !isBold) {
+			unboldIn = 1;
+			isBold = true;
+			while(true) {
+				unboldIn++;
+				if(!isDigit(*(currentCharr+unboldIn-1))) {
+					if(*(currentCharr+unboldIn-1) == '%') {
+						break;
+					} else {
+						unboldIn = 0;
+						isBold = false;
+						break;
+					}
+					break;
+				}
+			}
+		}
 		if(n == '%') {
 			res::vpToken.bind();
 			float iconSize = 0.06f * (scale / fontDownscale);
@@ -627,7 +645,8 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 	for(int i = 0; i < parts.size(); i++) {
 		parts[i] = strip(parts[i]);
 		if(isDrawingLargeIcons && isLargeSymbol(parts[i])) {
-			y -= drawLargeIcon(parts[i], x, y);
+			y -= drawLargeIcon(parts[i], x, y+(LARGE_ICON_SIZE/4) * bonusSizeTweak);
+			//drawLargeIcon(parts[i], x, y);
 			continue;
 		}
 		if(shouldBeBolded(parts[i]) && largeSingleLineVanillaBonuses) {
@@ -790,7 +809,7 @@ void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scal
 	
 	vector<string> lines = split(in, "\n");
 	if(isLargeSymbol(strip(lines[0]))) {
-		maxHeight -= getStringHeightRequired(in, scale);
+		maxHeight -= getStringHeightRequired(lines[0], scale);
 	}
 	
 	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
