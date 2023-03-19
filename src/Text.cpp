@@ -309,6 +309,23 @@ float getStringHeight(string in, float scale) {
 	
 	return tr + getStringYMax(in, scale);
 }
+bool shouldBeBolded(string in) {
+	if(in.size() <= 2)  return false;
+	if(in.at(0) != '+') return false;
+	
+	for(int i = 1; i < in.size(); i++) {
+		if(in.at(i) == ' ') {
+			string after = in.substr(i+1, in.size()-i);
+			
+			for(int r = 0; r < boldedWords.size(); r++) {
+				if(boldedWords[r] == after) return true;
+			}
+			return false;
+		}
+		if(!isActualDigit(in.at(i))) return false;
+	}
+	return true;
+}
 float getStringHeightRequired(string in, float scale) {
 	if(currentFont == "") return 0.f;
 	vector<string> ingore = split(in, "\n");
@@ -317,6 +334,11 @@ float getStringHeightRequired(string in, float scale) {
 	for(int i = 0; i < ingore.size()-1; i++) {
 		if(isLargeSymbol(ingore[i])) {
 			tr += LARGE_ICON_SIZE;
+			continue;
+		}
+		if(shouldBeBolded(in)) {
+			tr += currentFontHeight * bonusSizeTweak;
+			continue;
 		}
 	}
 	
@@ -359,23 +381,6 @@ float drawLargeIcon(string text, float x, float y) {
 	
 	return LARGE_ICON_SIZE * bonusSizeTweak;
 }
-bool shouldBeBolded(string in) {
-	if(in.size() <= 2)  return false;
-	if(in.at(0) != '+') return false;
-	
-	for(int i = 1; i < in.size(); i++) {
-		if(in.at(i) == ' ') {
-			string after = in.substr(i+1, in.size()-i);
-			
-			for(int r = 0; r < boldedWords.size(); r++) {
-				if(boldedWords[r] == after) return true;
-			}
-			return false;
-		}
-		if(!isActualDigit(in.at(i))) return false;
-	}
-	return true;
-}
 void drawString(string toRender, float x, float y, float scale, float r, float g, float b) {
 	if(currentFont == "") return;
 
@@ -391,6 +396,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 	scale *= fontDownscale;
 	
 	int unboldIn = 0;
+	bool hasPassedSpace = false;
 	
 	//float currentX = x/scale;
 	float currentX = x/scale;
@@ -492,6 +498,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 					if(boldedWords[i] == toRender.substr(posAt, boldedWords[i].size())) {
 						isBold = true;
 						unboldIn = boldedWords[i].size() + 2 + numberOfNumbers;
+						hasPassedSpace = false;
 					}
 				}
 			}
@@ -567,6 +574,14 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				isBold = false;
 				checkingForBold = true;
 				continue;
+			}
+		}
+		if(n == ' ' && isBold) {
+			if(!hasPassedSpace) {
+				hasPassedSpace = true;
+			} else {
+				isBold = false;
+				unboldIn = 0;
 			}
 		}
 		if(n == '%') {
