@@ -645,7 +645,11 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 	for(int i = 0; i < parts.size(); i++) {
 		parts[i] = strip(parts[i]);
 		if(isDrawingLargeIcons && isLargeSymbol(parts[i])) {
-			y -= drawLargeIcon(parts[i], x, y+(LARGE_ICON_SIZE/4) * bonusSizeTweak);
+			if(i == 0) {
+				y -= drawLargeIcon(parts[i], x, y+(LARGE_ICON_SIZE/4) * bonusSizeTweak);
+			} else {
+				y -= drawLargeIcon(parts[i], x, y) + (LARGE_ICON_SIZE / 3);
+			}
 			//drawLargeIcon(parts[i], x, y);
 			continue;
 		}
