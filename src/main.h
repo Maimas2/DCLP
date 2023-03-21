@@ -39,6 +39,8 @@ extern float averageDrawDelta, averageUpdateDelta;
 extern float progressThroughFrame;
 extern float targetFixedFps;
 
+extern bool shouldRedraw;
+
 extern string pathPrefix;
 
 extern char* cardTitle;

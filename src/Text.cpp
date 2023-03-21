@@ -802,14 +802,14 @@ string clampStringToWidth(string in, float width, float scale) {
 	return tr;
 }
 int timesMaxDRunThrough = 0;
-void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b) {
+void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b) {
 	if(currentFont == "") return;
 	
 	float heightTemp, widthTemp;
 	
 	maxWidth /= 2;
 	
-	in = clampStringToWidth(in, maxWidth*textXTweak, scale);
+	string in = clampStringToWidth(inn, maxWidth*textXTweak, scale);
 	
 	vector<string> lines = split(in, "\n");
 	if(isLargeSymbol(strip(lines[0]))) {
@@ -817,6 +817,14 @@ void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scal
 	}
 	
 	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
+		if(timesMaxDRunThrough < 1) {
+			timesMaxDRunThrough++;
+			//drawCenteredStringWithMaxDimensions(in, x, y, scale * (((float)lines.size()) / ((float)lines.size()-1)), maxWidth * (((float)lines.size()) / ((float)lines.size()-1)) * 100, maxHeight);
+			drawCenteredStringWithMaxDimensions(inn, x, y, scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f), maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f), maxHeight, r, g, b);
+			drawString(to_string(heightTemp) + "\n" + to_string(timesMaxDRunThrough), getX(), getY(), 1.f, 1.f, 0.f, 0.f);
+			timesMaxDRunThrough = 0;
+			return;
+		}
 		scale *= maxHeight / heightTemp;
 	}
 	/*if((widthTemp = getStringWidth(in, scale)) > maxWidth) {

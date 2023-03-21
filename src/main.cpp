@@ -83,6 +83,8 @@ bool isPausedMaster = false;
 
 bool isFirstFrame = true;
 
+bool shouldRedraw = false;
+
 #define NUMBER_OF_CHOICES 21
 const char* mainChoices[] = {"Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom", "Extra Custom"};
 const char* secondaryChoices[] = {"Same", "Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally", "Trait", "Custom"};
@@ -567,6 +569,7 @@ static void key_callback(GLFWwindow* eventWindow, int key, int scancode, int act
         glfwSetWindowShouldClose(window, GLFW_TRUE);
         return;
     }
+	shouldRedraw = true;
     if(action != GLFW_PRESS) {
         return;
     }
@@ -588,14 +591,21 @@ static void window_size_callback(GLFWwindow* window, int width, int height) {
     Log::debug("Window resized to " + doubleToString(width) + "x" + doubleToString(height));
 	setFloat("pixelWidth", pixelWidth);
 	setFloat("pixelHeight", pixelHeight);
+	shouldRedraw = true;
 }
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if(action == GLFW_PRESS) onMouse(getX(), getY(), action, button);
+    if(action == GLFW_PRESS) {
+		onMouse(getX(), getY(), action, button);
+	}
 	if(action == GLFW_RELEASE) onMouseRelease();
+	shouldRedraw = true;
+}
+void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+	shouldRedraw = true;
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	onScroll(xoffset, yoffset);
-	//Log::debug("Scrolled with xOffset of " + to_string(xoffset) + " and a yOffset of " + to_string(yoffset) + ".");
+	shouldRedraw = true;
 }
 void window_focus_callback(GLFWwindow* window, int focused) {
     if(focused) {
@@ -605,6 +615,7 @@ void window_focus_callback(GLFWwindow* window, int focused) {
         isWindowFocused = false;
 		Log::debug("Window unfocused");
     }
+	shouldRedraw = true;
 }
 void APIENTRY errorPassThrough(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam) {
 	if(hasDebugMode) {
@@ -654,7 +665,7 @@ GLFWwindow* createWindow(bool f) {
 	Log::debug("Refresh rate should be " + to_string(v->refreshRate) + "hz");
 	GLFWwindow* e;
 	
-	e =  glfwCreateWindow(v->width, v->height, "Bang", NULL, NULL);
+	e = glfwCreateWindow(v->width, v->height, "Bang", NULL, NULL);
 	if (!e)
     {
         glfwTerminate();
@@ -666,6 +677,7 @@ GLFWwindow* createWindow(bool f) {
     glfwSetWindowSizeCallback(e, window_size_callback);
 	glfwSetScrollCallback(e, scroll_callback);
 	glfwSetWindowFocusCallback(e, window_focus_callback);
+	glfwSetCursorPosCallback(e, cursor_position_callback);
 	
 	return e;
 }
@@ -1003,10 +1015,11 @@ int main(int argc, char *argv[]) {
 		}
 		
 		deltaFloat = glfwGetTime();
-		if(isWindowFocused) {
+		if(isWindowFocused) {// && shouldRedraw) {
 			draw();
 			drawDelta = (glfwGetTime() - deltaFloat)*1000;
 			drawDeltaAdd += drawDelta;
+			shouldRedraw = false;
 		} else {
 			drawDelta = 0.f;
 		}

@@ -439,7 +439,7 @@ void drawCardText() {
 			(ct),
 			textXPosTweak, -0.4f+textYPosTweak,         // X/Y
 			size * textSizeTweak,// Scale
-			1.8f * textSizeTweak, 0.6f * textSizeTweak,         // Max Dimensions
+			1.8f * textSizeTweak, (0.6f - (strcmp("", heirloomText) == 0 ? 0.f : 0.06f)) * textSizeTweak,         // Max Dimensions
 			r, g, b       // Color
 		);
 	} else if(cardLayout == 1) {
