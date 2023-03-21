@@ -10,3 +10,4 @@ string getPathToPwd();
 bool directoryExists(string dir);
 void createDirectory(string dir);
 void deleteFile(string file);
+int forkNew();

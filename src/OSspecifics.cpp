@@ -35,6 +35,15 @@ void createDirectory(string dir) {
 void deleteFile(string file) {
 	system(("rm " + file).c_str());
 }
+int forkNew() {
+	int pid = fork();
+	if(pid == 0) {
+		execv("./DCLP", (char *const[]){(char*)"./DCLP"});
+		return 0;
+	} else {
+		return pid;
+	}
+}
 #elif defined(_WIN32)
 #include <string.h>
 #include <string>

@@ -264,6 +264,7 @@ int exampleSelected = 0;
 char** shownArtworks = (char**)malloc(sizeof(char*) * 700);
 int p = 0;
 bool isOtherWindowShwon = false;
+bool isDemoShown = false;
 
 char* expansionIconList[] = {
 	(char*)"Adventures",
@@ -354,6 +355,10 @@ void composeDearImGuiFrame() {
 		}
 		if(ImGui::Button("Notes and Credits")) {
 			ImGui::OpenPopup("Notes");
+		}
+
+		if(ImGui::Checkbox("Are Images Low Res?", &isLowRes)) {
+			ImGui::OpenPopup("Changing Res");
 		}
 		
 		ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
@@ -450,15 +455,10 @@ void composeDearImGuiFrame() {
 			ImGui::Text("Are you sure you want to delete everything?\nThis will restart the program.");
 			if (ImGui::Button("OK", ImVec2(120, 0))) {
 				ImGui::CloseCurrentPopup();
-				int pid = fork();
-				if(pid == 0) {
-					execv("./DCLP", (char *const[]){(char*)"./DCLP"});
-				} else {
-					glfwHideWindow(window);
-					system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
-					waitpid(pid, 0, 0);
-					exit(0);
-				}
+				int pid = forkNew();
+				glfwHideWindow(window);
+				system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
+				waitpid(pid, 0, 0);
 			}
             ImGui::SetItemDefaultFocus();
             ImGui::SameLine();
@@ -524,7 +524,8 @@ void composeDearImGuiFrame() {
 		}
 		if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 			ImGui::Text("---- Notes and Credits ----");
-			ImGui::Text("This program is licensed under the GNU General Public License v3.0. Please refer to their website for more info.");
+			ImGui::Text("This program is licensed under the GNU General Public License v3.0.\nPlease refer to the following website for more info:");
+			ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
 			ImGui::NewLine();
 			ImGui::Text("List of libraries used in this program:");
 			ImGui::BulletText("ImGui (GUI)");
@@ -535,6 +536,25 @@ void composeDearImGuiFrame() {
 			ImGui::BulletText("stb_image (Image management)");
 			ImGui::BulletText("OpenGL (Rendering)");
 			if(ImGui::Button("Close Window")) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+		if(ImGui::BeginPopupModal("Changing Res", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("Are you sure you want to switch to higher resolution images?");
+			ImGui::Text("Your work will be saved, but the window will close and reopen.");
+			ImGui::NewLine();
+			ImGui::Text("Higher resolution images look better,\nbut increase load times significantly.");
+			ImGui::NewLine();
+			if(ImGui::Button("Change resolution")) {
+				ImGui::CloseCurrentPopup();
+				Saves::save();
+				int pid = forkNew();
+				exit(0);
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Leave it as is")) {
+				isLowRes = !isLowRes;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -554,10 +574,14 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
 
+		if(ImGui::Button((isDemoShown ? "Hide ImGui Demo" : "Show ImGui Demo"))) {
+			isDemoShown = !isDemoShown;
+		}
+
     	ImGui::End();
 
 		
-    	// ImGui::ShowDemoWindow();
+    	if(isDemoShown) ImGui::ShowDemoWindow();
     }
 	
 }
@@ -988,6 +1012,9 @@ int main(int argc, char *argv[]) {
 	loadFont("tnri.ttf", "tnrib");
 	
 	glClearColor(0.f, 0.f, 0.f, 1.0f);
+
+	Saves::init();
+	Saves::read();
 	
    	res::initial();
 	
@@ -997,9 +1024,6 @@ int main(int argc, char *argv[]) {
 	
 	handOnLoad();
 
-	Saves::init();
-	Saves::read();
-
 	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), true);
 	loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), true);
 	
@@ -1008,6 +1032,8 @@ int main(int argc, char *argv[]) {
 	//changeFullscreen();
 	
 	float deltaFloat = 0.f;
+
+	setMat4("baseTransMat", glm::scale(glm::vec3(1.f, 1.f, 1.f)));
 	
 	if(isScreenshotting) {
 		loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
