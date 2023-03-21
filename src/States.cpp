@@ -447,7 +447,7 @@ void drawCardText() {
 		float size = 1.5f;
 		drawCenteredStringWithMaxDimensions(
 			(ct),
-			textXPosTweak, -0.375f+textYPosTweak,       // X/Y
+			textXPosTweak, -0.415f+textYPosTweak,       // X/Y
 			size * textSizeTweak,               // Scale
 			5.f, 0.25f,         // Max Dimensions
 			r, g, b       // Color
