@@ -352,6 +352,9 @@ void composeDearImGuiFrame() {
 		if(ImGui::Button("Load Example")) {
 			ImGui::OpenPopup("Load Example");
 		}
+		if(ImGui::Button("Notes and Credits")) {
+			ImGui::OpenPopup("Notes");
+		}
 		
 		ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
@@ -432,10 +435,13 @@ void composeDearImGuiFrame() {
 		if (ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
 		if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::ListBox("Official Icons", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
+			ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
 			if(ImGui::Button("Load Example")) {
 				Saves::read(string(examplesUrls[exampleSelected]));
 				reloadPictures();
+				ImGui::CloseCurrentPopup();
+			}
+			if(ImGui::Button("Close Window")) {
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -511,6 +517,23 @@ void composeDearImGuiFrame() {
 				ImGui::CloseCurrentPopup();
 			}
 
+			if(ImGui::Button("Close Window")) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+		if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("---- Notes and Credits ----");
+			ImGui::Text("This program is licensed under the GNU General Public License v3.0. Please refer to their website for more info.");
+			ImGui::NewLine();
+			ImGui::Text("List of libraries used in this program:");
+			ImGui::BulletText("ImGui (GUI)");
+			ImGui::BulletText("GLFW (windowing)");
+			ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder)");
+			ImGui::BulletText("Curl (Image downloading. See curl-license.txt for its license)");
+			ImGui::BulletText("Freetype (font loading)");
+			ImGui::BulletText("stb_image (Image management)");
+			ImGui::BulletText("OpenGL (Rendering)");
 			if(ImGui::Button("Close Window")) {
 				ImGui::CloseCurrentPopup();
 			}
