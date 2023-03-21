@@ -73,6 +73,7 @@ namespace Saves {
       boolPointers["isTraveler"] = &isTraveler;
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
       boolPointers["isTrait"] = &isTrait;
+      boolPointers["isSupply"] = &isSupply;
    }
    void save() {
       string g = string(cardText);

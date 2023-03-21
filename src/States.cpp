@@ -423,7 +423,7 @@ void drawType(char* ss) {
 	isDrawingLargeIcons = true;
 }
 void drawCardText() {
-	string ct = string(cardText);
+	string ct = string(cardText) + (isSupply ? "" : "\n[i](This is not in the Supply)");
 	
 	setFont("tnr");
 	float r = 0.f, g = 0.f, b = 0.f;

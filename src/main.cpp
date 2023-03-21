@@ -335,11 +335,9 @@ void composeDearImGuiFrame() {
 		
 		ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
+		if(cardLayout == 0) ImGui::Checkbox("Is Supply Card?", &isSupply);
 		if(cardLayout == 0) ImGui::Checkbox("Traveller?", &isTraveler);
-		//if(cardLayout == 0) ImGui::Checkbox("Is Supply Pile?", &isSupply);
 		if(cardLayout == 1) ImGui::Checkbox("Trait?", &isTrait);
-
-		//ImGui::InputText("string", title, IM_ARRAYSIZE(title));
 		
 		ImGui::InputText("Title", cardTitle, 100);
 		
@@ -953,6 +951,7 @@ int main(int argc, char *argv[]) {
 	loadFont("tnr-bold.ttf", "tnrb");
 	loadFont("tnr.ttf", "tnr");
 	loadFont("tnri.ttf", "tnri");
+	loadFont("tnri.ttf", "tnrib");
 	
 	glClearColor(0.f, 0.f, 0.f, 1.0f);
 	

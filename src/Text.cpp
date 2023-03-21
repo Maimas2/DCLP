@@ -258,8 +258,13 @@ float getStringWidthRaw(string in, float scale) {
 	bool isBoldSave = isBold;
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
 	if(shouldBeBolded(in)) isBold = true;
+	int i = 0;
+	if(in.size() > 3 && in.substr(0, 3) == "[i]") {
+		i = 3;
+		setFont("tnri");
+	}
 	
-	for(int i = 0; i < in.size(); i++) {
+	for( ; i < in.size(); i++) {
 		char n = in.at(i);
 		if(n == '\n') {
 			isBold = false;
@@ -382,15 +387,18 @@ float drawLargeIcon(string text, float x, float y) {
 	
 	return LARGE_ICON_SIZE * bonusSizeTweak;
 }
+bool isItalicised = false;
 void drawString(string toRender, float x, float y, float scale, float r, float g, float b) {
 	if(currentFont == "") return;
+	if(toRender.size() == 0) return;
 
 	int offset = 0;
-	if(toRender.substr(0, 3) == "[i]") {
+	if(toRender.substr(0, 3) == "[i]" || isItalicised) {
 		offset = 3;
 		setFont("tnri");
 		x += scale / 15.f;
 		scale /= 1.25f;
+		isItalicised = true;
 	}
 	
 	y -= getStringYMax(toRender, scale);
@@ -765,26 +773,32 @@ string clampStringToWidth(string in, float width, float scale) {
 		}
 		words.push_back("\n");
 	}
+	bool isi = false;
 	for(int i = 0; i < words.size(); i++) {
 		if(words[i].substr(0, 3) == "[f]") {
 			tor.push_back(in.substr(3, words[i].size()-3));
 			continue;
 		}
+		if(words[i].substr(0, 3) == "[i]") {
+			isi = true;
+			words[i] = words[i].substr(3, words[i].size()-3);
+		}
 		if(getStringWidth(words[i], scale) >= width) { // Failsafe to prevent infinite loop
-			tor.push_back(building);
+			tor.push_back((isi ? "[i]" : "") + building);
 			tor.push_back(words[i]);
 			building = "";
 			cl = 0.f;
 			continue;
 		}
 		if(words[i] == "\n") {
-			tor.push_back(building);
+			tor.push_back((isi ? "[i]" : "") + building);
 			building = "";
 			cl = 0.f;
+			isi = false;
 			continue;
 		}
 		if(cl + getStringWidth(words[i], scale) > width) {
-			tor.push_back(building);
+			tor.push_back((isi ? "[i]" : "") + building);
 			building = "";
 			cl = 0.f;
 			i--;
