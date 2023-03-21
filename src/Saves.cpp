@@ -9,8 +9,6 @@
 
 using namespace std;
 
-string file = "save.dclp";
-
 string custom_replace(string base, string og, string n) {
    vector<string> s = split(base, og);
    string tor;
@@ -76,6 +74,7 @@ namespace Saves {
       boolPointers["isSupply"] = &isSupply;
    }
    void save() {
+      string file = "save.dclp";
       string g = string(cardText);
       g = custom_replace(g, "\n", "\\n");
       cardText = (char*)g.c_str();
@@ -98,7 +97,7 @@ namespace Saves {
       }
       fclose(f);
    }
-   void read() {
+   void read(string file) {
       ifstream in(file.c_str());
       string contents((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
       in.close();
@@ -145,5 +144,8 @@ namespace Saves {
             *(boolPointers[name]) = (lines[i].substr(lines[i].find(":")+1) == "0" ? false : true);
          }
       }
+   }
+   void read() {
+      read("save.dclp");
    }
 }

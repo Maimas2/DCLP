@@ -387,18 +387,16 @@ float drawLargeIcon(string text, float x, float y) {
 	
 	return LARGE_ICON_SIZE * bonusSizeTweak;
 }
-bool isItalicised = false;
 void drawString(string toRender, float x, float y, float scale, float r, float g, float b) {
 	if(currentFont == "") return;
 	if(toRender.size() == 0) return;
 
 	int offset = 0;
-	if(toRender.substr(0, 3) == "[i]" || isItalicised) {
+	if(toRender.substr(0, 3) == "[i]") {
 		offset = 3;
 		setFont("tnri");
 		x += scale / 15.f;
 		scale /= 1.25f;
-		isItalicised = true;
 	}
 	
 	y -= getStringYMax(toRender, scale);
