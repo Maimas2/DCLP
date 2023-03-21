@@ -91,6 +91,25 @@ const char* secondaryChoices[] = {"Same", "Action/Event", "Treasure", "Victory",
 const char* layoutChoices[] = {"Normal", "Landscape", "Base Card", "Pile Marker", "Player Mat"};
 const char* matColorChoices[] = {"Black", "Red", "Green", "Brown", "Blue"};
 
+const char* examplesNames[] = {
+	"Workshop",
+	"Coin of the Realm",
+	"Bonfire",
+	"Dominate",
+	"Cursed (trait)",
+	"Curse (base card)",
+	"Bane Marker",
+};
+const char* examplesUrls[] = {
+	"examples/workshop.dclp",
+	"examples/coin.dclp",
+	"examples/bonfire.dclp",
+	"examples/dominate.dclp",
+	"examples/cursed.dclp",
+	"examples/curse.dclp",
+	"examples/bane.dclp",
+};
+
 float customCardColor[3] = {1.f, 1.f, 1.f};
 float customEmbellishmentColor[3] = {1.f, 1.f, 1.f};
 float customSideColor[3] = {1.2f, 0.8f, 0.5f};
@@ -240,6 +259,7 @@ bool  isTrait   = false;
 
 float lastResetClick;
 int imageToLoad = 0;
+int exampleSelected = 0;
 
 char** shownArtworks = (char**)malloc(sizeof(char*) * 700);
 int p = 0;
@@ -342,7 +362,7 @@ void composeDearImGuiFrame() {
 		ImGui::InputText("Title", cardTitle, 100);
 		
 		if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
-		if(cardLayout <= 2) ImGui::InputText("Cost", cardCost, 30);
+		if(cardLayout == 2 || cardLayout == 0 || (cardLayout == 1 && !isTrait)) ImGui::InputText("Cost", cardCost, 30);
 		
 		if(cardLayout != 3) ImGui::InputText("Art Credit", cardCredit, 120);
 		if(cardLayout != 3) ImGui::InputText("Card Version and Creator", cardVersion, 120);
@@ -381,10 +401,7 @@ void composeDearImGuiFrame() {
 			}
 		}
 		
-		if(cardLayout <= 2) {
-			static ImGuiInputTextFlags flags = ImGuiInputTextFlags_None;
-			ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
-		}
+		if(cardLayout <= 2) ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_None);
 		
 		ImGui::InputText("Picture URL", iconUrl, 500);
 		if(cardLayout <= 2) ImGui::InputText("Expansion URL", expansionUrl, 500);
@@ -396,7 +413,7 @@ void composeDearImGuiFrame() {
 		if(ImGui::Button("Choose From Official Images")) {
 			ImGui::OpenPopup("Choose from Official Images");
 		}
-		if(ImGui::Button("Choose Official Expansion Icon")) {
+		if(cardLayout <= 2) if(ImGui::Button("Choose Official Expansion Icon")) {
 			ImGui::OpenPopup("Choose Official Expansion Icon");
 		}
 		ImGui::SliderFloat("X Move Distance", &xMove, -1.f, 1.f, "%.3f");
@@ -415,7 +432,12 @@ void composeDearImGuiFrame() {
 		if (ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
 		if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-
+			ImGui::ListBox("Official Icons", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
+			if(ImGui::Button("Load Example")) {
+				Saves::read(string(examplesUrls[exampleSelected]));
+				reloadPictures();
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 		if(ImGui::BeginPopupModal("Reset All", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {

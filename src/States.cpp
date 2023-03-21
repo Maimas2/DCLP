@@ -449,7 +449,7 @@ void drawCardText() {
 			(ct),
 			textXPosTweak, -0.415f+textYPosTweak,       // X/Y
 			size * textSizeTweak,               // Scale
-			1.5f, 0.25f,         // Max Dimensions
+			2.5f, 0.25f,         // Max Dimensions
 			r, g, b       // Color
 		);
 	} else if(cardLayout == 2) {
@@ -457,7 +457,7 @@ void drawCardText() {
 		largeIconSize = 8.f;
 		drawCenteredStringWithMaxDimensions(
 			string(ct),
-			textXPosTweak, 0.4f+textYPosTweak,         // X/Y
+			textXPosTweak, 0.3f+textYPosTweak,         // X/Y
 			size * textSizeTweak,               // Scale
 			1.8f, 0.6f,         // Max Dimensions
 			r, g, b       // Color

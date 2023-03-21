@@ -119,7 +119,7 @@ namespace Saves {
          if(type == 'c') {
             string name = lines[i].substr(1, lines[i].find(":")-1);
             if(charPointers[name] == nullptr) continue;
-            string src = (lines[i].substr(lines[i].find(":")+1) + "\0");
+            string src = (lines[i].substr(lines[i].find(":")+1)) + (char)0;
             src = custom_replace(src, "\\n", "\n");
             memcpy(*(charPointers[name]), (char*)src.c_str(), src.size());
          }
