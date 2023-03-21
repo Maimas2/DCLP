@@ -423,7 +423,7 @@ void drawType(char* ss) {
 	isDrawingLargeIcons = true;
 }
 void drawCardText() {
-	string ct = string(cardText) + (isSupply ? "" : "\n[i](This is not in the Supply)");
+	string ct = string(cardText);
 	
 	setFont("tnr");
 	float r = 0.f, g = 0.f, b = 0.f;
@@ -434,6 +434,7 @@ void drawCardText() {
 	}
 	
 	if(cardLayout == 0) {
+		ct += (isSupply ? "" : "\n[i](This is not in the Supply)");
 		float size = 1.5f;
 		drawCenteredStringWithMaxDimensions(
 			(ct),
