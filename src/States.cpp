@@ -449,7 +449,7 @@ void drawCardText() {
 			(ct),
 			textXPosTweak, -0.415f+textYPosTweak,       // X/Y
 			size * textSizeTweak,               // Scale
-			5.f, 0.25f,         // Max Dimensions
+			1.5f, 0.25f,         // Max Dimensions
 			r, g, b       // Color
 		);
 	} else if(cardLayout == 2) {

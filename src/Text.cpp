@@ -833,7 +833,6 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 			timesMaxDRunThrough++;
 			//drawCenteredStringWithMaxDimensions(in, x, y, scale * (((float)lines.size()) / ((float)lines.size()-1)), maxWidth * (((float)lines.size()) / ((float)lines.size()-1)) * 100, maxHeight);
 			drawCenteredStringWithMaxDimensions(inn, x, y, scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f), maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f), maxHeight, r, g, b);
-			drawString(to_string(heightTemp) + "\n" + to_string(timesMaxDRunThrough), getX(), getY(), 1.f, 1.f, 0.f, 0.f);
 			timesMaxDRunThrough = 0;
 			return;
 		}
