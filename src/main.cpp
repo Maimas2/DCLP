@@ -473,17 +473,6 @@ void composeDearImGuiFrame() {
 			ImGui::EndPopup();
 		}
 		if(ImGui::BeginPopupModal("Choose Official Expansion Icon", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			if(ImGui::InputText("Search", artSearch, 100) || isFirstFrame) {
-				int i = 0;
-				p = 0;
-				for(; i < sizeof(artworkNames) / sizeof(char*); i++) {
-					if(strstr(artworkNames[i], trimwhitespace(artSearch)) != nullptr) {
-						shownArtworks[p++] = artworkNames[i];
-					}
-				}
-				shownArtworks[p] = NULL;
-			}
-
 			ImGui::ListBox("Official Icons", &imageToLoad, expansionIconList, IM_ARRAYSIZE(expansionIconList), 15);
 
 			if(ImGui::Button("Load Selected Image")) {
