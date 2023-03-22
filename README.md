@@ -19,14 +19,14 @@ All designs of cards are taken from shardofhonor's similar card creator, found a
 * git CLI
 * Internet (I mean, really)
 
-After downloading and extracting, run `setup.sh`. This will download the appropriate libraries and compile everything.
+After downloading and extracting, run `setup.sh`. This should download the appropriate libraries and compile everything.
 
 ## Windows
-Nothing to compile now (sadly), but hopefully in the future there will be prebuilt exe's or something. :shrug:
+Not compiled for windows yet (sadly), but in the future there will be prebuilt exe's or something. :shrug:
 
 # Other notes
-Unless specified with --high-res, all images (excluding the coin, debt, and VP token) are rendered at half resolution for better load times and performance.
+Unless enabled at the top of the options bar, all images (excluding the coin, debt, and VP token) are rendered at half resolution for much better load times and performance.
 ## Curl
-This program uses Curl for downloading images. It's website can be found [here](https://curl.se/), and it's license can be found [here](https://curl.se/docs/copyright.html), or by running the program with `--curl-license`.
+This program uses Curl for downloading images. It's website can be found [here](https://curl.se/), and it's license can be found [here](https://curl.se/docs/copyright.html). This is also stored in `curl-license.txt`.
 ## Additional Info
-If you want more information (about anything, really), DM me `at Maimas2#4562`.
+If you want more information (about anything, really), DM me at `Maimas2#4562`.
