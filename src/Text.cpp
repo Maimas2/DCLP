@@ -458,7 +458,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				isBold = false;
 			}
 		}
-		int pos = currentCharr - toRender.begin(); // https://stackoverflow.com/questions/6136362/convert-iterator-to-int
+		int pos = offset;
 		int len;
 		if(isFirstCharacter) {
 			

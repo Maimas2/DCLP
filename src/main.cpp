@@ -447,24 +447,19 @@ char* expansionIconListImage[] = {
 	(char*)"expansion-images/seaside.png",
 	(char*)"expansion-images/seaside-old.png"
 };
-
-char *trimwhitespace(char *str) { // https://stackoverflow.com/a/122721
-  char *end;
-
-  // Trim leading space
-  while(isspace((unsigned char)*str)) str++;
-
-  if(*str == 0)  // All spaces?
-    return str;
-
-  // Trim trailing space
-  end = str + strlen(str) - 1;
-  while(end > str && isspace((unsigned char)*end)) end--;
-
-  // Write new null terminator character
-  end[1] = '\0';
-
-  return str;
+char* strip(char* in) {
+	int spacesAtEnd   = 0;
+	for(int i = 0; i < strlen(in); i++) {
+		if(isspace(in[i])) {
+			in++;
+		} else break;
+	}
+	for(int i = strlen(in)-1; i >= 0; i--) {
+		if(isspace(in[i])) {
+			in[i] = (char)0;
+		} else break;
+	}
+	return in;
 }
 void reloadPictures() {
 	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
@@ -561,10 +556,10 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 2) if(ImGui::Button("Choose Official Expansion Icon")) {
 			ImGui::OpenPopup("Choose Official Expansion Icon");
 		}
-		ImGui::SliderFloat("X Move Distance", &xMove, -1.f, 1.f, "%.3f");
-		ImGui::SliderFloat("Y Move Distance", &yMove, -1.f, 1.f, "%.3f");
-		ImGui::SliderFloat("Zoom", &zoom, 0.25f, 4.f, "%.2f");
-		if(ImGui::Button("Reset Positions")) {
+		ImGui::SliderFloat("Image X Adjust", &xMove, -1.f, 1.f, "%.3f");
+		ImGui::SliderFloat("Image Y Adjust", &yMove, -1.f, 1.f, "%.3f");
+		ImGui::SliderFloat("Image Zoom", &zoom, 0.25f, 4.f, "%.2f");
+		if(ImGui::Button("Reset Image Position")) {
 			xMove = 0;
 			yMove = 0;
 			zoom  = 1;
@@ -596,6 +591,7 @@ void composeDearImGuiFrame() {
 				glfwHideWindow(window);
 				system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
 				waitpid(pid, 0, 0);
+				exit(0);
 			}
             ImGui::SetItemDefaultFocus();
             ImGui::SameLine();
@@ -607,7 +603,7 @@ void composeDearImGuiFrame() {
 				int i = 0;
 				p = 0;
 				for(; i < sizeof(artworkNames) / sizeof(char*); i++) {
-					if(strstr(artworkNames[i], trimwhitespace(artSearch)) != nullptr) {
+					if(strstr(artworkNames[i], strip(artSearch)) != nullptr) {
 						shownArtworks[p++] = artworkNames[i];
 					}
 				}
@@ -902,17 +898,15 @@ void resetMatrix() {
 	glUseProgram(shaderProgram);
 }
 void imguiInit() {
-	// https://marcelfischer.eu/blog/2019/imgui-in-sdl-opengl/
-	
+	//Uhh turns out this is taken from the provided ImGui examples, under the MIT license
 	IMGUI_CHECKVERSION();
-	
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	
-	ImGui::StyleColorsDark();
-	
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    ImGui::StyleColorsLight();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
 }
 bool isScreenshotting = false;
 #define incrementLoop() i++;if(i>=argc) break;
@@ -983,13 +977,13 @@ int doSingleArgument(string arg, string next, int* i) { // Trust me on this one
 	
 	return 0;
 }
-string ReplaceAll(string str, const string& from, const string& to) { // https://stackoverflow.com/a/24315631
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
+string replaceAll(string in, string old, string news) {
+	int place = 0;
+	while(true) {
+		if(in.find(old, place) == string::npos) break;
+		in.replace((place = in.find(old, place)), news.size(), news);
+	}
+	return in;
 }
 int main(int argc, char *argv[]) {
 	showWindow = false;
