@@ -53,6 +53,7 @@ extern char* cardPreview;
 extern char* cardVersion;
 extern char* cardCredit;
 extern char* heirloomText;
+extern char* matText;
 extern int   cardColor;
 extern int   cardSecondary;
 extern int   matColor;
@@ -75,6 +76,7 @@ extern float tweakDividingLineY;
 extern float bottomTextSizeTweak;
 extern bool  isSupply;
 extern bool  isTrait;
+extern float matWidthTweak;
 
 extern bool  hasImage;
 

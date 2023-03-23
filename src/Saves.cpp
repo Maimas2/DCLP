@@ -24,16 +24,17 @@ namespace Saves {
    map<string, int*>   intPointers;
    map<string, bool*>  boolPointers;
    void init() {
-      floatPointers["xMove"] = &xMove;
-      floatPointers["yMove"] = &yMove;
-      floatPointers["zoom"] = &zoom;
-      floatPointers["textXTweak"] = &textXTweak;
-      floatPointers["textSizeTweak"] = &textSizeTweak;
-      floatPointers["textYPosTweak"] = &textYPosTweak;
+      floatPointers["xMove"]                   = &xMove;
+      floatPointers["yMove"]                   = &yMove;
+      floatPointers["zoom"]                    = &zoom;
+      floatPointers["textXTweak"]              = &textXTweak;
+      floatPointers["textSizeTweak"]           = &textSizeTweak;
+      floatPointers["textYPosTweak"]           = &textYPosTweak;
       floatPointers["expansionIconXSizeTweak"] = &expansionIconXSizeTweak;
       floatPointers["expansionIconYSizeTweak"] = &expansionIconYSizeTweak;
-      floatPointers["tweakDividingLineY"] = &tweakDividingLineY;
-      floatPointers["bottomTextSizeTweak"] = &bottomTextSizeTweak;
+      floatPointers["tweakDividingLineY"]      = &tweakDividingLineY;
+      floatPointers["bottomTextSizeTweak"]     = &bottomTextSizeTweak;
+      floatPointers["matWidthTweak"]           = &matWidthTweak;
 
       floatPointers["customColor1"] = &customCardColor[0];
       floatPointers["customColor2"] = &customCardColor[1];
@@ -51,27 +52,28 @@ namespace Saves {
       floatPointers["secondCustomCardColor2"] = &secondCustomCardColor[1];
       floatPointers["secondCustomCardColor3"] = &secondCustomCardColor[2];
 
-      charPointers["cardTitle"] = &cardTitle;
-      charPointers["cardType"] = &cardType;
-      charPointers["cardText"] = &cardText;
-      charPointers["cardCost"] = &cardCost;
-      charPointers["cardPreview"] = &cardPreview;
-      charPointers["cardVersion"] = &cardVersion;
-      charPointers["cardCredit"] = &cardCredit;
-      charPointers["pictureUrl"] = &iconUrl;
+      charPointers["cardTitle"]    = &cardTitle;
+      charPointers["cardType"]     = &cardType;
+      charPointers["cardText"]     = &cardText;
+      charPointers["cardCost"]     = &cardCost;
+      charPointers["cardPreview"]  = &cardPreview;
+      charPointers["cardVersion"]  = &cardVersion;
+      charPointers["cardCredit"]   = &cardCredit;
+      charPointers["pictureUrl"]   = &iconUrl;
       charPointers["expansionUrl"] = &expansionUrl;
       charPointers["heirloomText"] = &heirloomText;
+      charPointers["matText"]      = &matText;
 
       intPointers["cardColor"]     = &cardColor;
       intPointers["cardSecondary"] = &cardSecondary;
       intPointers["cardLayout"]    = &cardLayout;
       intPointers["matColor"]      = &matColor;
 
-      boolPointers["isLowRes"] = &isLowRes;
-      boolPointers["isTraveler"] = &isTraveler;
+      boolPointers["isLowRes"]                      = &isLowRes;
+      boolPointers["isTraveler"]                    = &isTraveler;
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
-      boolPointers["isTrait"] = &isTrait;
-      boolPointers["isSupply"] = &isSupply;
+      boolPointers["isTrait"]                       = &isTrait;
+      boolPointers["isSupply"]                      = &isSupply;
    }
    void save() {
       string file = "save.dclp";

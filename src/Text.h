@@ -9,6 +9,7 @@ extern bool   isDrawingLargeIcons;
 extern float  largeIconSize;
 extern int    fontSize;
 extern bool   isBold;
+extern bool   isPermanentlyBold;
 
 int textInit();
 int loadFont(string fontPath, string name);
@@ -42,6 +43,7 @@ void drawLeftAlignedVerticallyCenteredText(string in, float x, float y, float sc
 void drawLeftAlignedVerticallyCenteredText(string in, float x, float y, float scale);
 
 string clampStringToWidth(string in, float width, float scale);
+string splitIntoTwoLines(string in, float scale, float maxWidth);
 
 void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b);
 void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight);

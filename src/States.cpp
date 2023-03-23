@@ -1,9 +1,11 @@
 #ifndef GL_IS_INCLUDED
 #define GL_IS_INCLUDED
 #include "glm/fwd.hpp"
+#include <csetjmp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <type_traits>
 #endif
 #include <iostream>
 #include <cmath>
@@ -397,7 +399,9 @@ void drawTitle(char* ss) {
 		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);
 		setMat4("transMat", glm::mat4(1.f));
 	} else if(cardLayout == 4) {
-		drawCenteredStringWithMaxWidth("~" + s, 0.f, 0.535f, 3.f, 1.f);
+		isPermanentlyBold = true;
+		drawCenteredStringWithMaxWidth(s, 0.f, 0.535f, 3.f, 1.f);
+		isPermanentlyBold = false;
 	}
 }
 void drawType(char* ss) {
@@ -465,6 +469,14 @@ void drawCardText() {
 			r, g, b       // Color
 		);
 		largeIconSize = 4.f;
+	} else if(cardLayout == 3) {
+		// Leave empty (no text to be drawn)
+	} else if(cardLayout == 4) {
+		isDrawingLargeIcons = false;
+		isPermanentlyBold = true;
+		drawCenteredStringWithMaxDimensions(ct, -0.02f, -0.535f, 1.5f, 3.f * matWidthTweak, 0.25f);
+		isDrawingLargeIcons = true;
+		isPermanentlyBold = false;
 	}
 }
 void drawCost() {

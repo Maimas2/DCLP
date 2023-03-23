@@ -23,7 +23,7 @@
 #define cf Chars
 #define LARGE_ICON_SIZE 0.22
 
-#define Chars Charsets[currentFont + (isBold ? "b" : "")]
+#define Chars Charsets[currentFont + (isBold || isPermanentlyBold ? "b" : "")]
 
 bool isDigit(char c);
 
@@ -63,6 +63,7 @@ float largeIconSize       = 4.f;
 
 bool isBold = false;
 bool checkingForBold = true;
+bool isPermanentlyBold = false;
 
 char  digitList[]   = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', /* Account for misc symbols */ '?', '*', '+'};
 char  symbolList[]  = {'$', '@', '^', '%'};
@@ -446,6 +447,8 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 	if(shouldBeBolded(toRender)) {
 		isBold = true;
 	}
+
+	int pos = offset;
 	
 	for(string::const_iterator currentCharr = toRender.begin() + offset; currentCharr != toRender.end(); currentCharr++) {
 		if(numberOfContinues > 0) {
@@ -458,13 +461,13 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				isBold = false;
 			}
 		}
-		int pos = offset;
 		int len;
+		pos++;
+		pos = currentCharr - toRender.begin();
 		if(isFirstCharacter) {
-			
 			isFirstCharacter = false;
 		}
-		char n = toRender.at(pos);
+		char n = *currentCharr;
 
 		if(n == '~') {
 			isBold = !isBold;
@@ -829,7 +832,7 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	}
 	
 	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
-		if(timesMaxDRunThrough < 1) {
+		if(timesMaxDRunThrough < 0) {
 			timesMaxDRunThrough++;
 			//drawCenteredStringWithMaxDimensions(in, x, y, scale * (((float)lines.size()) / ((float)lines.size()-1)), maxWidth * (((float)lines.size()) / ((float)lines.size()-1)) * 100, maxHeight);
 			drawCenteredStringWithMaxDimensions(inn, x, y, scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f), maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f), maxHeight, r, g, b);
@@ -862,4 +865,26 @@ void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, fl
 }
 void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, float maxWidth) {
 	drawCenteredStringWithMaxWidth(in, x, y, scale, maxWidth, 0, 0, 0);
+}
+string splitIntoTwoLines(string in, float scale, float maxWidth) {
+	vector<string> words = split(in, " ");
+	string first = "";
+	string second = "";
+	bool hasBuilt = false;
+	float buildingWidth = 0.f;
+	for(int i = 0; i < words.size(); i++) {
+		if(hasBuilt) {
+			second += words[i] + " ";
+		} else {
+			if(buildingWidth + getStringWidth(words[i], 1.f) > maxWidth) {
+				hasBuilt = true;
+				i--;
+				continue;
+			} else {
+				first += words[i] + " ";
+				buildingWidth += getStringWidth(words[i], 1.f);
+			}
+		}
+	}
+	return first + "\n" + second;
 }

@@ -354,6 +354,7 @@ void copyToClipboard() {
 char* cardTitle   = (char*)malloc(128);
 char* cardType    = (char*)malloc(128);
 char* cardText    = (char*)malloc(512);
+char* matText     = (char*)malloc(512);
 char* iconUrl     = (char*)malloc(512);
 char* expansionUrl= (char*)malloc(512);
 char* cardCost    = (char*)malloc(32);
@@ -386,6 +387,7 @@ float bottomTextSizeTweak = 1.f;
 bool  isSupply  = true;
 bool  isTrait   = false;
 bool  hasImage  = false;
+float matWidthTweak = 1.f;
 
 float lastResetClick;
 int imageToLoad = 0;
@@ -537,7 +539,7 @@ void composeDearImGuiFrame() {
 			}
 		}
 		
-		if(cardLayout <= 2) ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_None);
+		if(cardLayout <= 2 || cardLayout == 4) ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_None);
 		
 		ImGui::InputText("Picture URL", iconUrl, 500);
 		if(cardLayout <= 2) ImGui::InputText("Expansion URL", expansionUrl, 500);
@@ -590,7 +592,6 @@ void composeDearImGuiFrame() {
 				int pid = forkNew();
 				glfwHideWindow(window);
 				system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
-				waitpid(pid, 0, 0);
 				exit(0);
 			}
             ImGui::SetItemDefaultFocus();
@@ -692,7 +693,7 @@ void composeDearImGuiFrame() {
 			ImGui::EndPopup();
 		}
 		
-		if(cardLayout < 3) ImGui::Text("Tweaks");
+		if(cardLayout < 3 || cardLayout == 4) ImGui::Text("Tweaks");
 		if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
@@ -705,6 +706,7 @@ void composeDearImGuiFrame() {
 
 		if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
+		if(cardLayout == 4) ImGui::SliderFloat("Mat Width Tweak", &matWidthTweak, 0.25f, 4.f);
 
 		if(ImGui::Button((isDemoShown ? "Hide ImGui Demo" : "Show ImGui Demo"))) {
 			isDemoShown = !isDemoShown;
@@ -903,7 +905,7 @@ void imguiInit() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    ImGui::StyleColorsLight();
+    ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init();
