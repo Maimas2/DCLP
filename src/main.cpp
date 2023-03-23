@@ -139,65 +139,193 @@ static void update() {
 	progressThroughFrame = (glfwGetTime()-lastFixedUpdate)*targetFixedFps;
     handlerUnfixedUpdate();
 }
-int w, h;
+void checkFBO() {                                                         
+	GLenum s = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER); 
+	if(s == GL_FRAMEBUFFER_COMPLETE) {
+		return;
+	} else if(s == GL_FRAMEBUFFER_UNSUPPORTED) {
+		return;
+	} else {
+		Log::fatal("FBO error!", true);
+	}
+}
+struct FBO {
+	GLuint fbo;
+	GLuint color;
+	GLuint depth;
+	int width;
+	int height;
+};
+FBO* setupFBO(int fboWidth, int fboHeight) {
+	FBO* toReturn = new FBO;
+	toReturn->width = fboWidth;
+	toReturn->height = fboHeight;
+	glGenFramebuffers(1, &(toReturn->fbo));
+	glGenTextures(1, &(toReturn->color));
+	glGenRenderbuffers(1, &(toReturn->depth));
+
+	glBindFramebuffer(GL_FRAMEBUFFER, (toReturn->fbo));
+
+	glBindTexture(GL_TEXTURE_2D, (toReturn->color));
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fboWidth, fboHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (toReturn->color), 0);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, (toReturn->depth));
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, fboWidth, fboHeight);
+	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, (toReturn->depth));
+
+	return toReturn;
+}
+int w = 0, h = 0;
 bool screenshottingNextFrame = false;
-GLubyte* getScreenshotPixels() { // Based off https://stackoverflow.com/questions/33757634/creating-screenshot-in-opengl-not-working
-	if(!isFullscreen && !isScreenshotting) {
-		changeFullscreen();
-		calculateFPS();
-        enablings();
-		for(int i = 0; i < 10; i++) {
-			resetMatrix();
-			update();
-			handlerDraw();
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}
-	}
-	if(cardLayout == 0 || cardLayout == 2) {
-		w = (pixelWidth/1920)*672;
-		h = (pixelHeight/1080)*1080;
-	} else if(cardLayout == 1 || cardLayout == 3) {
-		w = (pixelWidth/1920)*1080;
-		h = (pixelHeight/1080)*702;
-	}
+int iwidth, iheight;
+GLubyte* getNonAlphaScreenshotPixels() {
 	GLubyte* pixels = (GLubyte*)malloc(3 * w * h);
 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-	glReadPixels((int)(pixelWidth/2)-(w/2), (int)(pixelHeight/2)-(h/2), w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	if (GL_NO_ERROR != glGetError()) throw "Error: Unable to read pixels.";
 
 	return pixels;
 }
+void doWidthHeightPixels() {
+	if(cardLayout == 0 || cardLayout == 2) {
+		w = 1403;
+		h = 2151;
+		baseWindowRatio = 1403.f/2151.f;
+	} else if(cardLayout == 1 || cardLayout == 3) {
+		w = 2151;
+		h = 1403;
+		baseWindowRatio = 2151.f/1403.f;
+	}else if(cardLayout == 4) {
+		w = 2151;
+		h = 1564;
+		baseWindowRatio = 1.375385344;
+	}
+}
+GLubyte* getScreenshotPixels() {
+	GLubyte* pixels = (GLubyte*)malloc(4 * w * h);
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	if (GL_NO_ERROR != glGetError()) throw "Error: Unable to read pixels.";
+
+	return pixels;
+}
+void draw();
+FBO* uprightCardFBO = nullptr, *uprightDrawingFbo = nullptr;
+FBO* landscapeCardFBO = nullptr, *landscapeDrawingFBO = nullptr;
+FBO* matCardFBO = nullptr, *matDrawingFBO = nullptr;
+void drawOnFbo(bool isFlipping) {
+	if(uprightCardFBO == nullptr) {
+		uprightCardFBO      = setupFBO(1403, 2151);
+		uprightDrawingFbo   = setupFBO(1403, 2151);
+
+		landscapeCardFBO    = setupFBO(2151, 1403);
+		landscapeDrawingFBO = setupFBO(2151, 1403);
+
+		matCardFBO          = setupFBO(2151, 1564);
+		matDrawingFBO       = setupFBO(2151, 1564);
+	}
+	FBO* currentFbo = nullptr;
+	FBO* drawingFbo = nullptr;
+	if(cardLayout == 0 || cardLayout == 2){
+		currentFbo = uprightCardFBO;
+		drawingFbo = uprightDrawingFbo;
+	}
+	if(cardLayout == 1 || cardLayout == 3) {
+		currentFbo = landscapeCardFBO;
+		drawingFbo = landscapeDrawingFBO;
+	}
+	if(cardLayout == 4) {
+		currentFbo = matCardFBO;
+		drawingFbo = matDrawingFBO;
+	}
+	assert(currentFbo != nullptr);
+	assert(drawingFbo != nullptr);
+	glBindFramebuffer(GL_FRAMEBUFFER, currentFbo->fbo);
+	glViewport(0, 0, currentFbo->width, currentFbo->height);
+
+	doWidthHeightPixels();
+
+	iwidth = currentFbo->width;
+	iheight = currentFbo->height;
+	pixelWidth = (float)iwidth;
+	pixelHeight = (float)iheight;
+
+	resetMatrix();
+
+	if(cardLayout == 1 || cardLayout == 3) {
+		xStretch = 1.f;
+		yStretch = 1403.f/2151.f;
+		setFloat("xStretch", xStretch);
+		setFloat("yStretch", yStretch);
+	} else if(cardLayout == 4) {
+		xStretch = 1.f;
+		yStretch = 0.727068966f;
+		setFloat("xStretch", xStretch);
+		setFloat("yStretch", yStretch);
+	}
+
+	handlerDraw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, drawingFbo->fbo);
+
+	glViewport(0, 0, drawingFbo->width, drawingFbo->height);
+
+	glm::mat4 tp = glm::mat4(1.f);
+	if(isFlipping) tp *= glm::scale(glm::vec3(-1.f, 1.f, 1.f));
+	setMat4("transMat", tp);
+
+	if(cardLayout == 4) {
+		xStretch = 1.f;
+		yStretch = 0.727068966f;
+	}
+
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glBindTexture(GL_TEXTURE_2D, currentFbo->color);
+	drawTexturedQuad(-xStretch, yStretch, xStretch*2, -yStretch*2);
+	if(isFlipping) setMat4("transMat", glm::mat4(1.f));
+}
 void screenShot() {
+	doWidthHeightPixels();
+
+	drawOnFbo(false);
 	GLubyte* pixels = getScreenshotPixels();
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	stbi_flip_vertically_on_write(true);
-	stbi_write_jpg("out.jpg", w, h, 3, pixels, 100);
+	stbi_write_jpg("out.jpg", w, h, 4, pixels, 100);
 	
 	free(pixels);
 }
 void copyToClipboard() {
-	if(!screenshottingNextFrame) {
-		screenshottingNextFrame = true;
-		return;
-	}
-	GLubyte* pixels = getScreenshotPixels();
+	doWidthHeightPixels();
+
+	setMat4("baseTransMat", glm::scale(glm::vec3(-1.f, 1.f, 1.f)));
+	drawOnFbo(true);
+	GLubyte* pixels = getNonAlphaScreenshotPixels();
 
 	uint8_t* pix = (uint8_t*)malloc(w * h * sizeof(uint8_t) * 4);
 
 	int m = w * h * 4;
 	int g = 0;
-	for(int i = 0; i < m; i++) {
+	for(int i = m-1; i > 0; i--) {
 		if(i % 4 == 3) {
 			pix[i] = 255;
 			continue;
 		}
-		int pn = ((w * h * 3) - g++)/ 3;
+		int pn = (g++) / 3;
 		int r  = (pn / h);
 		int c  = (pn % h);
-		//cout << g-1 << "\t" << ((r * h) + c)*3 << endl;
 		pix[i] = pixels[((r * h) + c)*3 + (i % 4)];
 	}
 
@@ -220,7 +348,8 @@ void copyToClipboard() {
 	free(pixels);
 	free(pix);
 
-	screenshottingNextFrame = false;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	setMat4("baseTransMat", glm::mat4(1.f));
 }
 char* cardTitle   = (char*)malloc(128);
 char* cardType    = (char*)malloc(128);
@@ -256,6 +385,7 @@ float tweakDividingLineY = -0.4f;
 float bottomTextSizeTweak = 1.f;
 bool  isSupply  = true;
 bool  isTrait   = false;
+bool  hasImage  = false;
 
 float lastResetClick;
 int imageToLoad = 0;
@@ -339,6 +469,9 @@ char *trimwhitespace(char *str) { // https://stackoverflow.com/a/122721
 void reloadPictures() {
 	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
 	loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), false);
+	if(strcmp(iconUrl, "") != 0) {
+		hasImage = true;
+	} else hasImage = false;
 }
 void composeDearImGuiFrame() {
     ImGui_ImplOpenGL3_NewFrame();
@@ -372,9 +505,9 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
 		if(cardLayout == 2 || cardLayout == 0 || (cardLayout == 1 && !isTrait)) ImGui::InputText("Cost", cardCost, 30);
 		
-		if(cardLayout != 3) ImGui::InputText("Art Credit", cardCredit, 120);
-		if(cardLayout != 3) ImGui::InputText("Card Version and Creator", cardVersion, 120);
-		if(cardLayout != 3) ImGui::InputText("Heirloom", heirloomText, 120);
+		if(cardLayout < 3) ImGui::InputText("Art Credit", cardCredit, 120);
+		if(cardLayout < 3) ImGui::InputText("Card Version and Creator", cardVersion, 120);
+		if(cardLayout < 2) ImGui::InputText("Heirloom", heirloomText, 120);
 		
 		if(cardLayout == 0 || cardLayout == 2) ImGui::InputText("Preview (Top left & right)", cardPreview, 30);
 		
@@ -418,6 +551,10 @@ void composeDearImGuiFrame() {
 		}
 		ImGui::SameLine();
 		ImGui::Text("(Will probably freeze as image loads)");
+		if(ImGui::Button("Remove Image")) {
+			hasImage = false;
+			res::tempIcon.id = 0;
+		}
 		if(ImGui::Button("Choose From Official Images")) {
 			ImGui::OpenPopup("Choose from Official Images");
 		}
@@ -507,7 +644,6 @@ void composeDearImGuiFrame() {
 				string tem = string(expansionIconListImage[imageToLoad]);
 				string exePath = getPathToPwd();
 				string toLoadS = "file://" + exePath + "/" + tem;
-				cout << toLoadS << endl;
 				int i = 0;
 				for(; i < toLoadS.size(); i++) {
 					expansionUrl[i] = toLoadS.at(i);
@@ -560,7 +696,7 @@ void composeDearImGuiFrame() {
 			ImGui::EndPopup();
 		}
 		
-		if(cardLayout != 3) ImGui::Text("Tweaks");
+		if(cardLayout < 3) ImGui::Text("Tweaks");
 		if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
@@ -568,8 +704,8 @@ void composeDearImGuiFrame() {
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Tweak Vanilla Bonus Size", &bonusSizeTweak, 0.3f, 4.f, "%.2f");
 
-		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
-		if(cardLayout != 3) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
+		if(cardLayout < 3) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
+		if(cardLayout < 3) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
 
 		if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f");
 		if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
@@ -585,17 +721,17 @@ void composeDearImGuiFrame() {
     }
 	
 }
-static void draw() {
+void draw() {
     handlerDraw();
 	
 	composeDearImGuiFrame();
     ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-static void error_callback(int error, const char* description) {
+void error_callback(int error, const char* description) {
     fputs(description, stderr);
 }
-static void changeFullscreen() {
+void changeFullscreen() {
 	if(!isFullscreen) {
 		const GLFWvidmode* v = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, v->width, v->height, 0);
@@ -614,7 +750,7 @@ static void changeFullscreen() {
 bool testBool = false;
 bool isFullscreen = false;
 bool hasDebugMode = false;
-static void key_callback(GLFWwindow* eventWindow, int key, int scancode, int action, int mods) {
+void key_callback(GLFWwindow* eventWindow, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_S && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 	   Log::log("Ctrl+Alt+S pressed, segfaulting. This will kill everything in its place, probably causing things like data loss and stuff.");
 	   Log::flushFile();
@@ -643,7 +779,7 @@ static void key_callback(GLFWwindow* eventWindow, int key, int scancode, int act
     }
     onKey(key, action, mods);
 }
-static void window_size_callback(GLFWwindow* window, int width, int height) {
+void window_size_callback(GLFWwindow* window, int width, int height) {
     Log::debug("Window resized to " + doubleToString(width) + "x" + doubleToString(height));
 	setFloat("pixelWidth", pixelWidth);
 	setFloat("pixelHeight", pixelHeight);
@@ -737,16 +873,15 @@ GLFWwindow* createWindow(bool f) {
 	
 	return e;
 }
-void resetMatrix() {
-	int iwidth, iheight;
+void getWindowSize() {
 	glfwGetFramebufferSize(window, &iwidth, &iheight);
+}
+void resetMatrix() {
 	windowRatio = (float) iwidth / (float) iheight;
 	windowInverse = (float)iheight / (float)iwidth;
 	glViewport(0, 0, iwidth, iheight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glOrtho(-getHBorder(), getHBorder(), -getYBorder(), getYBorder(), 1.f, -1.f);
-	//glOrtho(-baseWindowRatio, baseWindowRatio, -baseWindowRatio, baseWindowRatio, 1.f, -1.f);
 
 	width = getHBorder()*2.f;
 	height = getYBorder()*2.f;
@@ -763,12 +898,6 @@ void resetMatrix() {
 	}
 	setFloat("xStretch", xStretch);
 	setFloat("yStretch", yStretch);
-	
-	if(screenshottingNextFrame) {
-		setMat4("transMat", glm::scale(glm::vec3(-1.f, 1.f, 1.f)));
-	} else {
-		setMat4("transMat", glm::mat4(1.f));
-	}
 	
 	glUseProgram(shaderProgram);
 }
@@ -1024,8 +1153,7 @@ int main(int argc, char *argv[]) {
 	
 	handOnLoad();
 
-	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), true);
-	loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), true);
+	reloadPictures();
 	
 	glfwSwapInterval(1);
 
@@ -1033,7 +1161,8 @@ int main(int argc, char *argv[]) {
 	
 	float deltaFloat = 0.f;
 
-	setMat4("baseTransMat", glm::scale(glm::vec3(1.f, 1.f, 1.f)));
+	setMat4("baseTransMat", glm::mat4(1.f));
+	setMat4("transMat", glm::mat4(1.f));
 	
 	if(isScreenshotting) {
 		loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
@@ -1053,8 +1182,7 @@ int main(int argc, char *argv[]) {
 	
 	glfwShowWindow(window);
 	
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
 		/*if(!isWindowFocused) {
 			glfwPollEvents();
 			continue;
@@ -1062,6 +1190,7 @@ int main(int argc, char *argv[]) {
         calculateFPS();
         enablings();
 		
+		getWindowSize();
 		resetMatrix();
 		
 		deltaFloat = glfwGetTime();
@@ -1071,6 +1200,12 @@ int main(int argc, char *argv[]) {
 			updateDeltaAdd += updateDelta;
 		} else {
 			updateDelta = 0.f;
+		}
+
+		if(isScreenshotting) {
+			screenShot();
+			isScreenshotting = false;
+			continue;
 		}
 		
 		deltaFloat = glfwGetTime();

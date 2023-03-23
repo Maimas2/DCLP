@@ -76,6 +76,8 @@ extern float bottomTextSizeTweak;
 extern bool  isSupply;
 extern bool  isTrait;
 
+extern bool  hasImage;
+
 extern float customCardColor[];
 extern float customEmbellishmentColor[];
 extern float customSideColor[];

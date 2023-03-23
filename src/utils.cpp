@@ -587,7 +587,7 @@ uniform mat4  baseTransMat; \n\
 uniform vec3  translationMat; \n\
  \n\
 void main() { \n\
-	vec3 aPos = bPos * mat3(transMat) * mat3(baseTransMat); \n\
+	vec3 aPos = (bPos * mat3(transMat)) * mat3(baseTransMat); \n\
     gl_Position = vec4((aPos.x+translationMat.x)/xStretch, (aPos.y+translationMat.y)/yStretch, ((aPos.z+translationMat.z)+50)/100.11, 1); \n\
     //gl_Position = vec4(aPos.x/xStretch, aPos.y, (aPos.z+50)/100.11, 1) * transMat; \n\
     color = aColor.xyz; \n\
