@@ -29,6 +29,8 @@
 #define isNight      (cardColor == 10 || cardSecondary == 11)
 #define isTitleWhite ((cardColor == 10 && cardSecondary == 0) || cardSecondary == 11)
 #define isTextWhite  (cardColor == 10)
+#define isBaseTitleWhite (cardColor == 10)
+#define isBaseTypeWhite  (cardSecondary == 11)
 
 const char* colorChoices[] = {"Action/Event", "Treasure", "Victory", "Reaction", "Duration", "Reserve", "Curse", "Shelter", "Ruins", "Landmark", "Night", "Boon", "Hex", "State", "Artifact", "Project", "Way", "Ally"};
 
@@ -264,6 +266,10 @@ void drawBase() {
 		res::baseCardColor.bind();
 		
 		drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, tempColor);
+
+		res::baseCardColorTwo.bind();
+		
+		drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, secondaryColor);
 		
 		res::baseCardOutline.bind();
 		
@@ -375,7 +381,7 @@ void drawTitle(char* ss) {
 	s = string(ss);
 	setFont("trajan");
 	
-	if(cardLayout == 0 || cardLayout == 2) {
+	if(cardLayout == 0) {
 		float r = 0, g = 0, b = 0;
 		if(isTitleWhite) {
 			r = 1;
@@ -392,6 +398,15 @@ void drawTitle(char* ss) {
 				drawCenteredStringWithMaxWidth(s, 0.f, 0.51f, 2.f, 0.66f, 0.f, 0.f, 0.f);
 			}
 		}
+	} else if(cardLayout == 2) {
+		float r = 0, g = 0, b = 0;
+		if(isBaseTitleWhite) {
+			r = 1;
+			g = 1;
+			b = 1;
+		}
+		
+		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, (strcmp(cardPreview, (char*)"") == 0) ? 1.f : 0.7f, r, g, b);
 	} else if(cardLayout == 3) {
 		setMat4("transMat", glm::rotate(1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
 		drawCenteredStringWithMaxWidth(s, 0.f, 0.8f, 2.f, 0.5, 0.f, 0.f, 0.f);

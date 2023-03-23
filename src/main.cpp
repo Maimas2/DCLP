@@ -509,7 +509,7 @@ void composeDearImGuiFrame() {
 		if(cardLayout == 0 || cardLayout == 2) ImGui::InputText("Preview (Top left & right)", cardPreview, 30);
 		
 		if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
-		if(cardLayout < 2) {
+		if(cardLayout <= 2) {
 			if(cardLayout == 1) {
 				if(!isTrait) ImGui::ListBox("Secondary Color", &cardSecondary, secondaryChoices, IM_ARRAYSIZE(secondaryChoices), 6);
 			} else {

@@ -40,6 +40,7 @@ desciptionFocus   = setupImage("card-resources/DescriptionFocus.png", true);
 		
 		baseCardOutline = setupImage("card-resources/BaseCardGray.png",      true);
 		baseCardColor   = setupImage("card-resources/BaseCardColorOne.png",  true);
+		baseCardColorTwo= setupImage("card-resources/BaseCardColorTwo.png",  true);
 		baseCardSide    = setupImage("card-resources/BaseCardBrown.png",     true);
 		
 		secondaryCard = setupImage("card-resources/CardColorTwo.png",        true);
