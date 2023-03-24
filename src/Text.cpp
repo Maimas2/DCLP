@@ -839,15 +839,20 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 		maxHeight -= getStringHeightRequired(lines[0], scale);
 	}
 	
-	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
-		if(timesMaxDRunThrough < 1) {
+	//if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
+	if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
+		if(timesMaxDRunThrough < 10) {
 			timesMaxDRunThrough++;
-			//drawCenteredStringWithMaxDimensions(in, x, y, scale * (((float)lines.size()) / ((float)lines.size()-1)), maxWidth * (((float)lines.size()) / ((float)lines.size()-1)) * 100, maxHeight);
-			drawCenteredStringWithMaxDimensions(inn, x, y, 
-												scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f) / textXTweak, 
-												maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f) / textXTweak, 
-												maxHeight, r, g, b);
-			timesMaxDRunThrough = 0;
+			float s = sqrt(heightTemp) / maxHeight;
+			maxWidth *= s;
+			maxHeight /= s;
+			//scale /= s;
+			// drawCenteredStringWithMaxDimensions(inn, x, y, 
+			// 									scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f) / textXTweak, 
+			// 									maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f) / textXTweak, 
+			// 									maxHeight, r, g, b);
+			drawCenteredStringWithMaxDimensions(inn, x, y, scale, maxWidth*2, maxHeight);
+			//timesMaxDRunThrough = 10;
 			return;
 		}
 		scale *= maxHeight / heightTemp;
