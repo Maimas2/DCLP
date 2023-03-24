@@ -722,7 +722,7 @@ void composeDearImGuiFrame() {
 		}
 
 		if((cardLayout < 3 || cardLayout == 4) && ImGui::TreeNode("Tweaks")) {
-			ImGui::Text("Tweaks");
+			ImGui::Text("May only be needed for large amounts of text.");
 			if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text X Position", &textXPosTweak, -1.f, 1.f, "%.2f");
