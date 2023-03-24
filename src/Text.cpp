@@ -320,6 +320,7 @@ float getStringYMax(string in, float scale) {
 }
 float getStringHeight(string in, float scale) {
 	if(currentFont == "") return 0.f;
+	if(in == "-") return currentFontHeight * scale * 0.35f;
 	vector<string> ingore = split(in, "\n");
 	float tr = 0.f;
 	
@@ -653,6 +654,9 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 	
 	for(int i = 0; i < parts.size(); i++) {
 		parts[i] = strip(parts[i]);
+		if(parts[i] == "-") {
+			y += currentFontHeight * scale * fontDownscale * 0.45f;
+		}
 		if(isDrawingLargeIcons && isLargeSymbol(parts[i])) {
 			if(i == 0) {
 				y -= drawLargeIcon(parts[i], x, y+(LARGE_ICON_SIZE/4) * bonusSizeTweak);
@@ -669,7 +673,11 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 			continue;
 		}
 		drawString(parts[i], x - getStringWidth(parts[i], scale)/2, y, scale, r, g, b);
-		y -= currentFontHeight * scale * fontDownscale;
+		if(parts[i] == "-") {
+			y -= currentFontHeight * scale * fontDownscale * 0.7f;
+		} else {
+			y -= currentFontHeight * scale * fontDownscale;
+		}
 	}
 	//drawString(textt, x, y, scale, r, g, b);
 }
@@ -832,10 +840,13 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	}
 	
 	if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
-		if(timesMaxDRunThrough < 0) {
+		if(timesMaxDRunThrough < 1) {
 			timesMaxDRunThrough++;
 			//drawCenteredStringWithMaxDimensions(in, x, y, scale * (((float)lines.size()) / ((float)lines.size()-1)), maxWidth * (((float)lines.size()) / ((float)lines.size()-1)) * 100, maxHeight);
-			drawCenteredStringWithMaxDimensions(inn, x, y, scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f), maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f), maxHeight, r, g, b);
+			drawCenteredStringWithMaxDimensions(inn, x, y, 
+												scale * min((((float)lines.size()) / ((float)lines.size()-1)), 1.f) / textXTweak, 
+												maxWidth * min((float)(((float)lines.size()) / ((float)lines.size()-1)) * 2.5f, 100.f) / textXTweak, 
+												maxHeight, r, g, b);
 			timesMaxDRunThrough = 0;
 			return;
 		}
