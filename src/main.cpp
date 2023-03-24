@@ -494,6 +494,70 @@ void composeDearImGuiFrame() {
 
 			if(ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
+			if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
+				if(ImGui::Button("Load Example")) {
+					Saves::read(string(examplesUrls[exampleSelected]));
+					reloadPictures();
+					ImGui::CloseCurrentPopup();
+				}
+				if(ImGui::Button("Close Window")) {
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+			if(ImGui::BeginPopupModal("Reset All", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("Are you sure you want to delete everything?\nThis will restart the program.");
+				if (ImGui::Button("OK", ImVec2(120, 0))) {
+					ImGui::CloseCurrentPopup();
+					int pid = forkNew();
+					glfwHideWindow(window);
+					system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
+					exit(0);
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+				ImGui::EndPopup();
+			}
+			if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("---- Notes and Credits ----");
+				ImGui::Text("This program is licensed under the GNU General Public License v3.0.\nPlease refer to the following website for more info:");
+				ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
+				ImGui::NewLine();
+				ImGui::Text("List of libraries used in this program:");
+				ImGui::BulletText("ImGui (GUI)");
+				ImGui::BulletText("GLFW (windowing)");
+				ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder)");
+				ImGui::BulletText("Curl (Image downloading. See curl-license.txt for its license)");
+				ImGui::BulletText("Freetype (font loading)");
+				ImGui::BulletText("stb_image (Image management)");
+				ImGui::BulletText("OpenGL (Rendering)");
+				if(ImGui::Button("Close Window")) {
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+			if(ImGui::BeginPopupModal("Changing Res", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("Are you sure you want to switch to higher resolution images?");
+				ImGui::Text("Your work will be saved, but the window will close and reopen.");
+				ImGui::NewLine();
+				ImGui::Text("Higher resolution images look better,\nbut increase load times significantly.");
+				ImGui::NewLine();
+				if(ImGui::Button("Change resolution")) {
+					ImGui::CloseCurrentPopup();
+					Saves::save();
+					int pid = forkNew();
+					exit(0);
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("Leave it as is")) {
+					isLowRes = !isLowRes;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -597,128 +661,66 @@ void composeDearImGuiFrame() {
 				zoom  = 1;
 			}
 
+			if(ImGui::BeginPopupModal("Choose from Official Images", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				if(ImGui::InputText("Search (CASE SENSITIVE)", artSearch, 100) || isFirstFrame) {
+					int i = 0;
+					p = 0;
+					for(; i < sizeof(artworkNames) / sizeof(char*); i++) {
+						if(strstr(artworkNames[i], strip(artSearch)) != nullptr) {
+							shownArtworks[p++] = artworkNames[i];
+						}
+					}
+					shownArtworks[p] = NULL;
+				}
+
+				ImGui::ListBox("Official Images", &imageToLoad, shownArtworks, p, 15);
+
+				if(ImGui::Button("Load Selected Image")) {
+					int pos = 0;
+					for(int i = 0; i < IM_ARRAYSIZE(artworkNames); i++) {
+						if(strcmp(shownArtworks[imageToLoad], artworkNames[i]) == 0) {
+							pos = i;
+							break;
+						}
+					}
+					for(int i = 0; ; i++) {
+						iconUrl[i] = artworkUrls[pos][i];
+						if(artworkUrls[pos][i] == 0) break;
+					}
+					reloadPictures();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if(ImGui::Button("Close Window")) {
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+			if(ImGui::BeginPopupModal("Choose Official Expansion Icon", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::ListBox("Official Icons", &imageToLoad, expansionIconList, IM_ARRAYSIZE(expansionIconList), 15);
+
+				if(ImGui::Button("Load Selected Image")) {
+					string tem = string(expansionIconListImage[imageToLoad]);
+					string exePath = getPathToPwd();
+					string toLoadS = "file://" + exePath + "/" + tem;
+					int i = 0;
+					for(; i < toLoadS.size(); i++) {
+						expansionUrl[i] = toLoadS.at(i);
+					}
+					expansionUrl[i] = 0;
+					reloadPictures();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if(ImGui::Button("Close Window")) {
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+
 			ImGui::TreePop();
 		}
 
-		if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
-			if(ImGui::Button("Load Example")) {
-				Saves::read(string(examplesUrls[exampleSelected]));
-				reloadPictures();
-				ImGui::CloseCurrentPopup();
-			}
-			if(ImGui::Button("Close Window")) {
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-		if(ImGui::BeginPopupModal("Reset All", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("Are you sure you want to delete everything?\nThis will restart the program.");
-			if (ImGui::Button("OK", ImVec2(120, 0))) {
-				ImGui::CloseCurrentPopup();
-				int pid = forkNew();
-				glfwHideWindow(window);
-				system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
-				exit(0);
-			}
-            ImGui::SetItemDefaultFocus();
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-            ImGui::EndPopup();
-		}
-		if(ImGui::BeginPopupModal("Choose from Official Images", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			if(ImGui::InputText("Search (CASE SENSITIVE)", artSearch, 100) || isFirstFrame) {
-				int i = 0;
-				p = 0;
-				for(; i < sizeof(artworkNames) / sizeof(char*); i++) {
-					if(strstr(artworkNames[i], strip(artSearch)) != nullptr) {
-						shownArtworks[p++] = artworkNames[i];
-					}
-				}
-				shownArtworks[p] = NULL;
-			}
-
-			ImGui::ListBox("Official Images", &imageToLoad, shownArtworks, p, 15);
-
-			if(ImGui::Button("Load Selected Image")) {
-				int pos = 0;
-				for(int i = 0; i < IM_ARRAYSIZE(artworkNames); i++) {
-					if(strcmp(shownArtworks[imageToLoad], artworkNames[i]) == 0) {
-						pos = i;
-						break;
-					}
-				}
-				for(int i = 0; ; i++) {
-					iconUrl[i] = artworkUrls[pos][i];
-					if(artworkUrls[pos][i] == 0) break;
-				}
-				reloadPictures();
-				ImGui::CloseCurrentPopup();
-			}
-
-			if(ImGui::Button("Close Window")) {
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-		if(ImGui::BeginPopupModal("Choose Official Expansion Icon", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::ListBox("Official Icons", &imageToLoad, expansionIconList, IM_ARRAYSIZE(expansionIconList), 15);
-
-			if(ImGui::Button("Load Selected Image")) {
-				string tem = string(expansionIconListImage[imageToLoad]);
-				string exePath = getPathToPwd();
-				string toLoadS = "file://" + exePath + "/" + tem;
-				int i = 0;
-				for(; i < toLoadS.size(); i++) {
-					expansionUrl[i] = toLoadS.at(i);
-				}
-				expansionUrl[i] = 0;
-				reloadPictures();
-				ImGui::CloseCurrentPopup();
-			}
-
-			if(ImGui::Button("Close Window")) {
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-		if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("---- Notes and Credits ----");
-			ImGui::Text("This program is licensed under the GNU General Public License v3.0.\nPlease refer to the following website for more info:");
-			ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
-			ImGui::NewLine();
-			ImGui::Text("List of libraries used in this program:");
-			ImGui::BulletText("ImGui (GUI)");
-			ImGui::BulletText("GLFW (windowing)");
-			ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder)");
-			ImGui::BulletText("Curl (Image downloading. See curl-license.txt for its license)");
-			ImGui::BulletText("Freetype (font loading)");
-			ImGui::BulletText("stb_image (Image management)");
-			ImGui::BulletText("OpenGL (Rendering)");
-			if(ImGui::Button("Close Window")) {
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-		if(ImGui::BeginPopupModal("Changing Res", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("Are you sure you want to switch to higher resolution images?");
-			ImGui::Text("Your work will be saved, but the window will close and reopen.");
-			ImGui::NewLine();
-			ImGui::Text("Higher resolution images look better,\nbut increase load times significantly.");
-			ImGui::NewLine();
-			if(ImGui::Button("Change resolution")) {
-				ImGui::CloseCurrentPopup();
-				Saves::save();
-				int pid = forkNew();
-				exit(0);
-			}
-			ImGui::SameLine();
-			if(ImGui::Button("Leave it as is")) {
-				isLowRes = !isLowRes;
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
 		if((cardLayout < 3 || cardLayout == 4) && ImGui::TreeNode("Tweaks")) {
 			ImGui::Text("Tweaks");
 			if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
