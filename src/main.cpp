@@ -449,6 +449,31 @@ char* expansionIconListImage[] = {
 	(char*)"expansion-images/seaside.png",
 	(char*)"expansion-images/seaside-old.png"
 };
+float expansionAspects[] = {
+	0.85f,
+	0.6f,
+	0.93f,
+	1.f,
+	1.39f,
+	1.39f,
+	0.94f,
+	0.84f,
+	1.05f,
+	0.84f,
+	1.37f,
+	1.3f,
+	0.91f,
+	1.f,
+	0.96f,
+	0.93f,
+	0.91f,
+	0.99f,
+	0.95f,
+	1.02f,
+	1.02f,
+	0.84f,
+	1.02f
+};
 char* strip(char* in) {
 	int spacesAtEnd   = 0;
 	for(int i = 0; i < strlen(in); i++) {
@@ -652,6 +677,9 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) if(ImGui::Button("Choose Official Expansion Icon")) {
 				ImGui::OpenPopup("Choose Official Expansion Icon");
 			}
+			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
+			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
+			if(cardLayout <= 2) ImGui::NewLine();
 			ImGui::SliderFloat("Image X Adjust", &xMove, -1.f, 1.f, "%.3f");
 			ImGui::SliderFloat("Image Y Adjust", &yMove, -1.f, 1.f, "%.3f");
 			ImGui::SliderFloat("Image Zoom", &zoom, 0.25f, 4.f, "%.2f");
@@ -708,6 +736,7 @@ void composeDearImGuiFrame() {
 						expansionUrl[i] = toLoadS.at(i);
 					}
 					expansionUrl[i] = 0;
+					expansionIconXSizeTweak = expansionAspects[imageToLoad];
 					reloadPictures();
 					ImGui::CloseCurrentPopup();
 				}
@@ -729,9 +758,6 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Y Position", &textYPosTweak, -1.f, 1.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Vanilla Bonus Size", &bonusSizeTweak, 0.3f, 4.f, "%.2f");
-
-			if(cardLayout < 3) ImGui::SliderFloat("Tweak Expansion Icon X Size", &expansionIconXSizeTweak, 0.5f, 2.f, "%.2f");
-			if(cardLayout < 3) ImGui::SliderFloat("Tweak Expansion Icon Y Size", &expansionIconYSizeTweak, 0.5f, 2.f, "%.2f");
 
 			//if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f"); Unneeded
 			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
