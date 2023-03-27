@@ -39,6 +39,8 @@
 
 #include "clip.h"
 
+#include <ImGuiFileDialog.h>
+
 using namespace std;
 
 GLFWwindow* createWindow(bool f);
@@ -390,13 +392,16 @@ bool  hasImage  = false;
 float matWidthTweak = 1.f;
 
 float lastResetClick;
-int imageToLoad = 0;
-int exampleSelected = 0;
+int   imageToLoad = 0;
+int   exampleSelected = 0;
+bool  isExample = false;
 
 char** shownArtworks = (char**)malloc(sizeof(char*) * 700);
 int p = 0;
 bool isOtherWindowShwon = false;
 bool isDemoShown = false;
+
+string currentFile = "save.dclp";
 
 char* expansionIconList[] = {
 	(char*)"Adventures",
@@ -501,7 +506,7 @@ void composeDearImGuiFrame() {
 
     ImGui::NewFrame();
     {
-		ImGui::SetNextWindowBgAlpha(0.7f);
+		ImGui::SetNextWindowBgAlpha(1.f);
         
         ImGui::Begin("Options", NULL);
 
@@ -520,6 +525,7 @@ void composeDearImGuiFrame() {
 			if(ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
 			if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("THIS WILL OVERWRITE ALL PREVIOUS WORk");
 				ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
 				if(ImGui::Button("Load Example")) {
 					Saves::read(string(examplesUrls[exampleSelected]));
@@ -551,13 +557,14 @@ void composeDearImGuiFrame() {
 				ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
 				ImGui::NewLine();
 				ImGui::Text("List of libraries used in this program:");
-				ImGui::BulletText("ImGui (GUI)");
-				ImGui::BulletText("GLFW (windowing)");
-				ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder)");
-				ImGui::BulletText("Curl (Image downloading. See curl-license.txt for its license)");
-				ImGui::BulletText("Freetype (font loading)");
-				ImGui::BulletText("stb_image (Image management)");
-				ImGui::BulletText("OpenGL (Rendering)");
+				ImGui::BulletText("ImGui (GUI) (MIT License)");
+				ImGui::BulletText("GLFW (windowing) (zlib/libpng license)");
+				ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder) (check clip/LICENSE.txt for license)");
+				ImGui::BulletText("Curl (Image downloading) (See curl-license.txt for its license)");
+				ImGui::BulletText("Freetype (font loading) (FTL License)");
+				ImGui::BulletText("stb_image (Image management) (MIT/Public Domain)");
+				ImGui::BulletText("OpenGL (Rendering) (No License due to the nature of OpenGL)");
+				ImGui::BulletText("ImGuiFileDialog (File input) (MIT License)");
 				if(ImGui::Button("Close Window")) {
 					ImGui::CloseCurrentPopup();
 				}
@@ -586,10 +593,43 @@ void composeDearImGuiFrame() {
 			ImGui::TreePop();
 		}
 
-		if(ImGui::TreeNode("Export")) {
-			if(ImGui::Button("Save to out.jpg")) 	screenShot();
+		if(ImGui::TreeNode("Import/Export")) {
+			if(ImGui::Button("Load .DCLP file")) {
+				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+			}
+
+			if(ImGui::Button("Save")) {
+				Saves::save();
+				//free(cardText);
+				cardText = (char*)malloc(512);
+				Saves::read();
+			}
+
+			if(ImGui::Button("Save as...")) {
+				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+			}
+			ImGui::Text("%s", ("Current file: " + currentFile).c_str());
+
+			ImGui::NewLine();
+
+			if(ImGui::Button("Save image to out.jpg")) 		screenShot();
 		
-			if(ImGui::Button("Copy to Clipboard")) 	copyToClipboard();
+			if(ImGui::Button("Copy image to Clipboard")) 	copyToClipboard();
+
+			if (ImGuiFileDialog::Instance()->Display("Choose DCLP File")) {
+				
+				if (ImGuiFileDialog::Instance()->IsOk()) {
+					std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+					std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+					isExample = false;
+					Saves::read(filePathName);
+					if(!isExample) currentFile = filePathName;
+					reloadPictures();
+
+					cout << currentFile << endl;
+				}
+				ImGuiFileDialog::Instance()->Close();
+			}
 
 			ImGui::TreePop();
 		}

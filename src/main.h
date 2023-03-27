@@ -79,8 +79,11 @@ extern bool  isTrait;
 extern float matWidthTweak;
 
 extern bool  hasImage;
+extern bool  isExample;
 
 extern float customCardColor[];
 extern float customEmbellishmentColor[];
 extern float customSideColor[];
 extern float secondCustomCardColor[];
+
+extern string currentFile;

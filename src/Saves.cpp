@@ -18,6 +18,8 @@ string custom_replace(string base, string og, string n) {
    return tor;
 }
 
+bool False = false;
+
 namespace Saves {
    map<string, float*> floatPointers;
    map<string, char**> charPointers;
@@ -74,9 +76,10 @@ namespace Saves {
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
       boolPointers["isTrait"]                       = &isTrait;
       boolPointers["isSupply"]                      = &isSupply;
+      boolPointers["isExample"]                     = &isExample;
    }
    void save() {
-      string file = "save.dclp";
+      string file = currentFile;
       string g = string(cardText);
       g = custom_replace(g, "\n", "\\n");
       cardText = (char*)g.c_str();
@@ -148,6 +151,6 @@ namespace Saves {
       }
    }
    void read() {
-      read("save.dclp");
+      read(currentFile);
    }
 }

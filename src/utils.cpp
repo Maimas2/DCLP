@@ -510,9 +510,6 @@ void bangExit() {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	
-	//cout << "Exiting normally." << endl;
-	//cout << "Thanks for playing y'all!" << endl;
-	
 	exit(EXIT_SUCCESS);
 }
 void setupVertexPointers(int size) {
