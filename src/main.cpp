@@ -510,7 +510,9 @@ void composeDearImGuiFrame() {
         
         ImGui::Begin("Options", NULL);
 
-		if(ImGui::TreeNode("Non-Card Options")) {
+		ImGui::BeginTabBar("Settings");
+
+		if(ImGui::BeginTabItem("Non-Card")) {
 			if(ImGui::Button("Load Example")) {
 				ImGui::OpenPopup("Load Example");
 			}
@@ -590,10 +592,10 @@ void composeDearImGuiFrame() {
 				ImGui::EndPopup();
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Import/Export")) {
+		if(ImGui::BeginTabItem("Save/Export")) {
 			if(ImGui::Button("Load .DCLP file")) {
 				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 			}
@@ -631,20 +633,20 @@ void composeDearImGuiFrame() {
 				ImGuiFileDialog::Instance()->Close();
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Card Layout")) {
+		if(ImGui::BeginTabItem("Layout")) {
 			ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
 			if(cardLayout == 0) ImGui::Checkbox("Is Supply Card?", &isSupply);
 			if(cardLayout == 0) ImGui::Checkbox("Traveller?", &isTraveler);
 			if(cardLayout == 1) ImGui::Checkbox("Trait?", &isTrait);
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Card Text")) {
+		if(ImGui::BeginTabItem("Text")) {
 			ImGui::InputText("Title", cardTitle, 100);
 			
 			if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
@@ -661,10 +663,10 @@ void composeDearImGuiFrame() {
 				ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_None);
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Color Settings")) {
+		if(ImGui::BeginTabItem("Color")) {
 			if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
 			if(cardLayout <= 2) {
 				if(cardLayout == 1) {
@@ -696,10 +698,10 @@ void composeDearImGuiFrame() {
 				}
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Picture Settings")) {
+		if(ImGui::BeginTabItem("Image")) {
 			ImGui::InputText("Picture URL", iconUrl, 500);
 			if(cardLayout <= 2) ImGui::InputText("Expansion URL", expansionUrl, 500);
 			if(ImGui::Button("Reload Pictures")) {
@@ -787,10 +789,10 @@ void composeDearImGuiFrame() {
 				ImGui::EndPopup();
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if((cardLayout < 3 || cardLayout == 4) && ImGui::TreeNode("Tweaks")) {
+		if((cardLayout < 3 || cardLayout == 4) && ImGui::BeginTabItem("Tweaks")) {
 			ImGui::Text("May only be needed for large amounts of text.");
 			if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
@@ -803,16 +805,18 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
 			if(cardLayout == 4) ImGui::SliderFloat("Mat Width Tweak", &matWidthTweak, 0.25f, 4.f);
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
 
-		if(ImGui::TreeNode("Debug")) {
+		if(ImGui::BeginTabItem("Debug")) {
 			if(ImGui::Button((isDemoShown ? "Hide ImGui Demo" : "Show ImGui Demo"))) {
 				isDemoShown = !isDemoShown;
 			}
 
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
+
+		ImGui::EndTabBar();
 
     	ImGui::End();
 
