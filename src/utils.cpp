@@ -503,7 +503,7 @@ string doubleToString(double d) {
 	return doubleToString(d, 0);
 }
 void bangExit() {
-	Saves::save();
+	Saves::exit();
 
 	Log::loggerExit();
 	

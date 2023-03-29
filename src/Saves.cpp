@@ -25,7 +25,23 @@ namespace Saves {
    map<string, char**> charPointers;
    map<string, int*>   intPointers;
    map<string, bool*>  boolPointers;
-   void init() {
+
+   void masterInit() {
+      floatPointers.clear();
+      boolPointers.clear();
+      intPointers.clear();
+      charPointers.clear();
+
+      intPointers["uiType"]                    = &currentMenuTypee;
+
+      boolPointers["isFullscreen"]             = &isFullscreen;
+   }
+   void initDefaultSave() {
+      floatPointers.clear();
+      boolPointers.clear();
+      intPointers.clear();
+      charPointers.clear();
+
       floatPointers["xMove"]                   = &xMove;
       floatPointers["yMove"]                   = &yMove;
       floatPointers["zoom"]                    = &zoom;
@@ -70,7 +86,6 @@ namespace Saves {
       intPointers["cardSecondary"] = &cardSecondary;
       intPointers["cardLayout"]    = &cardLayout;
       intPointers["matColor"]      = &matColor;
-      intPointers["uiType"]        = &currentMenuTypee;
 
       boolPointers["isLowRes"]                      = &isLowRes;
       boolPointers["isTraveler"]                    = &isTraveler;
@@ -79,11 +94,7 @@ namespace Saves {
       boolPointers["isSupply"]                      = &isSupply;
       boolPointers["isExample"]                     = &isExample;
    }
-   void save() {
-      string file = currentFile;
-      string g = string(cardText);
-      g = custom_replace(g, "\n", "\\n");
-      cardText = (char*)g.c_str();
+   void save(string file) {
       FILE *f = fopen(file.c_str(), "w");
       if(f == NULL) {
          cout << "File was NULL, not saving. This is probably an uh oh monent." << endl;
@@ -102,6 +113,12 @@ namespace Saves {
          fputs(("b" + it->first + ":" + to_string(*(it->second)) + "\n").c_str(), f);
       }
       fclose(f);
+   }
+   void save() {
+      string g = string(cardText);
+      g = custom_replace(g, "\n", "\\n");
+      cardText = (char*)g.c_str();
+      save(currentFile);
    }
    void read(string file) {
       ifstream in(file.c_str());
@@ -153,5 +170,17 @@ namespace Saves {
    }
    void read() {
       read(currentFile);
+   }
+   void readFirst() {
+      masterInit();
+      read("master.save");
+      initDefaultSave();
+      read();
+   }
+   void exit() {
+      masterInit();
+      save("master.save");
+      initDefaultSave();
+      save();
    }
 }

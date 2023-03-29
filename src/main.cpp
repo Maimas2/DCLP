@@ -561,7 +561,7 @@ void composeDearImGuiFrame() {
 			}
 			ImGui::EndMainMenuBar();
 		}
-		if (ImGuiFileDialog::Instance()->Display("Choose DCLP File")) {
+		if(ImGuiFileDialog::Instance()->Display("Choose DCLP File")) {
 			
 			if (ImGuiFileDialog::Instance()->IsOk()) {
 				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
@@ -1285,8 +1285,7 @@ int main(int argc, char *argv[]) {
 	
 	glClearColor(0.f, 0.f, 0.f, 1.0f);
 
-	Saves::init();
-	Saves::read();
+	Saves::readFirst();
 	
    	res::initial();
 	
