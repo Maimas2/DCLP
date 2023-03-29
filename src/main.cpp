@@ -809,6 +809,10 @@ void composeDearImGuiFrame() {
 					}
 					expansionUrl[i] = 0;
 					expansionIconXSizeTweak = expansionAspects[imageToLoad];
+					if(imageToLoad == 11) {
+						expansionIconXSizeTweak = 1.f;
+						expansionIconYSizeTweak = 0.77f;
+					}
 					reloadPictures();
 					ImGui::CloseCurrentPopup();
 				}
@@ -1278,10 +1282,10 @@ int main(int argc, char *argv[]) {
    	textInit();
 	loadFont("cinzel.ttf", "trajan");
 	loadFont("cinzel-bold.ttf", "trajanb");
-	loadFont("tnr-bold.ttf", "tnrb");
-	loadFont("tnr.ttf", "tnr");
-	loadFont("tnri.ttf", "tnri");
-	loadFont("tnri.ttf", "tnrib");
+	loadFont("freefonts/FreeSerifBold.ttf", "tnrb");
+	loadFont("freefonts/FreeSerif.ttf", "tnr");
+	loadFont("freefonts/FreeSerifItalic.ttf", "tnri");
+	loadFont("freefonts/FreeSerifItalic.ttf", "tnrib");
 	
 	glClearColor(0.f, 0.f, 0.f, 1.0f);
 
