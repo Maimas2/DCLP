@@ -421,6 +421,21 @@ void drawTitle(char* ss) {
 }
 void drawType(char* ss) {
 	string sss = string(ss);
+	string s1  = "";
+	string s2  = "";
+	bool isSplitting = getStringWidth(sss, 1.8f) > 0.8f;
+	if(twoLinedType && cardLayout != 1 && isSplitting) {
+		vector<string> lines = split(sss, " ");
+		float halfWidth = getStringWidth(sss, 1.f)/2;
+		float buildingWidth = 0.f;
+		for(int i = 0; i < lines.size(); i++) {
+			if(i < lines.size()/2+1) {
+				s1 += lines[i] + " ";
+			} else {
+				s2 += lines[i] + (i == lines.size()-1 ? "" : " ");
+			}
+		}
+	}
 	setFont("trajan");
 	isDrawingLargeIcons = false;
 	
@@ -435,7 +450,12 @@ void drawType(char* ss) {
 	float cg = (isTitleWhite ? 1.f : 0.f);
 	float cb = (isTitleWhite ? 1.f : 0.f);
 	if(cardLayout == 0 || cardLayout == 2) {
-		drawCenteredStringWithMaxWidth(sss, typeX, -0.785f, 1.8, typeWidth, cr, cg, cb);
+		if(twoLinedType && isSplitting) {
+			drawCenteredStringWithMaxWidth(s1, typeX, -0.753f, 1.3f, typeWidth, cr, cg, cb);
+			drawCenteredStringWithMaxWidth(s2, typeX, -0.812f, 1.3f, typeWidth, cr, cg, cb);
+		} else {
+			drawCenteredStringWithMaxWidth(sss, typeX, -0.785f, 1.8, typeWidth, cr, cg, cb);
+		}
 	} else if(cardLayout == 1) {
 		setMat4("transMat", glm::rotate(0.78539805f, glm::vec3(0.f, 0.f, 1.f)));
 		drawCenteredStringWithMaxWidth(sss, 0.24f, 0.85f, 1.5f, 0.27, cr, cg, cb);

@@ -92,7 +92,7 @@ namespace Saves {
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
       boolPointers["isTrait"]                       = &isTrait;
       boolPointers["isSupply"]                      = &isSupply;
-      boolPointers["isExample"]                     = &isExample;
+      boolPointers["isTwoLinedType"]                = &twoLinedType;
    }
    void save(string file) {
       FILE *f = fopen(file.c_str(), "w");

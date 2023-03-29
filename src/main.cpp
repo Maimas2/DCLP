@@ -390,6 +390,7 @@ bool  isSupply  = true;
 bool  isTrait   = false;
 bool  hasImage  = false;
 float matWidthTweak = 1.f;
+bool  twoLinedType = false;
 
 float lastResetClick;
 int   imageToLoad = 0;
@@ -679,7 +680,11 @@ void composeDearImGuiFrame() {
 		if(doMenuItem("Text")) {
 			ImGui::InputText("Title", cardTitle, 100);
 			
-			if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
+			if(cardLayout <= 2) {
+				ImGui::InputText("Type", cardType, 100);
+				ImGui::Checkbox("Split Type Over Two Lines?", &twoLinedType);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Used for splitting up a long type over two lines as opposed to squishing it on one.");
+			}
 			if(cardLayout == 2 || cardLayout == 0 || (cardLayout == 1 && !isTrait)) ImGui::InputText("Cost", cardCost, 30);
 			
 			if(cardLayout < 3) ImGui::InputText("Art Credit", cardCredit, 120);
@@ -834,6 +839,7 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Y Position", &textYPosTweak, -1.f, 1.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Vanilla Bonus Size", &bonusSizeTweak, 0.3f, 4.f, "%.2f");
+			if(cardLayout <= 2) ImGui::Checkbox("Split Type Over Two Lines?", &twoLinedType);
 
 			//if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f"); Unneeded
 			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
