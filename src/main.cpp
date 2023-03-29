@@ -535,6 +535,45 @@ void composeDearImGuiFrame() {
 		ImGui::SetNextWindowBgAlpha(1.f);
         
         ImGui::Begin("Options", NULL);
+
+		if(ImGui::BeginMainMenuBar()) {
+			if(ImGui::BeginMenu("Save/Export")) {
+				if(ImGui::MenuItem("Save")) {
+					Saves::save();
+					//free(cardText);
+					cardText = (char*)malloc(512);
+					Saves::read();
+				}
+				if(ImGui::MenuItem("Save as...")) {
+					ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+				}
+				ImGui::Text("%s", ("Current save file: " + currentFile).c_str());
+
+				if(ImGui::MenuItem("Load .DCLP file")) {
+					ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+				}
+
+				if(ImGui::MenuItem("Save image to out.jpg")) 		screenShot();
+		
+				if(ImGui::MenuItem("Copy image to Clipboard")) 		copyToClipboard();
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+		if (ImGuiFileDialog::Instance()->Display("Choose DCLP File")) {
+			
+			if (ImGuiFileDialog::Instance()->IsOk()) {
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+				isExample = false;
+				Saves::read(filePathName);
+				if(!isExample) currentFile = filePathName;
+				reloadPictures();
+			}
+			ImGuiFileDialog::Instance()->Close();
+		}
+
 		currentMenuType = currentMenuTypee;
 
 		if(currentMenuType == 0) {
@@ -622,47 +661,6 @@ void composeDearImGuiFrame() {
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
-			}
-
-			endMenuItem();
-		}
-
-		if(doMenuItem("Save/Export")) {
-			if(ImGui::Button("Load .DCLP file")) {
-				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
-			}
-
-			if(ImGui::Button("Save")) {
-				Saves::save();
-				//free(cardText);
-				cardText = (char*)malloc(512);
-				Saves::read();
-			}
-
-			if(ImGui::Button("Save as...")) {
-				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
-			}
-			ImGui::Text("%s", ("Current file: " + currentFile).c_str());
-
-			ImGui::NewLine();
-
-			if(ImGui::Button("Save image to out.jpg")) 		screenShot();
-		
-			if(ImGui::Button("Copy image to Clipboard")) 	copyToClipboard();
-
-			if (ImGuiFileDialog::Instance()->Display("Choose DCLP File")) {
-				
-				if (ImGuiFileDialog::Instance()->IsOk()) {
-					std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-					std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-					isExample = false;
-					Saves::read(filePathName);
-					if(!isExample) currentFile = filePathName;
-					reloadPictures();
-
-					cout << currentFile << endl;
-				}
-				ImGuiFileDialog::Instance()->Close();
 			}
 
 			endMenuItem();
@@ -844,6 +842,13 @@ void composeDearImGuiFrame() {
 			if(ImGui::Button((isDemoShown ? "Hide ImGui Demo" : "Show ImGui Demo"))) {
 				isDemoShown = !isDemoShown;
 			}
+			ImGui::Text("Compiled on");
+			ImGui::SameLine();
+			ImGui::Text(__DATE__);
+			ImGui::SameLine();
+			ImGui::Text("at");
+			ImGui::SameLine();
+			ImGui::Text(__TIME__);
 
 			endMenuItem();
 		}

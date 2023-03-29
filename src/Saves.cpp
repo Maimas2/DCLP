@@ -70,6 +70,7 @@ namespace Saves {
       intPointers["cardSecondary"] = &cardSecondary;
       intPointers["cardLayout"]    = &cardLayout;
       intPointers["matColor"]      = &matColor;
+      intPointers["uiType"]        = &currentMenuTypee;
 
       boolPointers["isLowRes"]                      = &isLowRes;
       boolPointers["isTraveler"]                    = &isTraveler;

@@ -89,4 +89,5 @@ extern float secondCustomCardColor[];
 extern string currentFile;
 
 extern int  exampleSelected;
+extern int  currentMenuTypee;
 extern const char* examplesNames[];
