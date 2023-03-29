@@ -339,7 +339,7 @@ float getStringHeightRequired(string in, float scale) {
 	vector<string> ingore = split(in, "\n");
 	float tr = 0.f;
 	
-	for(int i = 0; i < ingore.size()-1; i++) {
+	for(int i = 0; i < ingore.size(); i++) {
 		if(isLargeSymbol(ingore[i])) {
 			tr += LARGE_ICON_SIZE;
 			continue;
@@ -834,9 +834,14 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	
 	string in = clampStringToWidth(inn, maxWidth*textXTweak, scale);
 	
-	vector<string> lines = split(in, "\n");
-	if(isLargeSymbol(strip(lines[0])) && timesMaxDRunThrough == 0) {
-		maxHeight -= getStringHeightRequired(lines[0], scale);
+	vector<string> lines = split(inn, "\n");
+
+	for(int i = 1; i < lines.size(); i++) {
+		if(isLargeSymbol(strip(lines[i])) && timesMaxDRunThrough == 0) {
+			float t = getStringHeightRequired(strip(lines[i]), scale);
+			maxHeight -= t;
+			y += t/4;
+		}
 	}
 	
 	//if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
