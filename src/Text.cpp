@@ -327,6 +327,8 @@ float getStringHeight(string in, float scale) {
 	for(int i = 0; i < ingore.size()-1; i++) {
 		if(isLargeSymbol(ingore[i])) {
 			tr += LARGE_ICON_SIZE * bonusSizeTweak;
+		} else if(ingore[i].starts_with("-")) {
+			tr += (currentFontHeight * scale * fontDownscale) * 0.45f;
 		} else {
 			tr += (currentFontHeight * scale * fontDownscale);
 		}
