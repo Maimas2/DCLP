@@ -500,6 +500,32 @@ void reloadPictures() {
 		hasImage = true;
 	} else hasImage = false;
 }
+int currentMenuTypee = 0;
+int currentMenuType  = 0;
+const char* menuTypes[] {
+	(char*)"Tab List",
+	(char*)"Accordian",
+	(char*)"No Orginization"
+};
+bool doMenuItem(const char* l) {
+	if(currentMenuType == 0) {
+		return ImGui::BeginTabItem(l);
+	} else if(currentMenuType == 1) {
+		return ImGui::TreeNode(l);
+	} else {
+		
+	}
+	return true;
+}
+void endMenuItem() {
+	if(currentMenuType == 0) {
+		ImGui::EndTabItem();
+	} else if(currentMenuType == 1) {
+		ImGui::TreePop();
+	} else {
+		return;
+	}
+}
 void composeDearImGuiFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -509,10 +535,16 @@ void composeDearImGuiFrame() {
 		ImGui::SetNextWindowBgAlpha(1.f);
         
         ImGui::Begin("Options", NULL);
+		currentMenuType = currentMenuTypee;
 
-		ImGui::BeginTabBar("Settings");
+		if(currentMenuType == 0) {
+			ImGui::BeginTabBar("Settings");
+		} else if(currentMenuType == 1) {
+			
+		}
 
-		if(ImGui::BeginTabItem("Non-Card")) {
+		if(doMenuItem("Non-Card")) {
+			ImGui::Combo("UI Menu Type", &currentMenuTypee, menuTypes, 3);
 			if(ImGui::Button("Load Example")) {
 				ImGui::OpenPopup("Load Example");
 			}
@@ -592,10 +624,10 @@ void composeDearImGuiFrame() {
 				ImGui::EndPopup();
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Save/Export")) {
+		if(doMenuItem("Save/Export")) {
 			if(ImGui::Button("Load .DCLP file")) {
 				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 			}
@@ -633,20 +665,20 @@ void composeDearImGuiFrame() {
 				ImGuiFileDialog::Instance()->Close();
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Layout")) {
+		if(doMenuItem("Layout")) {
 			ImGui::ListBox("Layout", &cardLayout, layoutChoices, IM_ARRAYSIZE(layoutChoices), 5);
 		
 			if(cardLayout == 0) ImGui::Checkbox("Is Supply Card?", &isSupply);
 			if(cardLayout == 0) ImGui::Checkbox("Traveller?", &isTraveler);
 			if(cardLayout == 1) ImGui::Checkbox("Trait?", &isTrait);
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Text")) {
+		if(doMenuItem("Text")) {
 			ImGui::InputText("Title", cardTitle, 100);
 			
 			if(cardLayout <= 2) ImGui::InputText("Type", cardType, 100);
@@ -663,10 +695,10 @@ void composeDearImGuiFrame() {
 				ImGui::InputTextMultiline("Card Text", cardText, 500, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_None);
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Color")) {
+		if(doMenuItem("Color")) {
 			if(cardLayout <= 3) ImGui::ListBox("Color", &cardColor, mainChoices, IM_ARRAYSIZE(mainChoices), 6);
 			if(cardLayout <= 2) {
 				if(cardLayout == 1) {
@@ -698,10 +730,10 @@ void composeDearImGuiFrame() {
 				}
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Image")) {
+		if(doMenuItem("Image")) {
 			ImGui::InputText("Picture URL", iconUrl, 500);
 			if(cardLayout <= 2) ImGui::InputText("Expansion URL", expansionUrl, 500);
 			if(ImGui::Button("Reload Pictures")) {
@@ -789,10 +821,10 @@ void composeDearImGuiFrame() {
 				ImGui::EndPopup();
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if((cardLayout < 3 || cardLayout == 4) && ImGui::BeginTabItem("Tweaks")) {
+		if((cardLayout < 3 || cardLayout == 4) && doMenuItem("Tweaks")) {
 			ImGui::Text("May only be needed for large amounts of text.");
 			if(cardLayout <= 2) ImGui::Checkbox("Large Single Line Vanilla Bonuses", &largeSingleLineVanillaBonuses);
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Border Width", &textXTweak, 0.3f, 4.f, "%.2f");
@@ -805,18 +837,22 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
 			if(cardLayout == 4) ImGui::SliderFloat("Mat Width Tweak", &matWidthTweak, 0.25f, 4.f);
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		if(ImGui::BeginTabItem("Debug")) {
+		if(doMenuItem("Debug")) {
 			if(ImGui::Button((isDemoShown ? "Hide ImGui Demo" : "Show ImGui Demo"))) {
 				isDemoShown = !isDemoShown;
 			}
 
-			ImGui::EndTabItem();
+			endMenuItem();
 		}
 
-		ImGui::EndTabBar();
+		if(currentMenuType == 0) {
+			ImGui::EndTabBar();
+		} else if(currentMenuType == 1) {
+			
+		}
 
     	ImGui::End();
 
