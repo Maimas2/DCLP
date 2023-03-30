@@ -260,7 +260,7 @@ float getStringWidthRaw(string in, float scale) {
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
 	if(shouldBeBolded(in)) isBold = true;
 	int i = 0;
-	if(in.size() > 3 && in.substr(0, 3) == "[i]") {
+	if(in.starts_with("[i]")) {
 		i = 3;
 		setFont("tnri");
 	}
@@ -302,7 +302,8 @@ float getStringWidth(string in, float scale) {
 	in += "\n";
 	vector<string> strings = split(in, "\n");
 	float max = 0.f, temp = 0.f;
-	for(int i = 0; i < strings.size(); i++) {
+	int i = 0;
+	for(; i < strings.size(); i++) {
 		temp = getStringWidthRaw(strings[i], scale);
 		if(temp > max) max = temp;
 	}
@@ -399,7 +400,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 	if(toRender.substr(0, 3) == "[i]") {
 		offset = 3;
 		setFont("tnri");
-		x += scale / 15.f;
+		x += getStringWidth(toRender, scale) / 10.f;
 		scale /= 1.25f;
 	}
 	
