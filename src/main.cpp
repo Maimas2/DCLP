@@ -606,6 +606,17 @@ void composeDearImGuiFrame() {
 
 			if(ImGui::Button("Click To Reset All")) ImGui::OpenPopup("Reset All");
 
+			if(ImGui::TreeNode("Legend for Card Text Symbols")) {
+				ImGui::Text("$1: Money symbol (supports numbers, '?', and '*')");
+				ImGui::Text("@1: Debt symbol  (same as money symbol)");
+				ImGui::Text("2%%: VP symbol; number must be before '%%'");
+				ImGui::Text("^: Potion symbol (supports numbers)");
+				ImGui::Text("'-' alone on line: horizontal dividing line");
+				ImGui::Text("[i] at start of line: italicise the line");
+
+				ImGui::TreePop();
+			}
+
 			if(ImGui::BeginPopupModal("Load Example", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 				ImGui::Text("THIS WILL OVERWRITE ALL PREVIOUS WORk");
 				ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
