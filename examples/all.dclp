@@ -1,0 +1,44 @@
+fbottomTextSizeTweak:1.000000
+fcustomColor1:1.000000
+fcustomColor2:1.000000
+fcustomColor3:1.000000
+fcustomEmbellishmentColor1:1.000000
+fcustomEmbellishmentColor2:1.000000
+fcustomEmbellishmentColor3:1.000000
+fcustomSideColor1:1.200000
+fcustomSideColor2:0.800000
+fcustomSideColor3:0.500000
+fexpansionIconXSizeTweak:1.000000
+fexpansionIconYSizeTweak:1.000000
+fmatWidthTweak:1.000000
+fsecondCustomCardColor1:1.000000
+fsecondCustomCardColor2:1.000000
+fsecondCustomCardColor3:1.000000
+ftextSizeTweak:1.000000
+ftextXTweak:0.970000
+ftextYPosTweak:0.000000
+ftweakDividingLineY:-0.400000
+fxMove:0.000000
+fyMove:0.000000
+fzoom:1.000000
+ccardCost:$199^3@3
+ccardCredit:
+ccardPreview:
+ccardText:Money Symbol: $2\nDebt Symbol: @2\nVP Symbol: 2%\nPotion Symbol: ^2\nThis has many numbers: $222222\n-\nThis is a custom image\n-\n[i]This line is italicised\nThis isn't italicised
+ccardTitle:This is a very long title and it will squish in as it gets too long
+ccardType:This is also very long, but this type can be split over two lines
+ccardVersion:
+cexpansionUrl:
+cheirloomText:
+cmatText:
+cpictureUrl:https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/SEACComputer_031.jpg/1024px-SEACComputer_031.jpg
+icardColor:0
+icardLayout:0
+icardSecondary:0
+imatColor:0
+bisLowRes:1
+bisSupply:1
+bisTrait:0
+bisTraveler:0
+bisTwoLinedType:1
+blargeSingleLineVanillaBonuses:1

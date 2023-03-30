@@ -105,6 +105,7 @@ const char* examplesNames[] = {
 	"Cursed (trait)",
 	"Curse (base card)",
 	"Bane Marker",
+	"Examples of many options"
 };
 const char* examplesUrls[] = {
 	"examples/workshop.dclp",
@@ -118,6 +119,7 @@ const char* examplesUrls[] = {
 	"examples/cursed.dclp",
 	"examples/curse.dclp",
 	"examples/bane.dclp",
+	"examples/all.dclp"
 };
 
 float customCardColor[3] = {1.f, 1.f, 1.f};
@@ -596,7 +598,7 @@ void composeDearImGuiFrame() {
 			if(ImGui::Button("Load Example")) {
 				ImGui::OpenPopup("Load Example");
 			}
-			if(ImGui::Button("Notes and Credits")) {
+			if(ImGui::Button("Notes & Credits")) {
 				ImGui::OpenPopup("Notes");
 			}
 
@@ -658,6 +660,9 @@ void composeDearImGuiFrame() {
 				ImGui::BulletText("stb_image (Image management) (MIT/Public Domain)");
 				ImGui::BulletText("OpenGL (Rendering) (No License due to the nature of OpenGL)");
 				ImGui::BulletText("ImGuiFileDialog (File input) (MIT License)");
+				ImGui::NewLine();
+				ImGui::Text("Example image By National Institute of Standards and Technology - National Institute of Standards and Technology, \n\
+				Public Domain, https://commons.wikimedia.org/w/index.php?curid=31557618");
 				if(ImGui::Button("Close Window")) {
 					ImGui::CloseCurrentPopup();
 				}

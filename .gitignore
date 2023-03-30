@@ -21,3 +21,7 @@ out.jpg
 run.sh
 save.dclp
 tempicon.png
+.gitignore
+saves
+master.save
+e.dclp
