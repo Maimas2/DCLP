@@ -1,0 +1,44 @@
+fbottomTextSizeTweak:1.000000
+fcustomColor1:1.000000
+fcustomColor2:1.000000
+fcustomColor3:1.000000
+fcustomEmbellishmentColor1:1.000000
+fcustomEmbellishmentColor2:1.000000
+fcustomEmbellishmentColor3:1.000000
+fcustomSideColor1:1.200000
+fcustomSideColor2:0.800000
+fcustomSideColor3:0.500000
+fexpansionIconXSizeTweak:0.930000
+fexpansionIconYSizeTweak:1.000000
+fmatWidthTweak:1.000000
+fsecondCustomCardColor1:1.000000
+fsecondCustomCardColor2:1.000000
+fsecondCustomCardColor3:1.000000
+ftextSizeTweak:1.000000
+ftextXTweak:1.000000
+ftextYPosTweak:0.000000
+ftweakDividingLineY:-0.400000
+fxMove:0.000000
+fyMove:0.000000
+fzoom:1.000000
+ccardCost:$5
+ccardCredit:Illustration: Grant Hansen
+ccardPreview:
+ccardText:If it's your Night phase, each other player recieves the next Hex.\nOtherwise, +3 Cards.
+ccardTitle:Werewolf
+ccardType:Action - Night - Attack - Doom
+ccardVersion:Copyright 2017 Rio Grande Games
+cexpansionUrl:file:///home/alex/Documents/opengl-dominion/expansion-images/nocturne.png
+cheirloomText:
+cmatText:
+cpictureUrl:http://wiki.dominionstrategy.com/images/4/4a/WerewolfArt.jpg
+icardColor:10
+icardLayout:0
+icardSecondary:1
+imatColor:0
+bisLowRes:1
+bisSupply:1
+bisTrait:0
+bisTraveler:0
+bisTwoLinedType:1
+blargeSingleLineVanillaBonuses:1
