@@ -711,7 +711,12 @@ void composeDearImGuiFrame() {
 			}
 			if(cardLayout == 2 || cardLayout == 0 || (cardLayout == 1 && !isTrait)) ImGui::InputText("Cost", cardCost, 30);
 			
-			if(cardLayout < 3) ImGui::InputText("Art Credit", cardCredit, 120);
+			if(cardLayout < 3) {
+				ImGui::InputText("Art Credit", cardCredit, 120);
+				if(ImGui::Button("Copy Copyright Symbol")) {
+					clip::set_text("©");
+				}
+			}
 			if(cardLayout < 3) ImGui::InputText("Card Version and Creator", cardVersion, 120);
 			if(cardLayout < 2) ImGui::InputText("Heirloom", heirloomText, 120);
 			

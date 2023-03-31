@@ -166,7 +166,7 @@ int loadFont(string fontPath, string name) {
 		
 		CharSet setToPush;
 
-		for (unsigned char c = 0; c < 128; c++) {
+		for (unsigned char c = 0; c < 170; c++) {
 			if (FT_Load_Char(*font, c, FT_LOAD_RENDER))
 			{
 				Log::warning(string("Failed to load char ") + string(reinterpret_cast<char*>(c)) + string("! Continuing, expect font failure/rendering issues."));
