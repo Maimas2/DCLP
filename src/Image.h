@@ -13,31 +13,11 @@ using namespace std;
 class Image {
 	public:
 		Image();
-		int type = 0;
 		bool doIHaveTrans = true;
 		string path = "";
 		void bind();
 		void load();
-		void unload();
-		int getType();
-		bool isLoaded = false;
 		int width;
 		int height;
-		int currentSlot = 0;
-		unsigned int id = 0;
-};
-class SubImage : Image {
-	public:
-		SubImage();
-		int type = 0;
-		bool doIHaveTrans = true;
-		string path = "";
-		void bind();
-		void load();
-		void unload();
-		int getType();
-		bool isLoaded = false;
-	private:
-		int currentSlot = 0;
 		unsigned int id = 0;
 };

@@ -19,18 +19,6 @@ struct Point2 {
     float y;
 };
 
-struct GameSettings {
-	bool shouldCrash;
-	int hits;
-	double money;
-	float power;
-	float gravity;
-	float moneyGain;
-	bool canGainHits;
-	string savePath;
-	string description;
-};
-
 struct ImageStruct {
 	int width;
 	int height;
@@ -50,14 +38,7 @@ extern float eventColor[];
 
 #endif
 
-namespace bg {
-	void drawAllPoints();
-	void updateAllPoints();
-}
-
 extern int shaderProgram;
-extern GameSettings currentSettings;
-extern double moneyMadeThisGame;
 extern bool isFixedFunction;
 
 double getMouseX();
@@ -66,7 +47,6 @@ double getxPos(double xPos);
 double getyPos(double yPos);
 double getY();
 double getX();
-const char* readFile(char* file);
 void checkShader(int shader);
 void setMatrix(char* name, const float* data);
 void setBool(string name, bool value);
@@ -77,9 +57,8 @@ void setVec3(string name, float value1, float value2, float value3);
 void setVec4(string name, float value1, float value2, float value3, float value4);
 void setMat4(string name, glm::mat4 in);
 int shaders(string vs, string fs);
-int shaders();
 ImageStruct loadImageToInt(string source, bool hasTrans);
-Image loadImage(string source, bool hasTrans, /* IMAGE_TYPE */int type);
+Image loadImage(string source, bool hasTrans);
 void clear(float r, float g, float b);
 Point2 rotatePoint(Point2 in, float angle, float cx, float cy);
 void plotPoint(Point2 in);
@@ -93,22 +72,18 @@ void drawColoredQuad(float x, float y, float wid, float hei, float rgb[12]);
 void plotPoints(Point2 in[4]);
 void plotPoints(Point2 in[4], float z);
 void setTint(float r, float g, float b);
-void drawPlayButton();
 string doubleToString(double d, int precision);
 string doubleToString(double d);
-void bangExit();
+void dclpExit();
 void setupVertexPointers(int size);
 int setupVAO();
 void utilsSetup();
 void translate(float x, float y);
-bool startsWith(string og, string doesIt);
 float getRandom();
 void setAlpha(float one, float two, float three, float four);
 void setAlpha(float al);
 void setOob(bool oo);
 char* readFileToChar(string path);
-void drawNote(string note, float maxWidth, bool hasBackgroud, bool clearsDepthBit);
-void drawSpotlights();
 void drawRoundedRectangle(float x, float y, float z, float width, float height, float bearingX, float bearingY, float* color);
 vector<string> split(string og, string splitter);
 string split(string og, string splitter, bool isFirst);

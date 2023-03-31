@@ -142,7 +142,7 @@ int textInit() {
 	if(isTextLoaded) {
 		return 0;
 	}
-	if (FT_Init_FreeType(&freetype)) {
+	if(FT_Init_FreeType(&freetype)) {
 		Log::fatal("Could not load FreeType!", true);
 	}
 	isTextLoaded = true;
@@ -888,26 +888,4 @@ void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, fl
 }
 void drawCenteredStringWithMaxWidth(string in, float x, float y, float scale, float maxWidth) {
 	drawCenteredStringWithMaxWidth(in, x, y, scale, maxWidth, 0, 0, 0);
-}
-string splitIntoTwoLines(string in, float scale, float maxWidth) {
-	vector<string> words = split(in, " ");
-	string first = "";
-	string second = "";
-	bool hasBuilt = false;
-	float buildingWidth = 0.f;
-	for(int i = 0; i < words.size(); i++) {
-		if(hasBuilt) {
-			second += words[i] + " ";
-		} else {
-			if(buildingWidth + getStringWidth(words[i], 1.f) > maxWidth) {
-				hasBuilt = true;
-				i--;
-				continue;
-			} else {
-				first += words[i] + " ";
-				buildingWidth += getStringWidth(words[i], 1.f);
-			}
-		}
-	}
-	return first + "\n" + second;
 }

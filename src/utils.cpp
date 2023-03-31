@@ -39,18 +39,6 @@ float currentAlpha[4] = {1.f, 1.f, 1.f, 1.f};
 double moneyMadeThisGame = -1;
 bool isFixedFunction = false;
 
-GameSettings currentSettings = {
-	true,
-	-1,
-	-1,
-	-1,
-	-1,
-	-1,
-	false,
-	"/uh-oh.Bang",
-	"You... SHould not be seeing this. GET OUT!"
-};
-
 float allRed[12] = {
 	1.f, 0.f, 0.f,
 	1.f, 0.f, 0.f,
@@ -116,57 +104,6 @@ float eventColor[12] = {
 
 float tintR = 1.f, tintG = 1.f, tintB = 1.f;
 
-namespace bg {
-	struct BGpoint {
-		Point2 pos;
-		float size;
-		bool isGoingUp;
-		bool isVisible;
-	};
-	vector<BGpoint> bgPoints;
-	void resetPoint(BGpoint* in) {
-		in->isGoingUp = true;
-		in->pos = {getRandom()*2.6f-1.9f, getRandom()*(32.f/9.f)-(16.f/9.f)};
-		in->isVisible = true;
-	}
-	void updatePoint(BGpoint* in) {
-		in->pos.x += 0.004f;
-		in->pos.y -= 0.0006f;
-		if(in->isGoingUp) {
-			in->size += (getRandom()*0.00007f) + 0.0001f;
-			if(in->size > 0.01f) {
-				in->isGoingUp = false;
-			}
-		} else {
-			in->size -= (getRandom()*0.00003f) + 0.0001f;
-			if(in->size <= -getRandom()/10.f) {
-				resetPoint(in);
-			}
-		}
-		if(in->pos.x > (16.f/9.f) || in->pos.y < -1.f) {
-			resetPoint(in);
-		} 
-	}
-	void updateAllPoints() {
-		for(int i = 0; i < bgPoints.size(); i++) {
-			updatePoint(&(bgPoints[i]));
-		}
-	}
-	void drawPoint(BGpoint in) {
-		if(in.isVisible) fillOval(in.pos.x-in.size/2.f, in.pos.y-in.size/2.f, 2.f, max(in.size*1.3f, 0.f), max(in.size*1.3f, 0.f));
-	}
-	void drawAllPoints() {
-		if(bgPoints.size() != 125) {
-			bgPoints.push_back({{0.f, 0.f}, 0.f, true, false});
-		}
-		setAlpha(0.5f);
-		for(int i = 0; i < bgPoints.size(); i++) {
-			drawPoint(bgPoints[i]);
-		}
-		setAlpha(1.f);
-	}
-}
-
 float degreesToRadians(float degree) {
 	return ((degree * 3.14159) / 180.f);
 }
@@ -201,21 +138,6 @@ double getY() {
 	//return (-getyPos(getMouseY()))*yStretch;
 }
 
-const char* readFile(char* file) {
-	fstream newfile;
-	newfile.open(file,ios::in);
-	string toReturn;
-	if (newfile.is_open()) {
-		string tp;
-		while(getline(newfile, tp)) {
-			toReturn += tp + "\n";
-		}
-		newfile.close();
-	}
-	const char* e = toReturn.c_str();
-	return e;
-}
-
 void checkShader(int shader) {
 	int success;
 	char returnLog[300];
@@ -224,8 +146,6 @@ void checkShader(int shader) {
 		glGetShaderInfoLog(shader, 300, NULL, returnLog);
 		Log::error("Shader compilation failed! Dropping into fixed function pipeline! This will most surely cause rendering issues/failure. Here is the error:\n\t\t\t\t\t\t\t" +
 			string(returnLog));
-		//glUseProgram(0);
-		//isFixedFunction = true;
 	}
 }
 
@@ -249,57 +169,6 @@ void setVec4(string name, float value1, float value2, float value3, float value4
 }
 void setMat4(string name, glm::mat4 in) {
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), 1, GL_FALSE, glm::value_ptr(in));
-}
-int shaders(string vs, string fs) {
-	string vertexCode;
-	string fragmentCode;
-	ifstream vShaderFile;
-	ifstream fShaderFile;
-	vShaderFile.exceptions (ifstream::failbit | ifstream::badbit);
-	fShaderFile.exceptions (ifstream::failbit | ifstream::badbit);
-	try
-	{
-		vShaderFile.open(vs);
-		fShaderFile.open(fs);
-		stringstream vShaderStream, fShaderStream;
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
-		vShaderFile.close();
-		fShaderFile.close();
-		vertexCode   = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
-	}
-	catch(ifstream::failure e)
-	{
-		Log::error("Shader file read unseccussfully!");
-		return 0;
-	}
-	const char* vertexShaderSource = vertexCode.c_str();
-	const char* fragmentShaderSource = fragmentCode.c_str();
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	//glShaderSource(vertexShader, 1, (const GLchar* const*)readFile((char*)"shaders/vertex.vs"), NULL);
-	glCompileShader(vertexShader);
-	checkShader(vertexShader);
-	vShader = vertexShader;
-
-	unsigned int fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	//glShaderSource(fragmentShader, 1, (const GLchar* const*)readFile((char*)"shaders/fragment.fs"), NULL);
-	glCompileShader(fragmentShader);
-	checkShader(fragmentShader);
-	fShader = fragmentShader;
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glUseProgram(shaderProgram);
-
-	return shaderProgram;
 }
 int shaderSource(string vertexCode, string fragmentCode) {
 	const char* vertexShaderSource = vertexCode.c_str();
@@ -328,9 +197,6 @@ int shaderSource(string vertexCode, string fragmentCode) {
 	glUseProgram(shaderProgram);
 
 	return shaderProgram;
-}
-int shaders() {
-	return shaders("shaders/vertex.vs", "shaders/fragment.fs");
 }
 ImageStruct loadImageToInt(string source, bool hasTrans) {
 	unsigned int texture;
@@ -361,13 +227,12 @@ ImageStruct loadImageToInt(string source, bool hasTrans) {
 	stbi_image_free(data);
 	return {width, height, texture};
 }
-Image loadImage(string source, bool hasTrans, int typee) {
+Image loadImage(string source, bool hasTrans) {
 	Image i;
 	//i.id = c.textureId;
 	i.path = source;
 	i.doIHaveTrans = hasTrans;
-	i.type = typee;
-	if(typee == IMAGE_ALWAYS_LOADED) i.load();
+	i.load();
 	return i;
 }
 void clear(float r, float g, float b) {
@@ -502,7 +367,7 @@ string doubleToString(double d, int precision) {
 string doubleToString(double d) {
 	return doubleToString(d, 0);
 }
-void bangExit() {
+void dclpExit() {
 	Saves::exit();
 
 	Log::loggerExit();
@@ -626,11 +491,7 @@ void main() { \n\
    fc = FragColor * vec4(color, alpha); \n\
 } \n\
 	");
-}
-bool startsWith(string og, string doesIt) {
-	return og.substr(0, doesIt.length()) == doesIt;
-}
-float getRandom() {
+}float getRandom() {
 	return ((float)rand())/(float)RAND_MAX;
 }
 void setAlpha(float one, float two, float three, float four) {
@@ -655,44 +516,6 @@ char* readFileToChar(string path) {
 	
 	fclose(f);
 	return buffer;
-}
-void drawNote(string note, float maxWidth = 0.5f, bool hasBackgroud = true, bool clearsDepthBit = false) {
-	if(clearsDepthBit) glClear(GL_DEPTH_BUFFER_BIT);
-	string toDraw = clampStringToWidth(note, maxWidth, 1.f);
-	if(hasBackgroud) {
-		drawColoredQuad(getX(), getY(), 0.02f, getStringWidth(toDraw, 1.f)+0.02f, (-getStringHeight(toDraw, 1.f))-0.04f, allBlack);
-		drawString(toDraw, getX()+0.01f, getY()-0.01f, 1.f, 1.f, 1.f, 1.f);
-	} else {
-		drawString(toDraw, getX(), getY(), 1.f);
-	}
-}
-void drawSpotlights() {
-	res::allWhite.bind();
-	setAlpha(0.8f, 0.8f, -0.1f, -0.1f);
-	
-	Point2 points[] = {
-		{-0.05f, 0.f},
-		{0.05f, 0.f},
-		{0.15f, 1.4f},
-		{-0.15f, 1.4f}
-	};
-	for(int i = 0; i < 4; i++) {
-		points[i] = rotatePoint(points[i], sin(glfwGetTime())*30.f, 0.f, 0.f);
-		points[i].x -= 1.f;
-		points[i].y -= 1.05f;
-	}
-	
-	plotPoints(points, 3.f);
-	
-	for(int i = 0; i < 4; i++) {
-		points[i] = rotatePoint(points[i], -sin(glfwGetTime())*30.f+cos(glfwGetTime())*30.f, -1.f, -1.05f);
-		points[i].x += 2.f;
-		points[i].y -= 0.2f;
-	}
-	
-	plotPoints(points, 3.f);
-	
-	setAlpha(1.f);
 }
 void drawRoundedRectangle(float x, float y, float z, float width, float height, float bearingX, float bearingY, float* color) {
 	if(height < 0) {

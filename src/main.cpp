@@ -149,7 +149,6 @@ static void update() {
 		lastFixedUpdate += 1.f/60.f;
 	}
 	progressThroughFrame = (glfwGetTime()-lastFixedUpdate)*targetFixedFps;
-    handlerUnfixedUpdate();
 }
 void checkFBO() {                                                         
 	GLenum s = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER); 
@@ -942,13 +941,15 @@ bool isFullscreen = false;
 bool hasDebugMode = false;
 void key_callback(GLFWwindow* eventWindow, int key, int scancode, int action, int mods) {
 	if(key == GLFW_KEY_S && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-	   Log::log("Ctrl+Alt+S pressed, segfaulting. This will kill everything in its place, probably causing things like data loss and stuff.");
-	   Log::flushFile();
-		
-       raise(11);
+	   	Log::log("Ctrl+Alt+S pressed, segfaulting. This will kill everything in its place, probably causing things like data loss and stuff.");
+	   	Log::flushFile();
+
+		cout << "Ctrl+Alt+S pressed, initiating segfault." << endl;
+
+       	raise(11);
     }
     if(key == GLFW_KEY_F4 && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        dclpExit();
         return;
     }
 	shouldRedraw = true;
@@ -979,14 +980,12 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     if(action == GLFW_PRESS) {
 		onMouse(getX(), getY(), action, button);
 	}
-	if(action == GLFW_RELEASE) onMouseRelease();
 	shouldRedraw = true;
 }
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	shouldRedraw = true;
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-	onScroll(xoffset, yoffset);
 	shouldRedraw = true;
 }
 void window_focus_callback(GLFWwindow* window, int focused) {
@@ -998,11 +997,6 @@ void window_focus_callback(GLFWwindow* window, int focused) {
 		Log::debug("Window unfocused");
     }
 	shouldRedraw = true;
-}
-void APIENTRY errorPassThrough(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam) {
-	if(hasDebugMode) {
-		cout << message << endl;
-	}
 }
 void calculateFPS() {
     totalFramesEver++;
@@ -1167,10 +1161,6 @@ void printLayouts() {
 			"2\tBase card. Used by Copper, Silver, Estate, Province, Curse, etc." << endl <<
 			"";
 }
-int doSingleArgument(string arg, string next, int* i) { // Trust me on this one
-	
-	return 0;
-}
 string replaceAll(string in, string old, string news) {
 	int place = 0;
 	while(true) {
@@ -1296,9 +1286,6 @@ int main(int argc, char *argv[]) {
 	
 	vector<string> splitted = split(getPathToExe(), "/");
 	pathPrefix = "./";
-	for(int i = 0; i < splitted.size(); i++) {
-		//pathPrefix += splitted[i] + "/";
-	}
 	Log::log("Path prefix should be " + pathPrefix);
 	
 	int logReturn = Log::loggerInit();
@@ -1351,29 +1338,9 @@ int main(int argc, char *argv[]) {
 	setMat4("baseTransMat", glm::mat4(1.f));
 	setMat4("transMat", glm::mat4(1.f));
 	
-	if(isScreenshotting) {
-		loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
-		loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), false);
-		calculateFPS();
-      enablings();
-		for(int i = 0; i < 10; i++) {
-			resetMatrix();
-			update();
-			handlerDraw();
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}
-		screenShot();
-		return 0;
-	}
-	
 	glfwShowWindow(window);
 	
     while (!glfwWindowShouldClose(window)) {
-		/*if(!isWindowFocused) {
-			glfwPollEvents();
-			continue;
-		}*/
         calculateFPS();
         enablings();
 		
@@ -1419,12 +1386,6 @@ int main(int argc, char *argv[]) {
 		}
     }
 	
-	bangExit();
+	dclpExit();
     return 0;
 }
-
-#ifdef _WIN64
-int WinMain() {
-	main(0, nullptr);
-}
-#endif

@@ -66,7 +66,7 @@ namespace Log {
 	void fatal(string out, bool shouldKill) {
 		addString(string("\n[ FATAL ERROR ]: ") + string(shouldKill ? "" : "NOT ") + "KILLING. Full details should be below:\n\n" + out);
 		if(shouldKill) {
-			bangExit();
+			dclpExit();
 		}
 	}
 	void flushFile() {

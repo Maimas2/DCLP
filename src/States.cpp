@@ -38,12 +38,6 @@ float* matColorPointers[] = {allBlack, allRed, allGreen, allBrown, allBlue};
 
 using namespace std;
 
-void State::update() {}
-void State::draw() {}
-void State::onKeyPress(int key, int action, int mods) {}
-void State::onMouseClick(double x, double y, int action, int button) {}
-State::State() {}
-
 map<string, vector<float>> colors;
 
 vector<vector<float>> co;
@@ -67,7 +61,7 @@ float sideColor[12] = {
 float secondaryColor[12];
 
 bool hasInited = false;
-void TestState::update() {
+void MainDrawState::update() {
     if(!hasInited) {
 		hasInited = true;
 		
@@ -565,7 +559,7 @@ void drawExpansionIcon() {
 		}
 	}
 }
-void TestState::draw() {
+void MainDrawState::draw() {
 	clear(0.f, 0.f, 0.f);
 	
 	glDisable(GL_DEPTH_TEST);
@@ -587,11 +581,9 @@ void TestState::draw() {
 	res::vpToken.bind();
 	drawCardText();
 }
-void TestState::onKeyPress(int key, int action, int mods) {
-    if(key == GLFW_KEY_SPACE) {
-        isGreen = !isGreen;
-    }
+void MainDrawState::onKeyPress(int key, int action, int mods) {
+    
 }
-void TestState::onMouseClick(double x, double y, int action, int button) {
+void MainDrawState::onMouseClick(double x, double y, int action, int button) {
 
 }

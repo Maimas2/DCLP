@@ -11,16 +11,14 @@
 
 using namespace std;
 
-IMAGE_TYPE IMAGE_ALWAYS_LOADED = 0;
-
 namespace res {
 	Image IMAGE_LIST;
 	Image setupImage(string path, bool hasTrans) {
 		Image i;
 		if(isLowRes && path.starts_with("card-resources")) {
-			i = loadImage(pathPrefix + "low-res/" +  path, hasTrans, IMAGE_ALWAYS_LOADED);
+			i = loadImage(pathPrefix + "low-res/" +  path, hasTrans);
 		} else {
-			i = loadImage(pathPrefix + path, hasTrans, IMAGE_ALWAYS_LOADED);
+			i = loadImage(pathPrefix + path, hasTrans);
 		}
 		return i;
 	}
@@ -62,6 +60,6 @@ pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",      tru
 		traitBase = setupImage("card-resources/TraitBrown.png", 			   true);
 		traitColor= setupImage("card-resources/TraitColorOne.png", 		   true);
 		traitSide = setupImage("card-resources/TraitBrownSide.png", 		   true);
-		traitColorSide = setupImage("card-resources/TraitColorOneSide.png", 			   true);
+		traitColorSide = setupImage("card-resources/TraitColorOneSide.png",  true);
 	}
 }
