@@ -53,6 +53,7 @@ namespace Saves {
       floatPointers["tweakDividingLineY"]      = &tweakDividingLineY;
       floatPointers["bottomTextSizeTweak"]     = &bottomTextSizeTweak;
       floatPointers["matWidthTweak"]           = &matWidthTweak;
+      floatPointers["newlineSizeTweak"]        = &newlineSizeTweak;
 
       floatPointers["customColor1"] = &customCardColor[0];
       floatPointers["customColor2"] = &customCardColor[1];

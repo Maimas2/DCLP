@@ -166,7 +166,7 @@ int loadFont(string fontPath, string name) {
 		
 		CharSet setToPush;
 
-		for (unsigned char c = 0; c < 170; c++) {
+		for (unsigned char c = 0; c < 170; c++) { // Weird number so the copyright symbol can load 
 			if (FT_Load_Char(*font, c, FT_LOAD_RENDER))
 			{
 				Log::warning(string("Failed to load char ") + string(reinterpret_cast<char*>(c)) + string("! Continuing, expect font failure/rendering issues."));
@@ -684,7 +684,7 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 		if(parts[i] == "-") {
 			y -= currentFontHeight * scale * fontDownscale * 0.7f;
 		} else {
-			y -= currentFontHeight * scale * fontDownscale;
+			y -= currentFontHeight * scale * fontDownscale * newlineSizeTweak;
 		}
 	}
 	//drawString(textt, x, y, scale, r, g, b);

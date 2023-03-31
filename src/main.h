@@ -78,6 +78,7 @@ extern bool  isSupply;
 extern bool  isTrait;
 extern float matWidthTweak;
 extern bool  twoLinedType;
+extern float newlineSizeTweak;
 
 extern bool  hasImage;
 extern bool  isExample;

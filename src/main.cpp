@@ -401,6 +401,7 @@ bool  isTrait   = false;
 bool  hasImage  = false;
 float matWidthTweak = 1.f;
 bool  twoLinedType = false;
+float newlineSizeTweak = 1.f;
 
 float lastResetClick;
 int   imageToLoad = 0;
@@ -544,6 +545,10 @@ void composeDearImGuiFrame() {
     ImGui::NewFrame();
     {
 		ImGui::SetNextWindowBgAlpha(1.f);
+
+		const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(pixelWidth / 4, pixelHeight - 40), ImGuiCond_FirstUseEver);
         
         ImGui::Begin("Options", NULL);
 
@@ -869,6 +874,7 @@ void composeDearImGuiFrame() {
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Text Size", &textSizeTweak, 0.3f, 4.f, "%.2f");
 			if(cardLayout <= 2) ImGui::SliderFloat("Tweak Vanilla Bonus Size", &bonusSizeTweak, 0.3f, 4.f, "%.2f");
 			if(cardLayout <= 2) ImGui::Checkbox("Split Type Over Two Lines?", &twoLinedType);
+			if(cardLayout <  2) ImGui::SliderFloat("Newline Height Tweak", &newlineSizeTweak, 0.25f, 4.f);
 
 			//if(cardLayout <= 1) ImGui::SliderFloat("Tweak Dividing Line Y Position", &tweakDividingLineY, -1.f, 1.f, "%.2f"); Unneeded
 			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
