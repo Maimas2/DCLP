@@ -1047,6 +1047,7 @@ GLFWwindow* createWindow(bool f) {
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+
     glfwMakeContextCurrent(e);
     glfwSetKeyCallback(e, key_callback);
     glfwSetMouseButtonCallback(e, mouse_button_callback);
@@ -1054,7 +1055,7 @@ GLFWwindow* createWindow(bool f) {
 	glfwSetScrollCallback(e, scroll_callback);
 	glfwSetWindowFocusCallback(e, window_focus_callback);
 	glfwSetCursorPosCallback(e, cursor_position_callback);
-	
+
 	return e;
 }
 void getWindowSize() {
@@ -1299,8 +1300,13 @@ int main(int argc, char *argv[]) {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
-    const GLFWvidmode* v = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    //const GLFWvidmode* v = glfwGetVideoMode(glfwGetPrimaryMonitor());
     window = createWindow(false);
+
+	GLFWimage images[1]; 
+	images[0].pixels = stbi_load("images/white.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	glfwSetWindowIcon(window, 1, images);
+	stbi_image_free(images[0].pixels);
     
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {

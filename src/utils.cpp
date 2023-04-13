@@ -198,6 +198,9 @@ int shaderSource(string vertexCode, string fragmentCode) {
 
 	return shaderProgram;
 }
+unsigned char* loadImageToChar(string source, bool hasTrans, int &width, int &height, int &nrChannels) {
+	return stbi_load(source.c_str(), &width, &height, &nrChannels, STBI_rgb_alpha);
+}
 ImageStruct loadImageToInt(string source, bool hasTrans) {
 	unsigned int texture;
 	glGenTextures(1, &texture);
@@ -209,7 +212,7 @@ ImageStruct loadImageToInt(string source, bool hasTrans) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load(source.c_str(), &width, &height, &nrChannels, STBI_rgb_alpha);
+	unsigned char* data = loadImageToChar(source, hasTrans, width, height, nrChannels);
 	if (data)
 	{
 		if(hasTrans) {
@@ -221,7 +224,7 @@ ImageStruct loadImageToInt(string source, bool hasTrans) {
 	}
 	else
 	{
-		Log::warning("Failed to load texture, expect rendering issues.");
+		Log::warning("Failed to load texture " + source + ", expect rendering issues.");
 		return {0, 0, 0};
 	}
 	stbi_image_free(data);

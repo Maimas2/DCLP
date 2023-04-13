@@ -57,6 +57,7 @@ void setVec3(string name, float value1, float value2, float value3);
 void setVec4(string name, float value1, float value2, float value3, float value4);
 void setMat4(string name, glm::mat4 in);
 int shaders(string vs, string fs);
+unsigned char* loadImageToChar(string source, bool hasTrans, int &width, int &height, int &nrChannels);
 ImageStruct loadImageToInt(string source, bool hasTrans);
 Image loadImage(string source, bool hasTrans);
 void clear(float r, float g, float b);

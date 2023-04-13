@@ -16,14 +16,9 @@ using namespace std;
 namespace Log {
 	//begin log utils
 	string totalOutput;
-	ostream* f = nullptr;
 	bool hasInited = false;
 	void addString(string toAdd) {
-		if(hasInited) {
-			outFile << toAdd << endl;
-		} else {
-			totalOutput += toAdd + "\n";
-		}
+		cout << toAdd << endl;
 	}
 	string getTimestamp() {
 		string t = to_string(glfwGetTime());
@@ -32,27 +27,17 @@ namespace Log {
 	//End util functions
 	int loggerInit() {
 		auto t = chrono::system_clock::to_time_t(chrono::system_clock::now());
-		string fp = pathPrefix + "log/" + to_string(t) + ".log";
-		f = new ofstream(fp);
-		if(!f) {
-			cout << "Output file was unable to be initialized! Using stdout instead." << endl;
-			
-			f = &cout;
-		}
-		outFile << totalOutput;
 		hasInited = true;
 		return 0;
 	}
 	void loggerExit() {
 		
-		outFile << totalOutput;
-		outFile.flush();
 	}
 	void debug(string out) {
-		addString("[    DEBUG    ] " + getTimestamp() + " " + out);
+		// addString("[    DEBUG    ] " + getTimestamp() + " " + out);
 	}
 	void log(string out) {
-		addString("[     LOG     ] " + getTimestamp() + " " + out);
+		// addString("[     LOG     ] " + getTimestamp() + " " + out);
 	}
 	void warning(string out) {
 		addString("[   WARNING   ] " + getTimestamp() + " " + out);
@@ -70,6 +55,6 @@ namespace Log {
 		}
 	}
 	void flushFile() {
-		outFile.flush();
+		
 	}
 }

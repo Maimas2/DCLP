@@ -17,3 +17,4 @@ git submodule init
 cd ..
 
 bash build-freetype.sh
+bash re-build.sh
