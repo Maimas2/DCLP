@@ -1285,7 +1285,10 @@ int main(int argc, char *argv[]) {
 	}
 	
 	vector<string> splitted = split(getPathToExe(), "/");
-	pathPrefix = "./";
+	string pathPrefix;
+	for(int i = 0; i < splitted.size()-1; i++) {
+		pathPrefix += "/" + splitted[i];
+	}
 	Log::log("Path prefix should be " + pathPrefix);
 	
 	int logReturn = Log::loggerInit();

@@ -1,0 +1,3 @@
+rm CMakeCache.txt
+cmake -GLFW_BUILD_TESTS=OFF -GLFW_BUILD_EXAMPLES=OFF .
+make
