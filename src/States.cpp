@@ -169,7 +169,7 @@ void drawBase() {
 			height = 0.8f;
 		}
 		setBool("maxX", true);
-		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (0.35-height/2+(yMove*0.4f))*zoom, wid*zoom, height*zoom);
+		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.35f - ((height/2)*zoom - yMove), wid*zoom, height*zoom);
 		setBool("maxX", false);
 		if(cardSecondary == 0) {
 			res::baseCard.bind();
