@@ -33,6 +33,10 @@ float getYBorder();
 
 void resetMatrix();
 
+void screenShot();
+void copyToClipboard();
+void reloadPictures();
+
 extern float delta;
 extern float drawDelta, updateDelta;
 extern float averageDrawDelta, averageUpdateDelta;
@@ -92,4 +96,8 @@ extern string currentFile;
 
 extern int  exampleSelected;
 extern int  currentMenuTypee;
+extern int  currentMenuType;
 extern const char* examplesNames[];
+
+extern bool isFirstFrame;
+extern bool isDemoShown;
