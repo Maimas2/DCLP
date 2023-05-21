@@ -573,7 +573,7 @@ void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) {
 	cout << url << endl;
 	pid_t pid=fork();
     if (pid==0) { /* child process */
-        static char *argv[]={(char*)"curl", (char*)url.c_str(), (char*)"--output", (char*)fileOut.c_str(), (char*)"-s", NULL};
+        static char *argv[]={(char*)"curl", (char*)url.c_str(), (char*)"--output", (char*)fileOut.c_str(), NULL};
         execv("/bin/curl", argv);
         exit(127); /* only if execv fails */
     } else { /* pid!=0; parent process */

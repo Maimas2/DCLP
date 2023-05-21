@@ -18,6 +18,9 @@
 
 using namespace std;
 
+// This file was more important in a separate project which had lots of functionality that was not needed for this. 
+// The entire file is not strictly needed, but I don't want to do the work to remove it.
+
 MainDrawState* t;
 
 bool isMouseDown = false;

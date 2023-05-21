@@ -125,7 +125,7 @@ bool isLargeVP(string in) {
 	return true;
 }
 bool isLargeSymbol(string in) {
-	return isLargeCoin(in) || isLargeVP(in);
+	return (isLargeCoin(in) || isLargeVP(in)) && (cardLayout == 0 || cardLayout == 2);
 }
 void bindIconFromChar(char c) {
 	if(c == '$') {
@@ -865,7 +865,7 @@ void drawCenteredString(string textt, float x, float y, float scale, float r, fl
 			//drawLargeIcon(parts[i], x, y);
 			continue;
 		}
-		if(shouldBeBolded(parts[i]) && largeSingleLineVanillaBonuses) {
+		if(shouldBeBolded(parts[i]) && largeSingleLineVanillaBonuses && (cardLayout == 0 || cardLayout == 2)) {
 			float size = 1.5 * bonusSizeTweak;
 			drawString(parts[i], x - getStringWidth(parts[i], size)/2, y, size, r, g, b);
 			y -= currentFontHeight * size * fontDownscale;
@@ -1047,7 +1047,7 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	
 	//if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
 	if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
-		if(timesMaxDRunThrough < 5) {
+		if(timesMaxDRunThrough < 0) {
 			timesMaxDRunThrough++;
 			scale *= (maxHeight / heightTemp) * 0.95f;
 			maxWidth *= (maxHeight / heightTemp) * 1.5;

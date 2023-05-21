@@ -637,17 +637,14 @@ void composeDearImGuiFrame() {
 				ImGui::EndPopup();
 			}
 			if(ImGui::BeginPopupModal("Reset All", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-				ImGui::Text("Are you sure you want to delete everything?\nThis will restart the program.");
+				ImGui::Text("Are you sure you want to delete everything?\nThis will DELETE EVERYTHING.");
 				if (ImGui::Button("OK", ImVec2(120, 0))) {
 					ImGui::CloseCurrentPopup();
-					int pid = forkNew();
-					glfwHideWindow(window);
-					system("rm ./save.dclp ./tempicon.png expansionicon.png > /dev/null");
-					exit(0);
+					Saves::read("base-save.dclp");
 				}
 				ImGui::SetItemDefaultFocus();
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+				if(ImGui::Button("Cancel", ImVec2(120, 0))) ImGui::CloseCurrentPopup();
 				ImGui::EndPopup();
 			}
 			if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
