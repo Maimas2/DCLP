@@ -166,7 +166,7 @@ int loadFont(string fontPath, string name) {
 		
 		CharSet setToPush;
 
-		for (unsigned char c = 0; c < 170; c++) { // Weird number so the copyright symbol can load 
+		for (int c = 0; c < 255; c++) { // Weird number so the copyright symbol can load 
 			if (FT_Load_Char(*font, c, FT_LOAD_RENDER))
 			{
 				Log::warning(string("Failed to load char ") + string(reinterpret_cast<char*>(c)) + string("! Continuing, expect font failure/rendering issues."));
@@ -217,7 +217,7 @@ int loadFont(string fontPath, string name) {
 				((float)(*font)->glyph->advance.y)/(fontSize*64.f),
 				(*font)->glyph->bitmap_left/(float)fontSize,
 				(*font)->glyph->bitmap_top/(float)fontSize,
-				c
+				(unsigned char)c
 			};
 			setToPush.insert(pair<GLchar, Char>(c, ch));
 		}
@@ -253,6 +253,193 @@ bool shouldBeBolded(string in) {
 	}
 	return true;
 }
+bool checkChar(char &n, char next) { // Check if current char should have any sort of accent or decoration
+	if((int)n == -61) {
+		// ----------------------------------- A -----------------------------------
+		if(next == -96) { // à
+			n = (char)224;
+			return true;
+		}
+		if(next == -95) { // á
+			n = (char)225;
+			return true;
+		}
+		if(next == -94) { // â
+			n = (char)226;
+			return true;
+		}
+		if(next == -93) { // ã
+			n = (char)227;
+			return true;
+		}
+
+		if(next == -128) { // À
+			n = (char)192;
+			return true;
+		}
+		if(next == -127) { // Á
+			n = (char)193;
+			return true;
+		}
+		if(next == -126) { // Â
+			n = (char)194;
+			return true;
+		}
+		if(next == -125) { // Ã
+			n = (char)195;
+			return true;
+		}
+
+		if(next == -89) { // ç
+			n = (char)231;
+			return true;
+		}
+		if(next == -121) { // Ç
+			n = (char)199;
+			return true;
+		}
+
+		// -------------------------------- E -----------------------------
+
+		if(next == -88) { // è
+			n = (char)232;
+			return true;
+		}
+		if(next == -87) { // é
+			n = (char)233;
+			return true;
+		}
+		if(next == -86) { // ê
+			n = (char)234;
+			return true;
+		}
+
+		if(next == -120) { // È
+			n = (char)200;
+			return true;
+		}
+		if(next == -119) { // É
+			n = (char)201;
+			return true;
+		}
+		if(next == -118) { // Ê
+			n = (char)202;
+			return true;
+		}
+
+		// -------------------------------- I -----------------------------
+
+		if(next == -84) { // ì
+			n = (char)236;
+			return true;
+		}
+		if(next == -83) { // í
+			n = (char)237;
+			return true;
+		}
+		if(next == -82) { // î
+			n = (char)238;
+			return true;
+		}
+
+		if(next == -116) { // Ì
+			n = (char)204;
+			return true;
+		}
+		if(next == -115) { // Í
+			n = (char)205;
+			return true;
+		}
+		if(next == -114) { // Î
+			n = (char)206;
+			return true;
+		}
+
+
+		if(next == -79) { // ñ
+			n = (char)241;
+			return true;
+		}
+		if(next == -111) { // Ñ
+			n = (char)209;
+			return true;
+		}
+
+		// ----------------------------------- O -----------------------------------
+
+		if(next == -78) { // ò
+			n = (char)242;
+			return true;
+		}
+		if(next == -77) { // ó
+			n = (char)243;
+			return true;
+		}
+		if(next == -76) { // ô
+			n = (char)244;
+			return true;
+		}
+		if(next == -75) { // õ
+			n = (char)245;
+			return true;
+		}
+
+		if(next == -110) { // Ò
+			n = (char)210;
+			return true;
+		}
+		if(next == -109) { // Ó
+			n = (char)211;
+			return true;
+		}
+		if(next == -108) { // Ô
+			n = (char)212;
+			return true;
+		}
+		if(next == -107) { // Õ
+			n = (char)213;
+			return true;
+		}
+
+		// -------------------------------- U -----------------------------
+
+		if(next == -71) { // ù
+			n = (char)249;
+			return true;
+		}
+		if(next == -70) { // ú
+			n = (char)250;
+			return true;
+		}
+		if(next == -69) { // û
+			n = (char)251;
+			return true;
+		}
+
+		if(next == -103) { // Ù
+			n = (char)217;
+			return true;
+		}
+		if(next == -102) { // Ú
+			n = (char)218;
+			return true;
+		}
+		if(next == -101) { // Û
+			n = (char)219;
+			return true;
+		}
+
+		if(next == -67) { // ý
+			n = (char)253;
+			return true;
+		}
+		if(next == -99) { // Ý
+			n = (char)221;
+			return true;
+		}
+	}
+	return false;
+}
 float getStringWidthRaw(string in, float scale) {
 	if(currentFont == "") return 0.f;
 	float wid = 0.f;
@@ -268,6 +455,7 @@ float getStringWidthRaw(string in, float scale) {
 	
 	for( ; i < in.size(); i++) {
 		char n = in.at(i);
+		if(i < in.size()-1) if(checkChar(n, in.at(i+1))) i++;
 		if(n == '\n') {
 			isBold = false;
 			continue;
@@ -293,7 +481,7 @@ float getStringWidthRaw(string in, float scale) {
 			continue;
 		}
 		
-		Char currentChar = Charsets[currentFont + (isBold ? "b" : "")][in.at(i)];
+		Char currentChar = Charsets[currentFont + (isBold ? "b" : "")][n];
 		wid += currentChar.advanceX * scale * fontDownscale;
 	}
 	isBold = isBoldSave;
@@ -476,6 +664,8 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		}
 		char n = *currentCharr;
 
+		if(pos < toRender.size()-1) if(checkChar(n, *(currentCharr+1))) currentCharr++;
+
 		if(n == '~') {
 			isBold = !isBold;
 			continue;
@@ -628,7 +818,8 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 			currentX += 0.06f / fontDownscale;
 			continue;
 		}
-		Char currentChar = cf[*currentCharr];
+		//Char currentChar = cf[*currentCharr];
+		Char currentChar = cf[n];
 		if(currentChar.represents == '\n') {
 			currentX  = x/scale;
 			currentY -= currentFontHeight;
