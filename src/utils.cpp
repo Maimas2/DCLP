@@ -373,6 +373,8 @@ string doubleToString(double d) {
 void dclpExit() {
 	Saves::exit();
 
+	Log::log("Terminating saves and logging services, then terminating GLFW.");
+
 	Log::loggerExit();
 	
 	glfwDestroyWindow(window);

@@ -75,6 +75,7 @@ extern float textXPosTweak;
 extern float textYPosTweak;
 extern float expansionIconXSizeTweak;
 extern float expansionIconYSizeTweak;
+extern float expansionIconXPosTweak;
 extern bool  largeSingleLineVanillaBonuses;
 extern float tweakDividingLineY;
 extern float bottomTextSizeTweak;
@@ -98,6 +99,9 @@ extern int  exampleSelected;
 extern int  currentMenuTypee;
 extern int  currentMenuType;
 extern const char* examplesNames[];
+extern char* recentFiles[5];
+extern string recentFilesBeautified[5];
+extern int numberOfRecentFiles;
 
 extern bool isFirstFrame;
 extern bool isDemoShown;

@@ -543,19 +543,19 @@ void drawExpansionIcon() {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();
 			
-			drawTexturedQuad(0.47f, -0.815f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
+			drawTexturedQuad(0.47f+expansionIconXPosTweak/25.f, -0.815f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
 		}
 	} else if(cardLayout == 1) {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();
 			
-			drawTexturedQuad(0.763f, -0.495f, 0.07f*expansionIconXSizeTweak, 0.07f*expansionIconYSizeTweak);
+			drawTexturedQuad(0.763f+expansionIconXPosTweak/25.f, -0.495f, 0.07f*expansionIconXSizeTweak, 0.07f*expansionIconYSizeTweak);
 		}
 	} else if(cardLayout == 2) {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();
 			
-			drawTexturedQuad(0.47f, -0.82f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
+			drawTexturedQuad(0.47f+expansionIconXPosTweak/25.f, -0.82f, 0.08f*expansionIconXSizeTweak, 0.08f*expansionIconYSizeTweak);
 		}
 	}
 }

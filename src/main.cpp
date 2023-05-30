@@ -79,8 +79,6 @@ float targetFixedFps = 60.f;
 bool isWindowFocused = true;
 string pathPrefix;
 
-bool isPausedMaster = false;
-
 bool isFirstFrame = true;
 
 bool shouldRedraw = false;
@@ -90,6 +88,10 @@ float customEmbellishmentColor[3] = {1.f, 1.f, 1.f};
 float customSideColor[3] = {1.2f, 0.8f, 0.5f};
 
 float secondCustomCardColor[3] = {1.f, 1.f, 1.f};
+
+char* recentFiles[5];
+string recentFilesBeautified[5];
+int numberOfRecentFiles = 0;
 
 // int getChoice(char* c) {
 // 	for(int i = 0; i < 18; i++) {
@@ -354,6 +356,7 @@ float textXPosTweak = 0.f;
 float textYPosTweak = 0.f;
 float expansionIconXSizeTweak = 1.f;
 float expansionIconYSizeTweak = 1.f;
+float expansionIconXPosTweak  = 0.f;
 bool  largeSingleLineVanillaBonuses = true;
 float tweakDividingLineY = -0.4f;
 float bottomTextSizeTweak = 1.f;
@@ -371,7 +374,7 @@ bool  isExample = false;
 bool isOtherWindowShwon = false;
 bool isDemoShown = false;
 
-string currentFile = "save.dclp";
+string currentFile = "";
 
 void reloadPictures() {
 	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
@@ -387,7 +390,11 @@ void composeDearImGuiFrame() {
     doImguiWindow();
 }
 void draw() {
-    handlerDraw();
+    if(uiMode == 1) {
+		handlerDraw();
+	} else {
+		clear(0.f, 0.f, 0.f);
+	}
 	
 	composeDearImGuiFrame();
     ImGui::Render();
@@ -432,11 +439,6 @@ void key_callback(GLFWwindow* eventWindow, int key, int scancode, int action, in
     if(action != GLFW_PRESS) {
         return;
     }
-	if(isPausedMaster) update();
-	if(key == GLFW_KEY_F4 && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		isPausedMaster = !isPausedMaster;
-		Log::debug(string(isPausedMaster ? "Pausing " : "Unpausing ") + "game");
-	}
 	if(key == GLFW_KEY_F11) {
 		changeFullscreen();
 	}
@@ -517,7 +519,7 @@ GLFWwindow* createWindow(bool f) {
 	Log::debug("Refresh rate should be " + to_string(v->refreshRate) + "hz");
 	GLFWwindow* e;
 	
-	e = glfwCreateWindow(v->width, v->height, "Bang", NULL, NULL);
+	e = glfwCreateWindow(v->width, v->height, "DCLP", NULL, NULL);
 	if (!e)
     {
         glfwTerminate();
@@ -531,6 +533,8 @@ GLFWwindow* createWindow(bool f) {
 	glfwSetScrollCallback(e, scroll_callback);
 	glfwSetWindowFocusCallback(e, window_focus_callback);
 	glfwSetCursorPosCallback(e, cursor_position_callback);
+
+	glfwShowWindow(e);
 
 	return e;
 }
@@ -647,6 +651,8 @@ string replaceAll(string in, string old, string news) {
 	return in;
 }
 int main(int argc, char *argv[]) {
+	deleteFile("expansionicon.png");
+	deleteFile("tempicon.png");
 	showWindow = false;
 	bool isCli = false;
 	// for(int i = 1; i < argc; i++) { // Lengthy, but it works, so I don't care
@@ -760,6 +766,10 @@ int main(int argc, char *argv[]) {
 		iconUrl[i] = '\0';
 		expansionUrl[i] = '\0';
 	}
+
+	for(int i = 0; i < 5; i++) {
+		recentFiles[i] = (char*)malloc(512);
+	}
 	
 	vector<string> splitted = split(getPathToExe(), "/");
 	string pathPrefix;
@@ -780,7 +790,7 @@ int main(int argc, char *argv[]) {
     window = createWindow(false);
 
 	GLFWimage images[1]; 
-	images[0].pixels = stbi_load("images/white.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	images[0].pixels = stbi_load("images/icon_64px.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 	glfwSetWindowIcon(window, 1, images);
 	stbi_image_free(images[0].pixels);
     
@@ -804,8 +814,6 @@ int main(int argc, char *argv[]) {
 
 	Saves::readFirst();
 	
-   	res::initial();
-	
 	utilsSetup();
 	
 	textInit();
@@ -815,31 +823,35 @@ int main(int argc, char *argv[]) {
 	reloadPictures();
 	
 	glfwSwapInterval(1);
-
-	//changeFullscreen();
 	
 	float deltaFloat = 0.f;
 
 	setMat4("baseTransMat", glm::mat4(1.f));
 	setMat4("transMat", glm::mat4(1.f));
 	
-	glfwShowWindow(window);
-	
     while (!glfwWindowShouldClose(window)) {
-        calculateFPS();
+		calculateFPS();
         enablings();
 		
 		getWindowSize();
 		resetMatrix();
+
+		if(totalFramesEver == 0) {
+			setFont("trajan");
+			clear(0.f, 0.f, 0.f);
+			drawCenteredString("Loading...", 0.f, 0.f, 4.f, 1.f, 0.f, 0.f);
+			glfwSwapBuffers(window);
+			totalFramesEver++;
+			continue;
+		}
+		if(totalFramesEver == 1) {
+			res::initial();
+		}
 		
 		deltaFloat = glfwGetTime();
-        if(!isPausedMaster) {
-			update();
-			updateDelta = (glfwGetTime()-deltaFloat)*1000;
-			updateDeltaAdd += updateDelta;
-		} else {
-			updateDelta = 0.f;
-		}
+		update();
+		updateDelta = (glfwGetTime()-deltaFloat)*1000;
+		updateDeltaAdd += updateDelta;
 
 		if(isScreenshotting) {
 			screenShot();

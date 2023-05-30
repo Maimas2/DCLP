@@ -8,8 +8,11 @@ fcustomEmbellishmentColor3:1.000000
 fcustomSideColor1:1.200000
 fcustomSideColor2:0.800000
 fcustomSideColor3:0.500000
-fexpansionIconXSizeTweak:1.010000
-fexpansionIconYSizeTweak:0.740000
+fexpansionIconXPosTweak:-0.800000
+fexpansionIconXSizeTweak:1.390000
+fexpansionIconYSizeTweak:1.000000
+fmatWidthTweak:1.000000
+fnewlineSizeTweak:1.000000
 fsecondCustomCardColor1:1.000000
 fsecondCustomCardColor2:1.000000
 fsecondCustomCardColor3:1.000000
@@ -27,16 +30,16 @@ ccardText:Gain a card costing up to $4.
 ccardTitle:Workshop
 ccardType:Action
 ccardVersion:Copyright 2016 Rio Grande Games
-cexpansionUrl:file:///home/alex/Documents/opengl-dominion/expansion-images/base-set.png
+cexpansionUrl:https://wiki.dominionstrategy.com/images/thumb/b/b0/Dominion_icon.png/120px-Dominion_icon.png
 cheirloomText:
-cpictureUrl:http://wiki.dominionstrategy.com/images/2/24/WorkshopArt.jpg
+cmatText:
+cpictureUrl:https://wiki.dominionstrategy.com/images/2/24/WorkshopArt.jpg
 icardColor:0
 icardLayout:0
 icardSecondary:0
 imatColor:0
-bisLowRes:1
 bisSupply:1
 bisTrait:0
 bisTraveler:0
+bisTwoLinedType:0
 blargeSingleLineVanillaBonuses:1
-bisExample:1

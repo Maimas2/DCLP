@@ -34,10 +34,10 @@ namespace Log {
 		
 	}
 	void debug(string out) {
-		// addString("[    DEBUG    ] " + getTimestamp() + " " + out);
+		addString("[    DEBUG    ] " + getTimestamp() + " " + out);
 	}
 	void log(string out) {
-		// addString("[     LOG     ] " + getTimestamp() + " " + out);
+		addString("[     LOG     ] " + getTimestamp() + " " + out);
 	}
 	void warning(string out) {
 		addString("[   WARNING   ] " + getTimestamp() + " " + out);

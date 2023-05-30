@@ -6,6 +6,7 @@
 
 #include "main.h"
 #include "utils.h"
+#include "Log.h"
 
 using namespace std;
 
@@ -20,23 +21,39 @@ string custom_replace(string base, string og, string n) {
 
 bool False = false;
 
+extern int imageToLoad;
+
 namespace Saves {
    map<string, float*> floatPointers;
    map<string, char**> charPointers;
    map<string, int*>   intPointers;
    map<string, bool*>  boolPointers;
 
+   bool isMasterSave = true;
+
    void masterInit() {
+      isMasterSave = true;
+
       floatPointers.clear();
       boolPointers.clear();
       intPointers.clear();
       charPointers.clear();
 
+      charPointers["recentFiles0"] = &(recentFiles[0]);
+      charPointers["recentFiles1"] = &(recentFiles[1]);
+      charPointers["recentFiles2"] = &(recentFiles[2]);
+      charPointers["recentFiles3"] = &(recentFiles[3]);
+      charPointers["recentFiles4"] = &(recentFiles[4]);
+
       intPointers["uiType"]                    = &currentMenuTypee;
+      intPointers["recentFilesNum"]            = &numberOfRecentFiles;
 
       boolPointers["isFullscreen"]             = &isFullscreen;
+      boolPointers["isLowRes"]                 = &isLowRes;
    }
    void initDefaultSave() {
+      isMasterSave = false;
+      
       floatPointers.clear();
       boolPointers.clear();
       intPointers.clear();
@@ -54,6 +71,7 @@ namespace Saves {
       floatPointers["bottomTextSizeTweak"]     = &bottomTextSizeTweak;
       floatPointers["matWidthTweak"]           = &matWidthTweak;
       floatPointers["newlineSizeTweak"]        = &newlineSizeTweak;
+      floatPointers["expansionIconXPosTweak"]  = &expansionIconXPosTweak;
 
       floatPointers["customColor1"] = &customCardColor[0];
       floatPointers["customColor2"] = &customCardColor[1];
@@ -88,7 +106,6 @@ namespace Saves {
       intPointers["cardLayout"]    = &cardLayout;
       intPointers["matColor"]      = &matColor;
 
-      boolPointers["isLowRes"]                      = &isLowRes;
       boolPointers["isTraveler"]                    = &isTraveler;
       boolPointers["largeSingleLineVanillaBonuses"] = &largeSingleLineVanillaBonuses;
       boolPointers["isTrait"]                       = &isTrait;
@@ -96,6 +113,35 @@ namespace Saves {
       boolPointers["isTwoLinedType"]                = &twoLinedType;
    }
    void save(string file) {
+      if(!isMasterSave) {
+         int findRecentFile = -1;
+         const char* tempFile = file.c_str();
+         for(int i = 0; i < 5; i++) {
+            if(strcmp(tempFile, recentFiles[i]) == 0) {
+               findRecentFile = i;
+               Log::debug("Found recentFile at " + to_string(findRecentFile));
+               break;
+            }
+         }
+         if(findRecentFile == -1) {
+            numberOfRecentFiles = min(5, ++numberOfRecentFiles);
+         }
+         for(int i = (findRecentFile == -1 ? 4 : findRecentFile-1); i > 0; i--) {
+            //recentFiles[i] = recentFiles[i-1];
+            memcpy(recentFiles[i], recentFiles[i-1], strlen(recentFiles[i-1]));
+            recentFiles[i][strlen(recentFiles[i-1])] = '\0';
+         }
+         
+         memcpy(recentFiles[0], file.c_str(), file.size());
+         recentFiles[0][file.size()+1] = '\0';
+
+         for(int i = 0; i < 5; i++) {
+            string base = string(recentFiles[i]);
+            base = split(base, "/").back();
+            recentFilesBeautified[i] = base;
+         }
+      }
+
       FILE *f = fopen(file.c_str(), "w");
       if(f == NULL) {
          cout << "File was NULL, not saving. This is probably an uh oh monent." << endl;
@@ -105,24 +151,44 @@ namespace Saves {
          fputs(("f" + it->first + ":" + to_string(*(it->second)) + "\n").c_str(), f);
       }
       for(std::map<string, char**>::iterator it = charPointers.begin(); it != charPointers.end(); ++it) {
+         if(it->first.starts_with("recentFiles")) {
+            fputs(("crecentFiles" + to_string(it->first[it->first.size()-1]-48) + ":" + recentFiles[it->first[it->first.size()-1]-48] + "\n").c_str(), f);
+            //it->first[it->first.size()-1]-48
+            continue;
+         }
          fputs(("c" + it->first + ":" + *(it->second) + "\n").c_str(), f);
       }
       for(std::map<string, int*>::iterator it = intPointers.begin(); it != intPointers.end(); ++it) {
          fputs(("i" + it->first + ":" + to_string(*(it->second)) + "\n").c_str(), f);
       }
       for(std::map<string, bool*>::iterator it = boolPointers.begin(); it != boolPointers.end(); ++it) {
+         if(it->second == nullptr) {
+            Log::warning("An iterator's `second` was a nullptr, skipping.");
+            continue;
+         }
          fputs(("b" + it->first + ":" + to_string(*(it->second)) + "\n").c_str(), f);
       }
       fclose(f);
    }
    void save() {
+      if(currentFile == "") {
+         Log::warning("currentFile was empty, so not saving.");
+         return;
+      }
       string g = string(cardText);
       g = custom_replace(g, "\n", "\\n");
       cardText = (char*)g.c_str();
       save(currentFile);
    }
    void read(string file) {
+      imageToLoad = 0;
+
       ifstream in(file.c_str());
+      if(!in.is_open()) {
+         Log::warning("Unable to open save file " + file + "!");
+         in.close();
+         return;
+      }
       string contents((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
       in.close();
       vector<string> lines = split(contents, "\n");
@@ -175,8 +241,14 @@ namespace Saves {
    void readFirst() {
       masterInit();
       read("master.save");
+
+      for(int i = 0; i < 5; i++) {
+         string base = string(recentFiles[i]);
+         base = split(base, "/").back();
+         recentFilesBeautified[i] = base;
+      }
+      
       initDefaultSave();
-      read();
    }
    void exit() {
       masterInit();

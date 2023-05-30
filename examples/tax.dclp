@@ -28,10 +28,10 @@ ccardText:Add @2 to a Supply pile.\n-\nSetup: Add @1 to each Supply pile. When a
 ccardTitle:Tax
 ccardType:Event
 ccardVersion:Copyright 2016 Rio Grande Games
-cexpansionUrl:file:///home/alex/Documents/opengl-dominion/expansion-images/empires.png
+cexpansionUrl:https://wiki.dominionstrategy.com/images/thumb/2/2a/Empires_icon.png/120px-Empires_icon.png
 cheirloomText:
 cmatText:
-cpictureUrl:http://wiki.dominionstrategy.com/images/2/21/TaxArt.jpg
+cpictureUrl:https://wiki.dominionstrategy.com/images/2/21/TaxArt.jpg
 icardColor:0
 icardLayout:1
 icardSecondary:0

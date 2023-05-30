@@ -27,9 +27,9 @@ ccardText:When you gain a Cursed card, gain a Loot and a Curse.
 ccardTitle:Cursed
 ccardType:
 ccardVersion:Copyright 2022 Rio Grande Games
-cexpansionUrl:file:///home/alex/Documents/opengl-dominion/expansion-images/plunder.png
+cexpansionUrl:https://wiki.dominionstrategy.com/images/thumb/b/b8/Plunder_%28expansion%29_icon.png/109px-Plunder_%28expansion%29_icon.png
 cheirloomText:
-cpictureUrl:http://wiki.dominionstrategy.com/images/4/45/CursedArt.jpg
+cpictureUrl:https://wiki.dominionstrategy.com/images/4/45/CursedArt.jpg
 icardColor:18
 icardLayout:1
 icardSecondary:0

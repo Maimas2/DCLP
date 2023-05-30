@@ -27,4 +27,6 @@ master.save
 e.dclp
 freetype/
 freetype-bin/
-libimgui.a
+./libimgui.a
+saves/
+saves/*
