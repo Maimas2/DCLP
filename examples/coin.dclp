@@ -27,9 +27,9 @@ ccardText:$1\nPut this on your Tavern mat.\n-\nAfter you play an Action card, yo
 ccardTitle:Coin of the Realm
 ccardType:Treasure - Reserve
 ccardVersion:Copyright 2016 Rio Grande Games
-cexpansionUrl:file:///home/alex/Documents/opengl-dominion/expansion-images/adventures.png
+cexpansionUrl:https://wiki.dominionstrategy.com/images/thumb/5/5e/Adventures_icon.png/101px-Adventures_icon.png
 cheirloomText:
-cpictureUrl:https://wiki.dominionstrategy.com/images/thumb/5/5e/Adventures_icon.png/101px-Adventures_icon.png
+cpictureUrl:https://wiki.dominionstrategy.com/images/4/43/Coin_of_the_RealmArt.jpg
 icardColor:5
 icardLayout:0
 icardSecondary:2

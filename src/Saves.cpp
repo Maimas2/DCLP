@@ -7,6 +7,7 @@
 #include "main.h"
 #include "utils.h"
 #include "Log.h"
+#include "ImguiManager.h"
 
 using namespace std;
 
@@ -113,7 +114,7 @@ namespace Saves {
       boolPointers["isTwoLinedType"]                = &twoLinedType;
    }
    void save(string file) {
-      if(!isMasterSave) {
+      if(!isMasterSave && uiMode != 3) {
          int findRecentFile = -1;
          const char* tempFile = file.c_str();
          for(int i = 0; i < 5; i++) {
@@ -240,7 +241,7 @@ namespace Saves {
    }
    void readFirst() {
       masterInit();
-      read("master.save");
+      read("master.mdclp");
 
       for(int i = 0; i < 5; i++) {
          string base = string(recentFiles[i]);
@@ -252,7 +253,8 @@ namespace Saves {
    }
    void exit() {
       masterInit();
-      save("master.save");
+      save("master.mdclp");
+      isMasterSave = false;
       initDefaultSave();
       save();
    }

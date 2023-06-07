@@ -23,10 +23,11 @@ save.dclp
 tempicon.png
 .gitignore
 saves
-master.save
+master.mdclp
 e.dclp
 freetype/
 freetype-bin/
 ./libimgui.a
-saves/
-saves/*
+cards/
+cards/*
+expansions/*

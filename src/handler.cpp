@@ -7,14 +7,9 @@
 #include <vector>
 #include <map>
 
-#include "utils.h"
-#include "handler.h"
-#include "Image.h"
 #include "States.h"
-#include "main.h"
-#include "Text.h"
-#include "Log.h"
-#include "Resources.h"
+#include "ImguiManager.h"
+#include "Expansion-explorer.h"
 
 using namespace std;
 
@@ -47,9 +42,17 @@ void onMouseRelease() {
 	isMouseDown = false;
 }
 
+void handlerExternDraw() {
+	t->draw();
+}
+
 void handlerDraw() {
 	setTint(1.f, 1.f, 1.f);
 	setFloat("alpha", 1.f);
 	
-    t->draw();
+    if(uiMode == 2) {
+		drawExpansionExplorer();
+	} else {
+		t->draw();
+	}
 }

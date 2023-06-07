@@ -438,6 +438,12 @@ bool checkChar(char &n, char next) { // Check if current char should have any so
 			return true;
 		}
 	}
+	if((int)n == -66) {
+		cout << 2 << endl;
+		if(next == -41) {
+			return true;
+		}
+	}
 	return false;
 }
 float getStringWidthRaw(string in, float scale) {

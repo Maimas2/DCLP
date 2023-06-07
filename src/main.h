@@ -37,6 +37,8 @@ void screenShot();
 void copyToClipboard();
 void reloadPictures();
 
+void openErrorPopup(string whoops);
+
 extern float delta;
 extern float drawDelta, updateDelta;
 extern float averageDrawDelta, averageUpdateDelta;
@@ -66,7 +68,6 @@ extern float yMove;
 extern float zoom;
 extern int   cardLayout;
 extern bool  isLowRes;
-extern bool  isScreenshotting;
 extern bool  isTraveler;
 extern float textXTweak;
 extern float textSizeTweak;

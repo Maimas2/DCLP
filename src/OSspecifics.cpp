@@ -30,10 +30,10 @@ bool directoryExists(string dir) {
 	return filesystem::exists(dir);
 }
 void createDirectory(string dir) {
-	system(("mkdir " + dir).c_str());
+	filesystem::create_directories(dir);
 }
 void deleteFile(string file) {
-	system(("rm " + file).c_str());
+	filesystem::remove(file);
 }
 int forkNew() {
 	int pid = fork();

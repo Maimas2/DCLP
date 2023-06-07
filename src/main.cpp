@@ -102,6 +102,7 @@ int numberOfRecentFiles = 0;
 static void enablings() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
     glEnable(GL_MULTISAMPLE);
     //glDisable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_TEST);
@@ -327,7 +328,7 @@ void copyToClipboard() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	setMat4("baseTransMat", glm::mat4(1.f));
 }
-char* cardTitle   = (char*)malloc(128);
+char* cardTitle   = (char*)malloc(128);  // This is used around the program as a temporary storage for strings.
 char* cardType    = (char*)malloc(128);
 char* cardText    = (char*)malloc(512);
 char* matText     = (char*)malloc(512);
@@ -389,14 +390,26 @@ int currentMenuType  = 0;
 void composeDearImGuiFrame() {
     doImguiWindow();
 }
+string whoopsMessage;
+void openErrorPopup(string whoops) {
+	ImGui::OpenPopup("Whoops");
+	whoopsMessage = whoops;
+}
 void draw() {
-    if(uiMode == 1) {
+    if(uiMode > 0) {
 		handlerDraw();
 	} else {
 		clear(0.f, 0.f, 0.f);
 	}
 	
 	composeDearImGuiFrame();
+
+	if(ImGui::BeginPopupModal("Whoops")) {
+		ImGui::Text("%s", whoopsMessage.c_str());
+		if(ImGui::Button("My bad")) ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+	
     ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -577,7 +590,6 @@ void imguiInit() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init();
 }
-bool isScreenshotting = false;
 #define incrementLoop() i++;if(i>=argc) break;
 void printHelp() {
 	cout << "Dominion Command Line Card Creator" << endl <<
@@ -800,8 +812,6 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 	
-	if(!isScreenshotting) imguiInit();
-	
    	textInit();
 	loadFont("cinzel.ttf", "trajan");
 	loadFont("cinzel-bold.ttf", "trajanb");
@@ -810,7 +820,9 @@ int main(int argc, char *argv[]) {
 	loadFont("freefonts/FreeSerifItalic.ttf", "tnri");
 	loadFont("freefonts/FreeSerifItalic.ttf", "tnrib");
 	
-	glClearColor(0.f, 0.f, 0.f, 1.0f);
+	imguiInit();
+
+	glClearColor(0.f, 0.f, 0.f, 0.0f);
 
 	Saves::readFirst();
 	
@@ -852,12 +864,6 @@ int main(int argc, char *argv[]) {
 		update();
 		updateDelta = (glfwGetTime()-deltaFloat)*1000;
 		updateDeltaAdd += updateDelta;
-
-		if(isScreenshotting) {
-			screenShot();
-			isScreenshotting = false;
-			continue;
-		}
 		
 		deltaFloat = glfwGetTime();
 		if(isWindowFocused) {// && shouldRedraw) {

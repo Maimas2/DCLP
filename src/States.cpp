@@ -159,18 +159,20 @@ void drawBase() {
 		setVec2("maxNE", 0.55f, 0.75f);
 		setVec2("maxSW", -0.55f, -0.05f);
 		
-		res::tempIcon.bind();
-		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
-		if(wxh < 1.f) {
-			wid    = 1.1f;
-			height = 1.1f/wxh;
-		} else {
-			wid    = 0.8f*wxh;
-			height = 0.8f;
+		if(strcmp(iconUrl, "") != 0) {
+			res::tempIcon.bind();
+			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+			if(wxh < 1.f) {
+				wid    = 1.1f;
+				height = 1.1f/wxh;
+			} else {
+				wid    = 0.8f*wxh;
+				height = 0.8f;
+			}
+			setBool("maxX", true);
+			drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.35f - ((height/2)*zoom - yMove), wid*zoom, height*zoom);
+			setBool("maxX", false);
 		}
-		setBool("maxX", true);
-		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.35f - ((height/2)*zoom - yMove), wid*zoom, height*zoom);
-		setBool("maxX", false);
 		if(cardSecondary == 0) {
 			res::baseCard.bind();
 			
@@ -184,18 +186,12 @@ void drawBase() {
 		} else {
 			res::baseCard.bind();
 			
-			drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, tempColor);
+			drawColoredTexture(-0.6522547652254765, -1.f, 3.f, 0.6522547652254765*2, 2.f, tempColor);
 			
 			if(isNight) {
 				res::secondaryNight.bind();
 			} else {
 				res::secondaryCard.bind();
-			}
-			
-			if(isScreenshotting) {
-				for(int i = 0; i < 12; i++) {
-					secondaryColor[i] = co[cardSecondary-1][i % 3];
-				}
 			}
 			
 			drawColoredTexture(-0.6522547652254765, -1.f, 2.f, 0.6522547652254765*2, 2.f, secondaryColor);
@@ -539,6 +535,7 @@ void drawBottomTexts() {
 	setFont("tnr");
 }
 void drawExpansionIcon() {
+	if(strcmp(expansionUrl, "") == 0) return;
 	if(cardLayout == 0) {
 		if(res::tempExpansionIcon.id != 0) {
 			res::tempExpansionIcon.bind();

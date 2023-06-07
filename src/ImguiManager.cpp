@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 
 #include <imgui.h>
@@ -5,12 +6,16 @@
 #include <imgui_impl_opengl3.h>
 
 #include <ImGuiFileDialog.h>
+#include <math.h>
 
 #include "Saves.h"
 #include "utils.h"
 #include "main.h"
 #include "OSspecifics.h"
 #include "artworks.h"
+#include "Expansion-explorer.h"
+#include "Log.h"
+#include "Saves-class.h"
 
 #include "clip.h"
 
@@ -54,8 +59,7 @@ const char* examplesNames[] = {
 	"Tax",
 	"Cursed (trait)",
 	"Curse (base card)",
-	"Bane Marker",
-	"Examples of many options"
+	"Bane Marker"
 };
 const char* examplesUrls[] = {
 	"examples/workshop.dclp",
@@ -68,8 +72,7 @@ const char* examplesUrls[] = {
 	"examples/tax.dclp",
 	"examples/cursed.dclp",
 	"examples/curse.dclp",
-	"examples/bane.dclp",
-	"examples/all.dclp"
+	"examples/bane.dclp"
 };
 float expansionAspects[] = {
 	0.85f,
@@ -148,9 +151,15 @@ char** shownArtworks = (char**)malloc(sizeof(char*) * 700);
 int   imageToLoad = 0;
 int   p = 0;
 
+string returnV;
+
+char* expansionName = (char*)malloc(128);
+
 int uiMode = 0;
 // 0 - main choosing screen, appears at startup
 // 1 - editing a card
+// 2 - editing an expansion
+// 3 - editing a card from an expansion
 
 const char* menuTypes[] {
 	(char*)"Tabs",
@@ -177,6 +186,11 @@ void endMenuItem() {
 	}
 }
 
+char* savePaths[128];
+int selectedExpansion = 0;
+int numberOfSelectableExpansions = 0;
+vector<string> paths;
+
 void doImguiWindow() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -187,13 +201,14 @@ void doImguiWindow() {
 
         if(ImGui::BeginMainMenuBar()) {
             if(ImGui::Button("S")) {
+				if(uiMode == 2 || uiMode == 3) expansionExit();
                 Saves::save();
                 cardText = (char*)malloc(512);
                 Saves::read();
 				uiMode = 0;
             }
 			if(ImGui::BeginMenu("File")) {
-				if(ImGui::MenuItem("New empty file")) {
+				if(uiMode < 2 && ImGui::MenuItem("New empty file")) {
 					if(uiMode == 1) Saves::save();
 					deleteFile("tempicon.png");
 					hasImage = false;
@@ -202,7 +217,7 @@ void doImguiWindow() {
 					uiMode = 1;
 				}
 
-				if(uiMode == 1 && ImGui::MenuItem("Save")) {
+				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Save")) {
 					if(currentFile == "") {
 						ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 					} else {
@@ -214,14 +229,14 @@ void doImguiWindow() {
 				if(uiMode == 1 && ImGui::MenuItem("Save as...")) {
 					ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 				}
-				if(uiMode == 1) ImGui::Text("%s", ("Current save file: " + currentFile).c_str());
+				if(uiMode == 1 || uiMode == 3) ImGui::Text("%s", ("Current save file: " + currentFile).c_str());
 
-				if(ImGui::MenuItem("Load .DCLP file")) {
+				if(uiMode != 3 && ImGui::MenuItem("Load .DCLP file")) {
 					ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 				}
 
 				if(ImGui::BeginMenu("Load example card")) {
-					if(uiMode == 1) ImGui::Text("THIS WILL OVERWRITE ALL PREVIOUS WORK");
+					if(uiMode == 1 || uiMode == 3) ImGui::Text("THIS WILL OVERWRITE ALL PREVIOUS WORK");
 					ImGui::ListBox("Load Example", &exampleSelected, examplesNames, IM_ARRAYSIZE(examplesNames), 15);
 					if(ImGui::Button("Load")) {
 						if(uiMode == 0) {
@@ -236,7 +251,7 @@ void doImguiWindow() {
 					ImGui::EndMenu();
 				}
 
-				if(uiMode == 1 && ImGui::BeginMenu("Click To Reset All")) {
+				if((uiMode == 1 || uiMode == 3) && ImGui::BeginMenu("Click To Reset All")) {
 					if(ImGui::MenuItem("Are you sure? This can't be undone.")) {
 						deleteFile("expansionicon.png");
 						deleteFile("tempicon.png");
@@ -245,9 +260,9 @@ void doImguiWindow() {
 					ImGui::EndMenu();
 				}
 
-				if(uiMode == 1 && ImGui::MenuItem("Save image to out.jpg")) 		    screenShot();
+				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Save image to out.jpg")) 		    screenShot();
 		
-				if(uiMode == 1 && ImGui::MenuItem("Copy image to Clipboard")) 		copyToClipboard();
+				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Copy image to Clipboard")) 			copyToClipboard();
 
 				ImGui::Checkbox("Are Images Low Res? (requires restart to take effect)", &isLowRes);
 
@@ -389,6 +404,100 @@ void doImguiWindow() {
 			}
 			ii++;
 
+			//if(ImGui::Button("Ascend, ascend, ascend!")) {
+			if(ImGui::Button("Create new expansion")) {
+				ImGui::OpenPopup("Create Expansion");
+				free(expansionName);
+				expansionName = (char*)malloc(128);
+				for(int i = 0; i < 128; i++) {
+					expansionName[i] = 0;
+				}
+			}
+
+			if(ImGui::Button("Load Expansion")) {
+				paths.clear();
+				for(filesystem::directory_entry file : filesystem::directory_iterator("./expansions/")) {
+					if(!filesystem::exists(file.path().string() + "/master.mdclp")) {
+						continue;
+					}
+					paths.push_back(file.path());
+					Log::log("Found expansion: " + file.path().string());
+				}
+				ImGui::OpenPopup("Choose expansion");
+				numberOfSelectableExpansions = 0;
+				for(int i = 0; i < paths.size(); i++) {
+					Save* temp = new Save;
+					temp->charPointers["name"] = &expansionName;
+					temp->read(paths[i] + "/master.mdclp");
+					//memcpy(savePaths[i], expansionName, strlen(expansionName));
+					savePaths[i] = (char*)malloc(256);
+					strcpy(savePaths[i], expansionName);
+					delete temp;
+					numberOfSelectableExpansions++;
+				}
+			}
+
+			if(ImGui::BeginPopupModal("Create Expansion", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::InputText("Name", expansionName, 120);
+
+				if(ImGui::Button("Create")) {
+					returnV = createExpansion("./expansions/" + string(expansionName) + "/");
+					if(returnV == "") {
+						uiMode = 2;
+						ImGui::CloseCurrentPopup();
+					} else {
+						ImGui::OpenPopup("Expansion ERROR");
+					}
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("Exit")) {
+					ImGui::CloseCurrentPopup();
+				}
+
+				if(ImGui::BeginPopupModal("Expansion ERROR", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+					ImGui::Text("%s", returnV.c_str());
+					if(ImGui::Button("Cool")) ImGui::CloseCurrentPopup();
+					ImGui::EndPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
+			if(ImGui::BeginPopupModal("Choose expansion", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::ListBox("Choose expansion", &selectedExpansion, savePaths, numberOfSelectableExpansions, 5);
+
+				if(numberOfSelectableExpansions != 0 && ImGui::Button("Load")) {
+					strcpy(cardTitle, paths[selectedExpansion].c_str());
+					if(string(cardTitle) == "") {
+						returnV = "Path cannot be empty!";
+						ImGui::OpenPopup("Expansion ERROR");
+					} else {
+						returnV = loadExpansion(string(cardTitle) + "/");
+						cardTitle[0] = 0;
+						if(returnV != "") {
+							ImGui::OpenPopup("Expansion ERROR");
+						} else {
+							uiMode = 2;
+							ImGui::CloseCurrentPopup();
+						}
+					}
+				} else if(numberOfSelectableExpansions == 0) {
+					ImGui::Text("Create an expansion first");
+				}
+
+				if(ImGui::Button("Close")) {
+					ImGui::CloseCurrentPopup();
+				}
+
+				if(ImGui::BeginPopupModal("Expansion ERROR", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+					ImGui::Text("%s", returnV.c_str());
+					if(ImGui::Button("Cool")) ImGui::CloseCurrentPopup();
+					ImGui::EndPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+
             ImGui::End();
         }
 
@@ -419,6 +528,14 @@ void doImguiWindow() {
 		if(uiMode == 0) {
 			return;
 		}
+		if(uiMode == 2) {
+			ImGui::Begin("Expand");
+
+			expansionImgui();
+
+			ImGui::End();
+			return;
+		}
 
 		const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 20, main_viewport->WorkPos.y + 20), ImGuiCond_FirstUseEver);
@@ -427,6 +544,15 @@ void doImguiWindow() {
         ImGui::Begin("Options", NULL);
 
 		currentMenuType = currentMenuTypee;
+
+		if(uiMode == 3) {
+			if(ImGui::Button("Exit to expansion")) {
+				Saves::save();
+                cardText = (char*)malloc(512);
+                Saves::read();
+				uiMode = 2;
+			}
+		}
 
 		if(currentMenuType == 0) {
 			ImGui::NewLine();

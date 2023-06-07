@@ -370,7 +370,10 @@ string doubleToString(double d, int precision) {
 string doubleToString(double d) {
 	return doubleToString(d, 0);
 }
+void expansionExit();
 void dclpExit() {
+	expansionExit();
+
 	Saves::exit();
 
 	Log::log("Terminating saves and logging services, then terminating GLFW.");
@@ -567,12 +570,11 @@ string split(string og, string splitter, bool isFirst) {
 	}
 	return "";
 }
-void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) {
+void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) { // IMPORTANT: DOES NOT SUPPORT WINDOWS
 	if(isLoaded) {
 		*toLoad = res::setupImage(fileOut, true);
 		return;
 	}
-	cout << url << endl;
 	pid_t pid=fork();
     if (pid==0) { /* child process */
         static char *argv[]={(char*)"curl", (char*)url.c_str(), (char*)"--output", (char*)fileOut.c_str(), NULL};
