@@ -191,6 +191,8 @@ int selectedExpansion = 0;
 int numberOfSelectableExpansions = 0;
 vector<string> paths;
 
+int menuAction = 0;
+
 void doImguiWindow() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -227,12 +229,12 @@ void doImguiWindow() {
 					}
 				}
 				if(uiMode == 1 && ImGui::MenuItem("Save as...")) {
-					ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", "cards/", 1, nullptr, ImGuiFileDialogFlags_Modal);
 				}
-				if(uiMode == 1 || uiMode == 3) ImGui::Text("%s", ("Current save file: " + currentFile).c_str());
+				if(uiMode == 3) ImGui::Text("%s", ("Current save file: " + currentFile).c_str());
 
 				if(uiMode != 3 && ImGui::MenuItem("Load .DCLP file")) {
-					ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", "cards/", 1, nullptr, ImGuiFileDialogFlags_Modal);
 				}
 
 				if(ImGui::BeginMenu("Load example card")) {
@@ -270,45 +272,59 @@ void doImguiWindow() {
 			}
 			if(ImGui::BeginMenu("Help")) {
 				ImGui::Combo("UI Orginization", &currentMenuTypee, menuTypes, 3);
-				if(ImGui::BeginMenu("Legend for card text symbols")) {
-					ImGui::Text("$1: Money symbol (supports numbers, '?', and '*')");
-					ImGui::Text("@1: Debt symbol  (same as money symbol)");
-					ImGui::Text("2%%: VP symbol; number must be before '%%'");
-					ImGui::Text("^: Potion symbol (supports numbers)");
-					ImGui::Text("'-' alone on line: horizontal dividing line");
-					ImGui::Text("[i] at start of line: italicise the line");
-
-					ImGui::EndMenu();
+				if(ImGui::MenuItem("Legend for card text symbols")) {
+					menuAction = 2;
 				}
-				if(ImGui::BeginMenu("Notes & Credits")) {
-					ImGui::Text("---- Notes and Credits ----");
-					ImGui::Text("This program is licensed under the GNU General Public License v3.0.\nPlease refer to the following website for more info:");
-					ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
-					ImGui::NewLine();
-					ImGui::Text("List of libraries used in this program:");
-					ImGui::BulletText("ImGui (GUI) (MIT License)");
-					ImGui::BulletText("GLFW (windowing) (zlib/libpng license)");
-					ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder) (check clip/LICENSE.txt for license)");
-					ImGui::BulletText("Curl (Image downloading) (See curl-license.txt for its license)");
-					ImGui::BulletText("Freetype (font loading) (FTL License)");
-					ImGui::BulletText("stb_image (Image management) (MIT/Public Domain)");
-					ImGui::BulletText("OpenGL (Rendering) (No License due to the nature of OpenGL)");
-					ImGui::BulletText("ImGuiFileDialog (File input) (MIT License)");
-					ImGui::NewLine();
-					ImGui::Text("Example image By National Institute of Standards and Technology - National Institute of Standards and Technology, \n\
-					Public Domain, https://commons.wikimedia.org/w/index.php?curid=31557618");
-
-					ImGui::EndMenu();
-				}
-				if(ImGui::BeginMenu("Any questions?")) {
-					ImGui::Text("DM on Discord at Maimas2#4562 with any questions.");
-
-					ImGui::EndMenu();
+				if(ImGui::MenuItem("Notes & Credits")) {
+					menuAction = 1;
 				}
 				
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
+		}
+		if(menuAction == 1) {
+			ImGui::OpenPopup("Notes");
+			menuAction = 0;
+		}
+		if(menuAction == 2) {
+			ImGui::OpenPopup("Legend");
+			menuAction = 0;
+		}
+		if(ImGui::BeginPopupModal("Notes", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("---- Notes and Credits ----");
+			ImGui::Text("This program is licensed under the GNU General Public License v3.0.\nPlease refer to the following website for more info:");
+			ImGui::Text("https://www.gnu.org/licenses/gpl-3.0.en.html");
+			ImGui::NewLine();
+			ImGui::Text("List of libraries and tools used in this program:");
+			ImGui::BulletText("ImGui (GUI) (MIT License)");
+			ImGui::BulletText("GLFW (windowing) (zlib/libpng license)");
+			ImGui::BulletText("Clip (Clipboard management, see 'clip' subfolder) (check clip/LICENSE.txt for license)");
+			ImGui::BulletText("Curl (Image downloading) (See curl-license.txt for its license)");
+			ImGui::BulletText("Freetype (font loading) (FTL License)");
+			ImGui::BulletText("stb_image (Image management) (MIT/Public Domain)");
+			ImGui::BulletText("OpenGL (Rendering) (No License due to the nature of OpenGL)");
+			ImGui::BulletText("ImGuiFileDialog (File input) (MIT License)");
+
+			ImGui::NewLine();
+
+			ImGui::Text("DM on Discord at Maimas2#4562 with any questions.");
+
+			if(ImGui::Button("Exit")) ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
+		if(ImGui::BeginPopupModal("Legend", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("$1: Money symbol (supports numbers, '?', and '*')");
+			ImGui::Text("@1: Debt symbol  (same as money symbol)");
+			ImGui::Text("2%%: VP symbol; number must be before '%%'");
+			ImGui::Text("^: Potion symbol (supports numbers)");
+			ImGui::Text("'-' alone on line: horizontal dividing line");
+			ImGui::Text("[i] at start of line: italicise the line");
+
+			if(ImGui::Button("Exit")) ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
 		}
 
         if(uiMode == 0) { // Splash screen
@@ -319,7 +335,7 @@ void doImguiWindow() {
             ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkSize.x/2-200, main_viewport->WorkSize.y/2-200), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
 
-            ImGui::Begin("Load a File", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+            ImGui::Begin("Splash Screen", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
             float windowWidth = ImGui::GetWindowSize().x;
             float textWidth = ImGui::CalcTextSize("Dominion Card Designer").x;
@@ -356,7 +372,7 @@ void doImguiWindow() {
 			ii++;
 
 			if(ImGui::Button("Load .dclp file")) {
-				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+				ImGuiFileDialog::Instance()->OpenDialog("Choose DCLP File", "Choose DCLP File", ".dclp", "saves/", 1, nullptr, ImGuiFileDialogFlags_Modal);
 			}
 
 			ImGui::SameLine(windowWidth - (ImGui::CalcTextSize(recentFilesBeautified[ii].c_str()).x + 20));
