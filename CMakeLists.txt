@@ -4,12 +4,16 @@ project(DCLP)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(glfw)
 add_subdirectory(clip)
+
+find_package(CURL REQUIRED)
 
 find_package(Freetype REQUIRED)
 
@@ -45,5 +49,8 @@ target_include_directories(DCLP PRIVATE ${FREETYPE_INCLUDE_DIRS})
 target_link_libraries(DCLP glfw ${GLFW_LIBRARIES})
 target_link_libraries(DCLP freetype)
 target_link_libraries(DCLP clip)
+
+include_directories(${CURL_INCLUDE_DIR})
+target_link_libraries(DCLP ${CURL_LIBRARIES})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")

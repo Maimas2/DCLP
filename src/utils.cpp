@@ -1,5 +1,6 @@
 #ifndef GL_IS_INCLUDED
 #define GL_IS_INCLUDED
+//#include <curl/easy.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #endif
@@ -28,6 +29,8 @@
 #include "Log.h"
 #include "Text.h"
 #include "Saves.h"
+
+#include "curl/curl.h"
 
 using namespace std;
 
@@ -144,8 +147,7 @@ void checkShader(int shader) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if(!success) {
 		glGetShaderInfoLog(shader, 300, NULL, returnLog);
-		Log::error("Shader compilation failed! Dropping into fixed function pipeline! This will most surely cause rendering issues/failure. Here is the error:\n\t\t\t\t\t\t\t" +
-			string(returnLog));
+		Log::error("Shader compilation failed! Dropping into fixed function pipeline! This will most surely cause rendering issues/failure. Here is the error:\n\t\t\t\t\t\t\t" + string(returnLog));
 	}
 }
 
@@ -575,13 +577,29 @@ void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) { // IMP
 		*toLoad = res::setupImage(fileOut, true);
 		return;
 	}
+	CURL* image = curl_easy_init();
+	FILE* f = fopen(fileOut.c_str(), "wb");
+	curl_easy_setopt(image, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL); 
+	curl_easy_setopt(image, CURLOPT_WRITEDATA, f);
+
+	auto result = curl_easy_perform(image);
+	if(result) {
+		Log::warning("Loading of image " + url + " failed!");
+		return;
+	}
+
+	curl_easy_cleanup(image);
+
+	fclose(f);
+
+	*toLoad = res::setupImage(fileOut, true);
+	return;
 	pid_t pid=fork();
-    if (pid==0) { /* child process */
-        static char *argv[]={(char*)"curl", (char*)url.c_str(), (char*)"--output", (char*)fileOut.c_str(), NULL};
-        execv("/bin/curl", argv);
-        exit(127); /* only if execv fails */
-    } else { /* pid!=0; parent process */
-        waitpid(pid,0,0); /* wait for child to exit */
+    if(pid == 0) {
+		
+    } else {
+        waitpid(pid,0,0);
 		*toLoad = res::setupImage(fileOut, true);
     }
 }

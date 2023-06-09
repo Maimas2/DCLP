@@ -16,5 +16,13 @@ cd clip
 git submodule init
 cd ..
 
+git clone https://github.com/curl/curl.git
+cd curl
+git submodule init
+cd ..
+
+mkdir cards
+mkdir expansions
+
 bash build-freetype.sh
 bash re-build.sh

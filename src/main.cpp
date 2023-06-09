@@ -1,5 +1,6 @@
 #ifndef GL_IS_INCLUDED
 #define GL_IS_INCLUDED
+#include "curl/curl.h"
 #include "glm/geometric.hpp"
 #include <cstdint>
 #include <glad/glad.h>
@@ -794,6 +795,9 @@ int main(int argc, char *argv[]) {
 	if(logReturn != 0) {
 		cout << "Logger init failed!" << endl;
 	}
+
+	curl_global_init(CURL_GLOBAL_ALL);
+	CURL* handle = curl_easy_init();
 	
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
