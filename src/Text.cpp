@@ -449,7 +449,7 @@ bool checkChar(char &n, char next) { // Check if current char should have any so
 float getStringWidthRaw(string in, float scale) {
 	if(currentFont == "") return 0.f;
 	float wid = 0.f;
-	bool isBoldSave = isBold;
+	//bool isBoldSave = isBold;
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
 	if(shouldBeBolded(in)) isBold = true;
 	int i = 0;
@@ -469,7 +469,6 @@ float getStringWidthRaw(string in, float scale) {
 		if(n == '+') {
 			isBold = true;
 		}
-		if(n == '~') continue;
 		if(isIconSymbol(n)) {
 			int l = 0;
 			for(int ii = i+1; ii < in.size(); ii++) {
@@ -490,7 +489,8 @@ float getStringWidthRaw(string in, float scale) {
 		Char currentChar = Charsets[currentFont + (isBold ? "b" : "")][n];
 		wid += currentChar.advanceX * scale * fontDownscale;
 	}
-	isBold = isBoldSave;
+	//isBold = isBoldSave;
+	isBold = false;
 	setFont(fontTemp);
 	return wid;
 }
@@ -527,7 +527,7 @@ float getStringHeight(string in, float scale) {
 		} else if(ingore[i].starts_with("-")) {
 			tr += (currentFontHeight * scale * fontDownscale) * 0.45f;
 		} else {
-			tr += (currentFontHeight * scale * fontDownscale);
+			tr += (currentFontHeight * scale * fontDownscale * newlineSizeTweak);
 		}
 	}
 	
@@ -671,11 +671,6 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		char n = *currentCharr;
 
 		if(pos < toRender.size()-1) if(checkChar(n, *(currentCharr+1))) currentCharr++;
-
-		if(n == '~') {
-			isBold = !isBold;
-			continue;
-		}
 		
 		if(n == '+') {
 			bool hasPassedANumber = false;
@@ -837,7 +832,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 		drawColoredTexture((currentX + currentChar.bearX)*scale, (currentY - (currentChar.height - currentChar.bearY))*scale, 0.f, currentChar.width*scale, currentChar.height*scale, col);
 		currentX += currentChar.advanceX;
 	}
-	
+	isBold = false;
 	setFont(strtemp);
 }
 void drawString(string text, float x, float y, float scale) {
@@ -1052,18 +1047,18 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	}
 	
 	//if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
-	if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
-		if(timesMaxDRunThrough < 0) {
-			timesMaxDRunThrough++;
-			scale *= (maxHeight / heightTemp) * 0.95f;
-			maxWidth *= (maxHeight / heightTemp) * 1.5;
-			drawCenteredStringWithMaxDimensions(inn, x, y, scale, (maxWidth*2), maxHeight);
-			timesMaxDRunThrough = 0;
-			return;
-		}
-		scale *= maxHeight / heightTemp;
-		maxWidth *= maxHeight / heightTemp;
-	}
+	// if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
+	// 	if(timesMaxDRunThrough < 0) {
+	// 		timesMaxDRunThrough++;
+	// 		scale *= (maxHeight / heightTemp) * 0.95f;
+	// 		maxWidth *= (maxHeight / heightTemp) * 1.5;
+	// 		drawCenteredStringWithMaxDimensions(inn, x, y, scale, (maxWidth*2), maxHeight);
+	// 		timesMaxDRunThrough = 0;
+	// 		return;
+	// 	}
+	// 	scale *= maxHeight / heightTemp;
+	// 	maxWidth *= maxHeight / heightTemp;
+	// }
 	
 	drawCenteredString(in, x, y, scale, r, g, b);
 
