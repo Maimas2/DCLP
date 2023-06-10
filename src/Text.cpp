@@ -754,8 +754,8 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				if((ttods = getStringWidth(tod, tods)) > 0.04f*(scale/fontDownscale)) {
 					tods *= (0.04f*(scale/fontDownscale)) / ttods;
 				}
-				setFont("tnr");
-				isBold = true;
+				setFont("tnrb");
+				isBold = false;
 				switch(ctype) {
 					case 1:
 						drawCenteredString(tod, currentX*scale+0.0285f*iconScale, currentY*scale+0.015f*iconScale, tods);
@@ -779,7 +779,7 @@ void drawString(string toRender, float x, float y, float scale, float r, float g
 				} else {
 					currentX += 0.06f / fontDownscale;
 				}
-				isBold = false;
+				setFont("tnr");
 				checkingForBold = true;
 				continue;
 			}

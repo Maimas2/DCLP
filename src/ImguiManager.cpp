@@ -359,6 +359,7 @@ void doImguiWindow() {
                 Saves::read(string(recentFiles[0]));
 				currentFile = string(recentFiles[0]);
                 uiMode = 1;
+				reloadPictures();
             }
 
 			ImGui::SameLine(windowWidth - (ImGui::CalcTextSize(recentFilesBeautified[ii].c_str()).x + 20));
@@ -366,6 +367,7 @@ void doImguiWindow() {
 				Saves::read(string(recentFiles[ii]));
 				currentFile = string(recentFiles[ii]);
                 uiMode = 1;
+				reloadPictures();
 			}} else {
 				ImGui::NewLine();
 			}
@@ -380,6 +382,7 @@ void doImguiWindow() {
 				Saves::read(string(recentFiles[ii]));
 				currentFile = string(recentFiles[ii]);
                 uiMode = 1;
+				reloadPictures();
 			}} else {
 				ImGui::NewLine();
 			}
@@ -392,6 +395,7 @@ void doImguiWindow() {
 				Saves::read(string(recentFiles[ii]));
 				currentFile = string(recentFiles[ii]);
                 uiMode = 1;
+				reloadPictures();
 			}} else {
 				ImGui::NewLine();
 			}
@@ -403,6 +407,7 @@ void doImguiWindow() {
 				Saves::read(string(recentFiles[ii]));
 				currentFile = string(recentFiles[ii]);
                 uiMode = 1;
+				reloadPictures();
 			}} else {
 				ImGui::NewLine();
 			}
@@ -415,6 +420,7 @@ void doImguiWindow() {
 				Saves::read(string(recentFiles[ii]));
 				currentFile = string(recentFiles[ii]);
                 uiMode = 1;
+				reloadPictures();
 			}} else {
 				ImGui::NewLine();
 			}

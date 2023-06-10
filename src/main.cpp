@@ -825,7 +825,7 @@ int main(int argc, char *argv[]) {
 	loadFont("freefonts/FreeSerifBold.ttf", "tnrb");
 	loadFont("freefonts/FreeSerif.ttf", "tnr");
 	loadFont("freefonts/FreeSerifItalic.ttf", "tnri");
-	loadFont("freefonts/FreeSerifItalic.ttf", "tnrib");
+	loadFont("freefonts/FreeSerifBoldItalic.ttf", "tnrib");
 	
 	imguiInit();
 
