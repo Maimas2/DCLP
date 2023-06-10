@@ -39,7 +39,6 @@ int fShader;
 int shaderProgram;
 int vao;
 float currentAlpha[4] = {1.f, 1.f, 1.f, 1.f};
-double moneyMadeThisGame = -1;
 bool isFixedFunction = false;
 
 float allRed[12] = {
@@ -572,34 +571,29 @@ string split(string og, string splitter, bool isFirst) {
 	}
 	return "";
 }
-void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) { // IMPORTANT: DOES NOT SUPPORT WINDOWS
+CURL* curlHandle = nullptr;
+void loadIcon(string url, string fileOut, Image* toLoad, bool isLoaded) {
+	if(strip(url) == "") {
+		Log::log("Url to grab was empty (this may be normal)");
+		return;
+	}
+	if(curlHandle == nullptr) curlHandle = curl_easy_init();
 	if(isLoaded) {
 		*toLoad = res::setupImage(fileOut, true);
 		return;
 	}
-	CURL* image = curl_easy_init();
 	FILE* f = fopen(fileOut.c_str(), "wb");
-	curl_easy_setopt(image, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL); 
-	curl_easy_setopt(image, CURLOPT_WRITEDATA, f);
+	curl_easy_setopt(curlHandle, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curlHandle, CURLOPT_WRITEFUNCTION, NULL); 
+	curl_easy_setopt(curlHandle, CURLOPT_WRITEDATA, f);
 
-	auto result = curl_easy_perform(image);
+	auto result = curl_easy_perform(curlHandle);
 	if(result) {
-		Log::warning("Loading of image " + url + " failed!");
+		Log::warning("Loading of image " + url + " failed with error code " + to_string(result) + "!");
 		return;
 	}
-
-	curl_easy_cleanup(image);
-
+	
 	fclose(f);
 
 	*toLoad = res::setupImage(fileOut, true);
-	return;
-	pid_t pid=fork();
-    if(pid == 0) {
-		
-    } else {
-        waitpid(pid,0,0);
-		*toLoad = res::setupImage(fileOut, true);
-    }
 }

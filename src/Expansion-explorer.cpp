@@ -107,7 +107,6 @@ void expansionImgui() {
     for(int i = 0; i < cardNames.size(); i++) {
         string baseName = (cardNames[i] == "" ? "[empty]" : cardNames[i]);
         if(ImGui::Button(("Edit " + baseName).c_str())) {
-            cout << i << 1 << endl;
             Saves::read(savePaths[i]);
             currentFile = savePaths[i];
             uiMode = 3;
@@ -115,7 +114,6 @@ void expansionImgui() {
         }
         ImGui::SameLine(windowWidth - (ImGui::CalcTextSize(("Preview " + baseName).c_str()).x + 20));
         if(ImGui::Button(("Preview " + baseName).c_str())) {
-            cout << i << endl;
             Save temp;
             temp.loadDefault();
             temp.read(savePaths[i]);

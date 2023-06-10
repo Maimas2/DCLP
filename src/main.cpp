@@ -145,7 +145,7 @@ FBO* setupFBO(int fboWidth, int fboHeight) {
 	glBindFramebuffer(GL_FRAMEBUFFER, (toReturn->fbo));
 
 	glBindTexture(GL_TEXTURE_2D, (toReturn->color));
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fboWidth, fboHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fboWidth, fboHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -186,11 +186,11 @@ void doWidthHeightPixels() {
 	}
 }
 GLubyte* getScreenshotPixels() {
-	GLubyte* pixels = (GLubyte*)malloc(4 * w * h);
+	GLubyte* pixels = (GLubyte*)malloc(3 * w * h);
 
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
-	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	if (GL_NO_ERROR != glGetError()) throw "Error: Unable to read pixels.";
 
 	return pixels;
@@ -250,6 +250,10 @@ void drawOnFbo(bool isFlipping) {
 		setFloat("yStretch", yStretch);
 	}
 
+	enablings();
+
+	clear(0.f, 0.f, 0.f);
+
 	handlerDraw();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, drawingFbo->fbo);
@@ -265,8 +269,7 @@ void drawOnFbo(bool isFlipping) {
 		yStretch = 0.727068966f;
 	}
 
-	glClearColor(0.f, 0.f, 0.f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	clear(0.f, 0.f, 0.f);
 
 	glBindTexture(GL_TEXTURE_2D, currentFbo->color);
 	drawTexturedQuad(-xStretch, yStretch, xStretch*2, -yStretch*2);
@@ -281,7 +284,7 @@ void screenShot() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	stbi_flip_vertically_on_write(true);
-	stbi_write_jpg("out.jpg", w, h, 4, pixels, 100);
+	stbi_write_jpg("out.jpg", w, h, 3, pixels, 100);
 	
 	free(pixels);
 }
@@ -811,7 +814,7 @@ int main(int argc, char *argv[]) {
 	stbi_image_free(images[0].pixels);
     
 
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         cout << "Failed to initialize OpenGL context! Exiting" << std::endl;
         return -1;
     }

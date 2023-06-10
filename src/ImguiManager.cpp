@@ -569,6 +569,14 @@ void doImguiWindow() {
 				uiMode = 2;
 			}
 		}
+		if(uiMode == 1) {
+			if(ImGui::Button("Exit to main menu")) {
+				Saves::save();
+                cardText = (char*)malloc(512);
+                Saves::read();
+				uiMode = 0;
+			}
+		}
 
 		if(currentMenuType == 0) {
 			ImGui::NewLine();
