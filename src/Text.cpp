@@ -450,7 +450,6 @@ bool checkChar(char &n, char next) { // Check if current char should have any so
 float getStringWidthRaw(string in, float scale) {
 	if(currentFont == "") return 0.f;
 	float wid = 0.f;
-	//bool isBoldSave = isBold;
 	if(isLargeSymbol(in) && isDrawingLargeIcons) return 0.24f;
 	if(shouldBeBolded(in)) isBold = true;
 	int i = 0;
@@ -471,6 +470,7 @@ float getStringWidthRaw(string in, float scale) {
 		if(n == '+') {
 			isBold = true;
 		}
+		if(n == ' ') isBold = false;
 		if(isIconSymbol(n)) {
 			int l = 0;
 			for(int ii = i+1; ii < in.size(); ii++) {
@@ -485,13 +485,13 @@ float getStringWidthRaw(string in, float scale) {
 			} else {
 				wid += 0.06f * scale;
 			}
+			isBold = false;
 			continue;
 		}
 		
 		Char currentChar = Charsets[currentFont + (isBold ? "b" : "")][n];
 		wid += currentChar.advanceX * scale * fontDownscale;
 	}
-	//isBold = isBoldSave;
 	isBold = false;
 	setFont(fontTemp);
 	return wid;
