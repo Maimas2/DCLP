@@ -254,6 +254,13 @@ bool shouldBeBolded(string in) {
 	return true;
 }
 bool checkChar(char &n, char next) { // Check if current char should have any sort of accent or decoration
+	// if((int)n == -87) {
+	// 	if((int)next == 32) {
+	// 		n = (char)-100;
+	// 		cout << (int)n << "  " << (int)next << endl;
+	// 		return true;
+	// 	}
+	// }
 	if((int)n == -61) {
 		// ----------------------------------- A -----------------------------------
 		if(next == -96) { // à
@@ -438,12 +445,6 @@ bool checkChar(char &n, char next) { // Check if current char should have any so
 			return true;
 		}
 	}
-	if((int)n == -66) {
-		cout << 2 << endl;
-		if(next == -41) {
-			return true;
-		}
-	}
 	return false;
 }
 float getStringWidthRaw(string in, float scale) {
@@ -461,6 +462,7 @@ float getStringWidthRaw(string in, float scale) {
 	
 	for( ; i < in.size(); i++) {
 		char n = in.at(i);
+		if(n == 1) continue;
 		if(i < in.size()-1) if(checkChar(n, in.at(i+1))) i++;
 		if(n == '\n') {
 			isBold = false;
