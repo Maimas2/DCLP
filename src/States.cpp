@@ -204,18 +204,20 @@ void drawBase() {
 		setVec2("maxNE", 0.9f, 0.448f);
 		setVec2("maxSW", -0.9f, -0.24f);
 		
-		res::tempIcon.bind();
-		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
-		if(wxh < 1.f) {
-			wid    = 1.8f;
-			height = 1.8f/wxh;
-		} else {
-			wid    = 0.75f*wxh;
-			height = 0.75f;
+		if(strcmp(iconUrl, "") != 0) {
+			res::tempIcon.bind();
+			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+			if(wxh < 1.f) {
+				wid    = 1.8f;
+				height = 1.8f/wxh;
+			} else {
+				wid    = 0.75f*wxh;
+				height = 0.75f;
+			}
+			setBool("maxX", true);
+			drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.104-(height/2+(yMove*0.4f))*zoom, wid*zoom, height*zoom);
+			setBool("maxX", false);
 		}
-		setBool("maxX", true);
-		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.104-(height/2+(yMove*0.4f))*zoom, wid*zoom, height*zoom);
-		setBool("maxX", false);
 
 		if(isTrait) {
 			res::traitColor.bind();
@@ -239,19 +241,21 @@ void drawBase() {
 	} else if(cardLayout == 2) {
 		setVec2("maxNE", 0.55f, 0.75f);
 		setVec2("maxSW", -0.55f, -0.75f);
-		
-		res::tempIcon.bind();
-		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
-		if(wxh < 1.f) {
-			wid    = 1.1f;
-			height = 1.1f/wxh;
-		} else {
-			wid    = 0.8f*wxh;
-			height = 0.8f;
+
+		if(strcmp(iconUrl, "") != 0) {
+			res::tempIcon.bind();
+			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+			if(wxh < 1.f) {
+				wid    = 1.1f;
+				height = 1.1f/wxh;
+			} else {
+				wid    = 0.8f*wxh;
+				height = 0.8f;
+			}
+			setBool("maxX", true);
+			drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
+			setBool("maxX", false);
 		}
-		setBool("maxX", true);
-		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
-		setBool("maxX", false);
 		
 		res::baseCardColor.bind();
 		
@@ -271,18 +275,21 @@ void drawBase() {
 	} else if(cardLayout == 3) {
 		setVec2("maxNE", 0.8f, 0.5f);
 		setVec2("maxSW", -0.8f, -0.5f);
-		res::tempIcon.bind();
-		float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
-		if(wxh < 1.f) {
-			wid    = 1.1f;
-			height = 1.1f/wxh;
-		} else {
-			wid    = 0.8f*wxh;
-			height = 0.8f;
+
+		if(strcmp(iconUrl, "") != 0) {
+			res::tempIcon.bind();
+			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
+			if(wxh < 1.f) {
+				wid    = 1.1f;
+				height = 1.1f/wxh;
+			} else {
+				wid    = 0.8f*wxh;
+				height = 0.8f;
+			}
+			setBool("maxX", true);
+			drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
+			setBool("maxX", false);
 		}
-		setBool("maxX", true);
-		drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, (-height/2+(yMove*1.5f))*zoom, wid*zoom, height*zoom);
-		setBool("maxX", false);
 
 		res::pileMarker.bind();
 		drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
