@@ -536,8 +536,8 @@ void drawBottomTexts() {
 		drawVerticallyCenteredText(string(cardCredit), -0.5f, -0.89f, 0.6f * bottomTextSizeTweak, 1.f, 1.f, 1.f);
 		drawRightAlignedVerticallyCenteredText(string(cardVersion), 0.5f, -0.89f, 0.6f * bottomTextSizeTweak, 1.f, 1.f, 1.f);
 	} else if(cardLayout == 1) {
-		drawVerticallyCenteredText(string(cardCredit), -0.825f, -0.525f, 0.6f * bottomTextSizeTweak);
-		drawRightAlignedVerticallyCenteredText(string(cardVersion), 0.825f, -0.525f, 0.6f * bottomTextSizeTweak);
+		drawVerticallyCenteredText(string(cardCredit), -0.825f, -0.53f, 0.6f * bottomTextSizeTweak);
+		drawRightAlignedVerticallyCenteredText(string(cardVersion), 0.825f, -0.53f, 0.6f * bottomTextSizeTweak);
 	}
 	setFont("tnr");
 }

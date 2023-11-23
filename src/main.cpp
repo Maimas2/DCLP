@@ -3,6 +3,7 @@
 #include "curl/curl.h"
 #include "glm/geometric.hpp"
 #include <cstdint>
+#include <filesystem>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <sys/wait.h>
@@ -551,8 +552,6 @@ GLFWwindow* createWindow(bool f) {
 	glfwSetWindowFocusCallback(e, window_focus_callback);
 	glfwSetCursorPosCallback(e, cursor_position_callback);
 
-	glfwShowWindow(e);
-
 	return e;
 }
 void getWindowSize() {
@@ -671,96 +670,6 @@ int main(int argc, char *argv[]) {
 	deleteFile("tempicon.png");
 	showWindow = false;
 	bool isCli = false;
-	// for(int i = 1; i < argc; i++) { // Lengthy, but it works, so I don't care
-	// 	if(strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
-	// 		printHelp();
-	// 		return 0;
-	// 	} else if(strcmp(argv[i], "--high-res") == 0) {
-	// 		cout << "Using higher resolution images, expect lower performance and longer load times." << endl;
-	// 		isLowRes = false;
-	// 	} else if(strcmp(argv[i], "--title") == 0) {
-	// 		incrementLoop();
-	// 		cardTitle = argv[i];
-	// 		cout << "Using \"" << cardTitle << "\" as title." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--type") == 0) {
-	// 		incrementLoop();
-	// 		cardType = argv[i];
-	// 		cout << "Using \"" << cardType << "\" as type." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--cost") == 0) {
-	// 		incrementLoop();
-	// 		cardCost = argv[i];
-	// 		cout << "Using \"" << cardCost << "\" as cost." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--url") == 0) {
-	// 		incrementLoop();
-	// 		iconUrl = argv[i];
-	// 		cout << "Loading \"" << iconUrl << "\" as image." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--expansion-url") == 0) {
-	// 		incrementLoop();
-	// 		expansionUrl = argv[i];
-	// 		cout << "Loading \"" << expansionUrl << "\" as expansion icon." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--primary-color") == 0) {
-	// 		incrementLoop();
-	// 		cardColor = getChoice(argv[i]);
-	// 		cout << "Using \"" << mainChoices[cardColor] << "\" as primary color." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--secondary-color") == 0) {
-	// 		incrementLoop();
-	// 		cardSecondary = getChoice(argv[i])+1;
-	// 		cout << cardSecondary << endl;
-	// 		cout << "Using \"" << secondaryChoices[cardSecondary] << "\" as secondary color." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--text") == 0) {
-	// 		incrementLoop();
-	// 		cardText = argv[i];
-	// 		cout << "Card text acquired." << endl;
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--illustration-credit") == 0) {
-	// 		incrementLoop();
-	// 		cardCredit = argv[i];
-	// 		cout << "Using \"" << cardCredit << "\" as illustration credit." << endl;
-			
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--author") == 0) {
-	// 		incrementLoop();
-	// 		cardVersion = argv[i];
-	// 		cout << "Using \"" << cardVersion << "\" as version and author credit." << endl;
-			
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--preview") == 0) {
-	// 		incrementLoop();
-	// 		cardPreview = argv[i];
-	// 		cout << "Using \"" << cardVersion << "\" as preview." << endl;
-			
-	// 		isScreenshotting = true;
-	// 	} else if(strcmp(argv[i], "--legend") == 0) {
-	// 		printLegend();
-	// 		return 0;
-	// 	} else if(strcmp(argv[i], "--font-size") == 0) {
-	// 		incrementLoop();
-	// 		fontSize = stoi(argv[i]);
-	// 		if(fontSize == 0) {
-	// 			Log::warning("Font size was zero or unrecognisable, resetting to 144.");
-	// 			fontSize = 144;
-	// 		}
-	// 		if(fontSize > 500) {
-	// 			Log::warning("Font size is over 500! Expect longer render and load times.");
-	// 		}
-	// 	} else if(strcmp(argv[i], "--curl-license") == 0) {
-	// 		printCurlLicense();
-	// 		return 0;
-	// 	} else if(strcmp(argv[i], "--list-colors") == 0) {
-	// 		printColors();
-	// 		return 0;
-	// 	} else if(strcmp(argv[i], "--list-types") == 0) {
-	// 		printColors();
-	// 		return 0;
-	// 	}
-	// }
 	
 	for(int i = 0; i < 512; i++) {
 		if(i == 1) {
@@ -847,6 +756,32 @@ int main(int argc, char *argv[]) {
 
 	setMat4("baseTransMat", glm::mat4(1.f));
 	setMat4("transMat", glm::mat4(1.f));
+
+	res::initial();
+
+	if(argc > 1 && filesystem::exists(string(argv[1]))) {
+		Saves::read(string(argv[1]));
+		uiMode = 1;
+		reloadPictures();
+		for(int i = 0; i < 2; i++) {
+			calculateFPS();
+			enablings();
+			
+			getWindowSize();
+			resetMatrix();
+
+			update();
+			draw();
+
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
+		screenShot();
+		dclpExit();
+		return 0;
+	}
+
+	glfwShowWindow(window);
 	
     while (!glfwWindowShouldClose(window)) {
 		calculateFPS();
@@ -864,7 +799,7 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 		if(totalFramesEver == 1) {
-			res::initial();
+			
 		}
 		
 		deltaFloat = glfwGetTime();
