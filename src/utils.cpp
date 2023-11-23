@@ -236,7 +236,7 @@ Image loadImage(string source, bool hasTrans) {
 	//i.id = c.textureId;
 	i.path = source;
 	i.doIHaveTrans = hasTrans;
-	i.load();
+	//i.load();
 	return i;
 }
 void clear(float r, float g, float b) {

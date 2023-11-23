@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "Image.h"
+
 using namespace std;
 
 extern float width;
@@ -27,6 +29,8 @@ extern bool isFullscreen;
 
 extern int currentFps;
 extern int totalFramesEver;
+
+extern Image* currentlyBindedImage;
 
 float getHBorder();
 float getYBorder();

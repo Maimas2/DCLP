@@ -62,4 +62,10 @@ pileMarkerColored = setupImage("card-resources/PileMarkerColorOne.png",      tru
 		traitSide = setupImage("card-resources/TraitBrownSide.png", 		   true);
 		traitColorSide = setupImage("card-resources/TraitColorOneSide.png",  true);
 	}
+	void initialLoad() {
+		Image list[] = {IMAGE_LIST};
+		for(Image i : list) {
+			i.load();
+		}
+	}
 }

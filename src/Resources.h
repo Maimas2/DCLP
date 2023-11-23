@@ -16,5 +16,6 @@ traitSide, traitColor, traitColorSide, baseCardColorTwo
 namespace res {
 	extern Image IMAGE_LIST;
 	void initial();
+	void initialLoad();
 	Image setupImage(string path, bool hasTrans);
 }

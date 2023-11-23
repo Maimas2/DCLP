@@ -95,6 +95,8 @@ char* recentFiles[5];
 string recentFilesBeautified[5];
 int numberOfRecentFiles = 0;
 
+Image* currentlyBindedImage = nullptr;
+
 // int getChoice(char* c) {
 // 	for(int i = 0; i < 18; i++) {
 // 		if(strcmp(mainChoices[i], c) == 0) return i;
@@ -780,6 +782,8 @@ int main(int argc, char *argv[]) {
 		dclpExit();
 		return 0;
 	}
+
+	//res::initialLoad();
 
 	glfwShowWindow(window);
 	
