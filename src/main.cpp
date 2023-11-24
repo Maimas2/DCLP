@@ -399,6 +399,7 @@ string currentFile = "";
 void reloadPictures() {
 	loadIcon(string(iconUrl), "./tempicon.png", &(res::tempIcon), false);
 	loadIcon(string(expansionUrl), "./expansionicon.png", &(res::tempExpansionIcon), false);
+	res::tempExpansionIcon = res::setupImage("./expansionicon.png", true);
 	if(strcmp(iconUrl, "") != 0) {
 		hasImage = true;
 	} else hasImage = false;
