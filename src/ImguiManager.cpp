@@ -260,7 +260,7 @@ void doImguiWindow() {
 
 				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Save image to out.jpg")) 		    screenShot();
 		
-				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Copy image to Clipboard")) 			copyToClipboard();
+				if((uiMode == 1 || uiMode == 3) && ImGui::MenuItem("Copy image to clipboard")) 			copyToClipboard();
 
 				ImGui::Checkbox("Are Images Low Res? (requires restart to take effect)", &isLowRes);
 
@@ -554,17 +554,6 @@ void doImguiWindow() {
 			}
 			ImGuiFileDialog::Instance()->Close();
 		}
-        if(ImGuiFileDialog::Instance()->Display("Save DCLP File")) {
-			if (ImGuiFileDialog::Instance()->IsOk()) {
-				string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-				
-				currentFile = filePathName;
-                Saves::save();
-                cardText = (char*)malloc(512);
-                Saves::read();
-			}
-			ImGuiFileDialog::Instance()->Close();
-		}
 
 		if(uiMode == 0) {
 			return;
@@ -595,12 +584,49 @@ void doImguiWindow() {
 			}
 		}
 		if(uiMode == 1) {
-			if(ImGui::Button("Exit to main menu")) {
-				Saves::save();
+			if(ImGui::Button(currentFile == "" ? "Exit and save" : "Exit to main menu")) {
+				if(currentFile == "") {
+					ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+				} else {
+					Saves::save();
+					cardText = (char*)malloc(512);
+					Saves::read();
+					uiMode = 0;
+				}
+			}
+			if(currentFile == "") {
+				if(ImGui::Button("Exit without saving")) {
+					ImGui::OpenPopup("Quit?");
+				}
+				if(ImGui::Button("Save")) {
+					ImGuiFileDialog::Instance()->OpenDialog("Save DCLP File", "Save DCLP File", ".dclp", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+				}
+			}
+			if(ImGui::BeginPopupModal("Quit?")) {
+				ImGui::Text("Exit without saving your work?");
+				if(ImGui::Button("Yes")) {
+					cardText = (char*)malloc(512);
+					Saves::read();
+					uiMode = 0;
+					ImGui::CloseCurrentPopup();
+				}
+				if(ImGui::Button("Return to editor")) {
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		if(ImGuiFileDialog::Instance()->Display("Save DCLP File")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) {
+				string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				
+				currentFile = filePathName;
+                Saves::save();
                 cardText = (char*)malloc(512);
                 Saves::read();
-				uiMode = 0;
 			}
+			ImGuiFileDialog::Instance()->Close();
 		}
 
 		if(currentMenuType == 0) {
