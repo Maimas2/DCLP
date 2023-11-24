@@ -43,6 +43,8 @@ void reloadPictures();
 
 void openErrorPopup(string whoops);
 
+void resetColors();
+
 extern float delta;
 extern float drawDelta, updateDelta;
 extern float averageDrawDelta, averageUpdateDelta;
@@ -106,7 +108,6 @@ extern int  currentMenuType;
 extern const char* examplesNames[];
 extern char* recentFiles[5];
 extern string recentFilesBeautified[5];
-extern int numberOfRecentFiles;
 
 extern bool isFirstFrame;
 extern bool isDemoShown;

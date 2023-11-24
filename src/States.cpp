@@ -53,10 +53,10 @@ float embellishmentColor[12] = {
 	1.f, 1.f, 1.f,
 };
 float sideColor[12] = {
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f
 };
 float secondaryColor[12];
 
@@ -159,7 +159,7 @@ void drawBase() {
 		setVec2("maxNE", 0.55f, 0.75f);
 		setVec2("maxSW", -0.55f, -0.05f);
 		
-		if(strcmp(iconUrl, "") != 0) {
+		if(strcmp(iconUrl, "") != 0 && hasImage) {
 			res::tempIcon.bind();
 			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
 			if(wxh < 1.f) {
@@ -204,7 +204,7 @@ void drawBase() {
 		setVec2("maxNE", 0.9f, 0.448f);
 		setVec2("maxSW", -0.9f, -0.24f);
 		
-		if(strcmp(iconUrl, "") != 0) {
+		if(strcmp(iconUrl, "") != 0 && hasImage) {
 			res::tempIcon.bind();
 			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
 			if(wxh < 1.f) {
@@ -242,7 +242,7 @@ void drawBase() {
 		setVec2("maxNE", 0.55f, 0.75f);
 		setVec2("maxSW", -0.55f, -0.75f);
 
-		if(strcmp(iconUrl, "") != 0) {
+		if(strcmp(iconUrl, "") != 0 && hasImage) {
 			res::tempIcon.bind();
 			float wxh = (float)res::tempIcon.width / (float)res::tempIcon.height, wid, height;
 			if(wxh < 1.f) {
@@ -344,6 +344,9 @@ void drawEmbellishments() {
 			setFont("trajan");
 		}
 	} else if(cardLayout == 1) {
+		memcpy(&eventColor[3], &eventColor[0], sizeof(float) * 3);
+		memcpy(&eventColor[6], &eventColor[0], sizeof(float) * 3);
+		memcpy(&eventColor[9], &eventColor[0], sizeof(float) * 3);
 		if(isTrait) {
 			res::traitBase.bind();
 			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);
@@ -365,6 +368,9 @@ void drawEmbellishments() {
 			setMat4("transMat", glm::rotate(-1.57079633f, glm::vec3(0.f, 0.f, 1.f)));
 			drawCenteredStringWithMaxWidth(s, 0.f, -0.875f, 1.7f, 0.7, cr, cg, cb);
 			setMat4("transMat", glm::mat4(1.f));
+
+			res::eventSide.bind();
+			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, eventColor);
 		} else {
 			res::eventOutline.bind();
 			drawColoredTexture(-1.f, -0.6522547652254765, 2.f, 0.6522547652254765*2, embellishmentColor);

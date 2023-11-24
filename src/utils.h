@@ -35,6 +35,7 @@ extern float allYellow[];
 extern float allBrown[];
 extern float allDarkGray[];
 extern float eventColor[];
+extern float beventColor[];
 
 #endif
 

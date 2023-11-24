@@ -47,7 +47,6 @@ namespace Saves {
       charPointers["recentFiles4"] = &(recentFiles[4]);
 
       intPointers["uiType"]                    = &currentMenuTypee;
-      intPointers["recentFilesNum"]            = &numberOfRecentFiles;
 
       boolPointers["isFullscreen"]             = &isFullscreen;
       boolPointers["isLowRes"]                 = &isLowRes;
@@ -124,17 +123,12 @@ namespace Saves {
                break;
             }
          }
-         if(findRecentFile == -1) {
-            numberOfRecentFiles = min(5, ++numberOfRecentFiles);
-         }
-         for(int i = (findRecentFile == -1 ? 4 : findRecentFile-1); i > 0; i--) {
-            //recentFiles[i] = recentFiles[i-1];
-            memcpy(recentFiles[i], recentFiles[i-1], strlen(recentFiles[i-1]));
-            recentFiles[i][strlen(recentFiles[i-1])] = '\0';
+         for(int i = (findRecentFile == -1 ? 4 : findRecentFile); i > 0; i--) {
+            strcpy(recentFiles[i], recentFiles[i-1]);
          }
          
-         memcpy(recentFiles[0], file.c_str(), file.size());
-         recentFiles[0][file.size()+1] = '\0';
+         strcpy(recentFiles[0], file.c_str());
+         recentFiles[0][file.size()] = '\0';
 
          for(int i = 0; i < 5; i++) {
             string base = string(recentFiles[i]);

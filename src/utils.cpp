@@ -86,10 +86,10 @@ float allYellow[12] = {
 	1.f, 1.f, 0.f,
 };
 float allBrown[12] = {
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
-	1.2f, 0.8f, 0.5f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f,
+	0.897f, 0.621f, 0.413f,
 };
 float allDarkGray[12] = {
 	0.25f, 0.25f, 0.25f,
@@ -98,6 +98,12 @@ float allDarkGray[12] = {
 	0.25f, 0.25f, 0.25f,
 };
 float eventColor[12] = {
+	0.9f, 0.8f, 0.7f,
+	0.9f, 0.8f, 0.7f,
+	0.9f, 0.8f, 0.7f,
+	0.9f, 0.8f, 0.7f,
+};
+float beventColor[12] = {
 	0.9f, 0.8f, 0.7f,
 	0.9f, 0.8f, 0.7f,
 	0.9f, 0.8f, 0.7f,

@@ -87,7 +87,7 @@ bool shouldRedraw = false;
 
 float customCardColor[3] = {1.f, 1.f, 1.f};
 float customEmbellishmentColor[3] = {1.f, 1.f, 1.f};
-float customSideColor[3] = {1.2f, 0.8f, 0.5f};
+float customSideColor[3] = {0.897f, 0.621f, 0.413f,};
 
 float secondCustomCardColor[3] = {1.f, 1.f, 1.f};
 
@@ -96,6 +96,18 @@ string recentFilesBeautified[5];
 int numberOfRecentFiles = 0;
 
 Image* currentlyBindedImage = nullptr;
+
+void resetColors() {
+	for(int i = 0; i < 12; i++) {
+		customCardColor[i] = 1.f;
+		customEmbellishmentColor[i] = 1.f;
+		secondCustomCardColor[i] = 1.f;
+		eventColor[i] = beventColor[i];
+	}
+	customSideColor[0] = 0.897f;
+	customSideColor[1] = 0.621f;
+	customSideColor[2] = 0.413f;
+}
 
 // int getChoice(char* c) {
 // 	for(int i = 0; i < 18; i++) {
