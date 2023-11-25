@@ -67,7 +67,7 @@ void MainDrawState::update() {
 		
 		co.push_back({1, 1, 1});
 		co.push_back({1.1, 0.95, 0.55});
-		co.push_back({0.75, 0.9, 0.65});
+		co.push_back({0.7, 1.0, 0.6});
 		co.push_back({0.65, 0.8, 1.05});
 		co.push_back({1.2, 0.8, 0.4});
 		co.push_back({0.9, 0.75, 0.5});
@@ -173,6 +173,9 @@ void drawBase() {
 			drawTexturedQuad((-wid/2+(xMove*0.55f))*zoom, 0.35f - ((height/2)*zoom - yMove), wid*zoom, height*zoom);
 			setBool("maxX", false);
 		}
+		memcpy(&tempColor[3], &tempColor[0], sizeof(float) * 3);
+		memcpy(&tempColor[6], &tempColor[0], sizeof(float) * 3);
+		memcpy(&tempColor[9], &tempColor[0], sizeof(float) * 3);
 		if(cardSecondary == 0) {
 			res::baseCard.bind();
 			

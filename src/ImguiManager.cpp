@@ -699,7 +699,7 @@ void doImguiWindow() {
 				ImGui::ColorEdit3("Card Primary Color", customCardColor);
 				if(cardColor == NUMBER_OF_CHOICES-1) {
 					ImGui::ColorEdit3("Card Embellishment Color", customEmbellishmentColor);
-					if(cardLayout != 3) ImGui::ColorEdit3("Card Side Color", customSideColor);
+					if(cardLayout != 3 && cardLayout != 1) ImGui::ColorEdit3("Card Side Color", customSideColor);
 				}
 			}
 			if(cardSecondary+1 == NUMBER_OF_CHOICES && cardLayout < 2 && !isTrait) {
@@ -733,12 +733,14 @@ void doImguiWindow() {
 				iconUrl[0] = '\0';
 				res::tempIcon.id = 0;
 			}
+			ImGui::NewLine();
 			if(ImGui::Button("Load Official Image")) {
 				ImGui::OpenPopup("Choose from Official Images");
 			}
 			if(cardLayout <= 2) if(ImGui::Button("Load Expansion Icon")) {
 				ImGui::OpenPopup("Choose Official Expansion Icon");
 			}
+			ImGui::NewLine();
 			if(cardLayout <= 2) {
 				ImGui::Text("Edit expansion icon aspect ratio");
 
@@ -853,14 +855,20 @@ void doImguiWindow() {
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Scale the entire text. May work unexpectedly with large word counts.");
 			}
 			
-			if(cardLayout <  2) ImGui::SliderFloat("Newline Height", &newlineSizeTweak, 0.25f, 4.f, "%.2f");
-			if(ImGui::IsItemHovered()) ImGui::SetTooltip("Change distance between new lines. *Works unexpectedly. Use at your own risk.**");
+			if(cardLayout <  2) {
+				ImGui::SliderFloat("Newline Height", &newlineSizeTweak, 0.25f, 4.f, "%.2f");
+			 if(ImGui::IsItemHovered()) ImGui::SetTooltip("Change distance between new lines. *Works unexpectedly. Use at your own risk.**");
+			}
 
-			if(cardLayout <= 2) ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
-			if(ImGui::IsItemHovered()) ImGui::SetTooltip("Scale the two bottom lines of text. Only needed with exceptionally long lines.");
+			if(cardLayout <= 2) {
+				ImGui::SliderFloat("Bottom Text Size Tweak", &bottomTextSizeTweak, 0.3f, 2.f, "%.2f");
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Scale the two bottom lines of text. Only needed with exceptionally long lines.");
+			}
 
-			if(cardLayout == 4) ImGui::SliderFloat("Mat Width Tweak", &matWidthTweak, 0.25f, 4.f);
-			if(ImGui::IsItemHovered()) ImGui::SetTooltip("Change the space given until the text overflows to the next line.");
+			if(cardLayout == 4) {
+				ImGui::SliderFloat("Mat Width Tweak", &matWidthTweak, 0.25f, 4.f);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Change the space given until the text overflows to the next line.");
+			}
 
 			endMenuItem();
 		}
