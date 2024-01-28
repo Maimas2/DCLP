@@ -31,3 +31,9 @@ freetype-bin/
 cards/
 cards/*
 expansions/*
+./curl/
+./curl/
+libb/*
+libb
+curl/*
+libimgui.a

@@ -29,6 +29,11 @@ void drawCenteredString(string text, float x, float y, float scale, float r, flo
 
 float getStringYMax(string in, float scale);
 float getStringHeight(string in, float scale);
+float getStringHeightRequired(string in, float scale);
+
+bool shouldBeBolded(string in);
+bool isLargeSymbol(string in);
+float drawLargeIcon(string text, float x, float y);
 
 void drawVerticallyCenteredText(string in, float x, float y, float scale, float r, float g, float b);
 void drawVerticallyCenteredText(string text, float x, float y, float scale);

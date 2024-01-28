@@ -545,10 +545,11 @@ float getStringHeightRequired(string in, float scale) {
 			tr += LARGE_ICON_SIZE;
 			continue;
 		}
-		if(shouldBeBolded(in)) {
+		if(shouldBeBolded(in) && largeSingleLineVanillaBonuses) {
 			tr += currentFontHeight * bonusSizeTweak;
 			continue;
 		}
+		break;
 	}
 	
 	return tr;
@@ -1028,7 +1029,6 @@ string clampStringToWidth(string in, float width, float scale) {
 	}
 	return tr;
 }
-int timesMaxDRunThrough = 0;
 void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b) {
 	if(currentFont == "") return;
 	
@@ -1041,30 +1041,46 @@ void drawCenteredStringWithMaxDimensions(string inn, float x, float y, float sca
 	vector<string> lines = split(inn, "\n");
 
 	for(int i = 1; i < lines.size(); i++) {
-		if(isLargeSymbol(strip(lines[i])) && timesMaxDRunThrough == 0) {
+		if(isLargeSymbol(strip(lines[i]))) {
 			float t = getStringHeightRequired(strip(lines[i]), scale);
 			maxHeight -= t;
 			y += t/4;
 		}
 	}
 	
-	//if((heightTemp = getStringHeight(in, scale)-getStringHeightRequired(in, scale)) > maxHeight) {
-	// if((heightTemp = getStringHeight(in, scale)) > maxHeight) {
-	// 	if(timesMaxDRunThrough < 0) {
-	// 		timesMaxDRunThrough++;
-	// 		scale *= (maxHeight / heightTemp) * 0.95f;
-	// 		maxWidth *= (maxHeight / heightTemp) * 1.5;
-	// 		drawCenteredStringWithMaxDimensions(inn, x, y, scale, (maxWidth*2), maxHeight);
-	// 		timesMaxDRunThrough = 0;
-	// 		return;
-	// 	}
-	// 	scale *= maxHeight / heightTemp;
-	// 	maxWidth *= maxHeight / heightTemp;
-	// }
-	
 	drawCenteredString(in, x, y, scale, r, g, b);
 
 	isBold = false;
+}
+void drawCenteredStringWithMaxDimensionsBadOuttake(string inn, float x, float y, float scale, float maxWidth, float maxHeight, float r, float g, float b) {
+	if(currentFont == "") return;
+
+	float baseStringWidth = getStringWidth(inn, scale);
+	float baseStringHeight= getStringHeight(inn, scale);
+	if(baseStringWidth < maxWidth && baseStringHeight < maxHeight) {
+		drawCenteredString(inn, x, y, scale, r, g, b);
+		return;
+	}
+	if(baseStringWidth < maxWidth && baseStringHeight > maxHeight) {
+		drawCenteredString(inn, x, y, scale / (baseStringHeight / maxHeight), r, g, b);
+		return;
+	}
+	if(baseStringWidth > maxWidth) {
+		vector<string> linesOut;
+		vector<string> lines = split(inn, "\n");
+		for(int i = 0; i < lines.size(); i++) {
+			if(getStringWidth(lines[i], scale) > maxWidth) {
+				linesOut.push_back(clampStringToWidth(lines[i], maxWidth, scale));
+			} else {
+				linesOut.push_back(lines[i]);
+			}
+		}
+		string lineOut;
+		for(int i = 0; i < linesOut.size(); i++) {
+			lineOut += linesOut[i];
+		}
+		drawCenteredString(lineOut, x, y, scale, r, g, b);
+	}
 }
 void drawCenteredStringWithMaxDimensions(string in, float x, float y, float scale, float maxWidth, float maxHeight) {
 	drawCenteredStringWithMaxDimensions(in, x, y, scale, maxWidth, maxHeight, 0.f, 0.f, 0.f);
